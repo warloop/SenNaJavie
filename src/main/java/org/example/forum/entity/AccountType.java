@@ -1,10 +1,10 @@
-package org.example.forum;
+package org.example.forum.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name="users")
+@Table(name="account_type")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -12,16 +12,17 @@ import lombok.*;
 @RequiredArgsConstructor
 @ToString
 
-public class User {
+public class AccountType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NonNull
-    private String username;
 
     @NonNull
-    private String email;
+    @Column(name = "name")
+    private String name;
 
     @NonNull
-    private String password;
+    @Column(name = "description")
+    private String description;
+
 }

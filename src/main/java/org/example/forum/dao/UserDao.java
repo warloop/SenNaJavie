@@ -1,7 +1,7 @@
-package org.example.forum;
+package org.example.forum.dao;
 
 
-import org.springframework.stereotype.Repository;
+import org.example.forum.entity.User;
 
 import java.util.List;
 import java.util.Optional;
