@@ -13,7 +13,6 @@ public class LoginController {
     @Autowired
     UserDao dao;
 
-
     @GetMapping("/login")
     public String loginPage() {
         return "login";
@@ -23,9 +22,9 @@ public class LoginController {
         return "mainpage";
     }
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password) {
+    public String login(@RequestParam String login, @RequestParam String password) {
         boolean checkLogin = false;
-        if (dao.findByUsernameAndPassword(username, password) != null) {
+        if (dao.findByLoginAndPass(login, password) != null) {
             checkLogin = true;
         }
         if (checkLogin) {

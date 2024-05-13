@@ -11,14 +11,26 @@
 <p th:if="${param.error}">Username already exists!</p>
 
 <form action="/register" method="post">
-    <label for="username">Username:</label><br>
-    <input type="text" id="username" name="username" required><br>
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name" required><br>
+
+    <label for="surname">Surname:</label><br>
+    <input type="text" id="surname" name="surname" required><br>
+
+    <label for="login">Login:</label><br>
+    <input type="text" id="login" name="login" required><br>
+
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="emailConfirm">Email confirm:</label><br>
+    <input type="email" id="emailConfirm" name="emailConfirm" required><br><br>
 
     <label for="password">Password:</label><br>
     <input type="password" id="password" name="password" required><br>
 
-    <label for="email">Email:</label><br>
-    <input type="email" id="email" name="email" required><br><br>
+    <label for="passwordConfirm">Password confirm:</label><br>
+    <input type="password" id="passwordConfirm" name="passwordConfirm" required><br>
 
     <input type="submit" value="Register">
 </form>
