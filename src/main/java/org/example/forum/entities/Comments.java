@@ -48,9 +48,9 @@ public class Comments {
     private String comment_text;
 
     @NonNull
-    @Column(name = "opinion_mark")
+    @Column(name = "comment_mark")
     /*from 0-5*/
-    private short opinion_mark;
+    private short comment_mark;
 
     @NonNull
     @Column(name = "likes")
@@ -61,11 +61,11 @@ public class Comments {
     private int dislikes;
 
     @NonNull
-    @Column(name = "isBanned")
+    @Column(name = "is_banned")
     private boolean isBanned = false;
 
     @NonNull
-    @Column(name = "isDeleted")
+    @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
     @Column(name = "deleted_date")

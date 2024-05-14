@@ -30,6 +30,10 @@ public class Articles{
     private int user_adder_id;
 
     @NonNull
+    @Column(name = "subject_id")
+    private long subject_id;
+
+    @NonNull
     @Column(name = "add_date")
     private LocalDateTime add_date;
 
