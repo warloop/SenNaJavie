@@ -6,6 +6,7 @@ import org.example.forum.dto.User.UserLoginDto;
 import org.example.forum.dto.User.UserRegisterDto;
 import org.example.forum.entities.User;
 import org.example.forum.repos.Interfaces.UserRepository;
+import org.example.forum.services.interfaces.ISecurityService;
 import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class UserService implements IUserService {
     @Autowired
     private UserRepository USER_REPOSITORY;
 
+    @Autowired
+    private ISecurityService SECURITY_SERVICE;
     /**
      * Metoda wykonuje niezbędne funkcjonalności oraz logikę odpowiedzialną za rejestrację użytkownika w systemie.
      * @param userData - Obiekt typu DTO zawierający niezbędne dane do wykonania rejestracji.
@@ -44,6 +47,9 @@ public class UserService implements IUserService {
             if (USER_REPOSITORY.isUserExistsByEmail(userData.getEmail()).orElse(false)) {
                 throw new Exception("Ten email jest już zajęty! Proces rejestracji przerwany!");
             }
+
+            //HASHOWANIE HASŁA PRZEKAZANEGO W PROCESIE REJESTRACJI
+            userData.setPassword(SECURITY_SERVICE.hashDataUsingSHA256(userData.getPassword()));
 
             if(!USER_REPOSITORY.registerUser(userData)) throw new Exception("Rejestracja nie powiodła się, spróbuj ponownie!");
 
@@ -67,7 +73,7 @@ public class UserService implements IUserService {
     {
         try{
 
-            if(USER_REPOSITORY.findByLoginAndPass(userData.getLogin(), userData.getPassword()) == null) throw new Exception("Nie poprawny login lub hasło!");
+            if(USER_REPOSITORY.findByLoginAndPass(userData.getLogin(),  SECURITY_SERVICE.hashDataUsingSHA256(userData.getPassword())) == null) throw new Exception("Nie poprawny login lub hasło!");
 
             return new InformationReturned(200, "Poprawnie zalogowano!");
 

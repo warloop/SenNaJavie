@@ -18,9 +18,3 @@ CREATE TABLE login (
            active BIT NOT NULL DEFAULT 1,
            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
-INSERT INTO users (id, name, surname, email, account_type_id) VALUES (1, "Admin", "Administracyjny", "admin@example.com", 3);
-INSERT INTO login (id, user_id, login, password) VALUES (1,1,"root", "toor");
-
-INSERT INTO users (id, name, surname, email, account_type_id) VALUES (2, "Moderator", "Moderacyjny", "moderator@example.com", 2);
-INSERT INTO login (id, user_id, login, password) VALUES (2,2,"mod", "dom");
