@@ -1,5 +1,7 @@
 package org.example.forum.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
 import org.example.forum.repos.Interfaces.UserRepository;
@@ -20,7 +22,7 @@ public class LoginController {
     public String loginPage() {
         return "login";
     }
-    @GetMapping("/mainpage")
+    @GetMapping("/protected/mainpage")
     public String mainPage() {
         return "mainpage";
     }
@@ -34,16 +36,40 @@ public class LoginController {
      * @version 1.0.0
      */
     @PostMapping("/login")
-    public String login(@RequestParam String login, @RequestParam String password) {
+    public String login(@RequestParam String login, @RequestParam String password, HttpServletRequest request) {
 
         UserLoginDto userLoginDto = new UserLoginDto(login, password);
 
         InformationReturned informationReturned = USER_SERVICE.loginUser(userLoginDto);
 
         if(informationReturned.getCode() == 200) {
-            return "mainpage";
+
+            HttpSession session = request.getSession();
+            session.setAttribute("isLogged", "true");
+
+            return "redirect:/protected/mainpage";
         }
 
         return "login";
+    }
+
+    /**
+     * Metoda wylogowuje użytkownika, usuwa wartośc sesji.
+     * @param request
+     * @return Redirect to page => login
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request)
+    {
+        HttpSession session = request.getSession();
+        if(session != null)
+        {
+            session.removeAttribute("isLogged");
+            session.invalidate();
+        }
+
+        return "redirect:/login";
     }
 }
