@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  */
 
 @Entity
-@Table(name="opinions_reports")
+@Table(name="coments_reports")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -22,14 +22,14 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @ToString
 
-public class Opinions_reports {
+public class Comments_reports {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @NonNull
-    @Column(name = "opinion_id")
-    private long opinion_id;
+    @Column(name = "comment_id")
+    private long comment_id;
 
     @NonNull
     @Column(name = "report_type")

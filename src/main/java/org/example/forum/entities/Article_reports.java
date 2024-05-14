@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 public class Article_reports {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @NonNull
     @Column(name = "article_id")
