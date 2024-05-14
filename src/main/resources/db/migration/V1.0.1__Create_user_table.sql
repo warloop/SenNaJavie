@@ -2,7 +2,7 @@ CREATE TABLE users (
            id INT PRIMARY KEY AUTO_INCREMENT,
            name VARCHAR(48) NOT NULL,
            surname VARCHAR(48) NOT NULL,
-           email VARCHAR(256) NOT NULL,
+           email VARCHAR(256) NOT NULL UNIQUE,
            account_type_id SMALLINT NOT NULL,
            register_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
            is_deleted BIT NOT NULL DEFAULT 0,

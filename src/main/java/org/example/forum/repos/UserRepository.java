@@ -1,14 +1,14 @@
 package org.example.forum.repos;
 
+import io.micrometer.observation.annotation.Observed;
 import org.example.forum.dto.User.UserRegisterDto;
-import org.example.forum.repos.Interfaces.UserDao;
 import org.example.forum.entities.AccountType;
-import org.example.forum.entities.Login;
 import org.example.forum.entities.User;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,13 +22,14 @@ import static org.aspectj.bridge.MessageUtil.fail;
 
 
 @Repository
-public class UserDaoJdbcImpl implements UserDao {
+public class UserRepository implements org.example.forum.repos.Interfaces.UserRepository {
 
     /**
      * @brief Funkcja rejestruje podstawowe dane nowego użytkownika do tabeli Users.
      * @param user - Jako parametr funkcji otrzymuje obiekt UserRegisterDto, który zawiera dane z formularza rejestracji.
      * @return boolean - Zwraca true jeżeli dodawanie użytkownika powiedzie się.
      * @author Artur Leszczak
+     * @version 1.0.1
      */
     @Override
     public boolean registerUser(UserRegisterDto user) {
@@ -80,6 +81,11 @@ public class UserDaoJdbcImpl implements UserDao {
         }
     }
 
+    /**
+     *
+     * @author Mateusz Fiedosiuk
+     * @version 1.0.0
+     */
     @Override
     public void save(User user) {
         final String SQL = "INSERT INTO users (name, surname, email, account_type, register_date, is_deleted, delete_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -106,6 +112,11 @@ public class UserDaoJdbcImpl implements UserDao {
         }
     }
 
+    /**
+     *
+     * @author Mateusz Fiedosiuk
+     * @version 1.0.0
+     */
     @Override
     public void update(User user) {
         final String SQL = "UPDATE users SET name = ?, surname = ? email = ?, account_type = ?, is_deleted = ?, delete_date = ? WHERE id = ?";
@@ -124,6 +135,11 @@ public class UserDaoJdbcImpl implements UserDao {
         }
     }
 
+    /**
+     *
+     * @author Mateusz Fiedosiuk
+     * @version 1.0.0
+     */
     @Override
     public void delete(User user) {
         final String SQL = "UPDATE users SET is_deleted = ?, deleted_date = ? WHERE id = ?";
@@ -138,6 +154,11 @@ public class UserDaoJdbcImpl implements UserDao {
         }
     }
 
+    /**
+     *
+     * @author Mateusz Fiedosiuk
+     * @version 1.0.0
+     */
     @Override
     public Optional<User> findById(int id) {
         final String SQL = "SELECT * FROM users WHERE id = ?";
@@ -169,6 +190,11 @@ public class UserDaoJdbcImpl implements UserDao {
         return Optional.empty();
     }
 
+    /**
+     *
+     * @author Mateusz Fiedosiuk
+     * @version 1.0.0
+     */
     @Override
     public List<User> findAll() {
         final String SQL = "SELECT * FROM users";
@@ -200,6 +226,7 @@ public class UserDaoJdbcImpl implements UserDao {
      * @param password - Wartość tekstowa reprezentująca hasło
      * @return  User | null - Zwraca użytkownika lub null w przypadku niepowodzenia
      * @author Artur Leszczak
+     * @version 1.0.1
      */
      @Override
      public Optional<User> findByLoginAndPass(String login, String password)
@@ -224,4 +251,69 @@ public class UserDaoJdbcImpl implements UserDao {
          return null;
 
      }
+
+    /**
+     * Metoda sprawdza czy istnieje użytkownik o przekazanym w parametrze loginie.
+     * @param login Login szukanego użytkownika.
+     * @return Optional<boolean> Zwraca wynik true jeżeli uzytkownik istnieje oraz false jeżeli nie istnieje, dodatkowo zwraca null w przypadku niepowodzenia w sprawdzeniu.
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
+    @Override
+    public Optional<Boolean> isUserExistsByLogin(String login)
+    {
+        final String SQL = "SELECT COUNT(id) FROM users WHERE id = (SELECT user_id FROM login WHERE login = ?) AND is_deleted = 0";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement statement = conn.prepareStatement(SQL)) {
+            statement.setString(1, login);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+
+                    if(count == 0)
+                    {
+                        return Optional.of(false);
+                    }
+                    return Optional.of(true);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
+        return Optional.of(null);
+    }
+
+    /**
+     * Metoda sprawdza czy istnieje użytkownik o przekazanym w parametrze adresie email.
+     * @param email Adres email szukanego użytkownika.
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
+    @Override
+    public Optional<Boolean> isUserExistsByEmail(String email)
+    {
+        final String SQL = "SELECT COUNT(id) FROM users WHERE email = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement statement = conn.prepareStatement(SQL)) {
+            statement.setString(1, email);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+
+                    if(count == 0)
+                    {
+                        return Optional.of(false);
+                    }
+                    return Optional.of(true);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
+        return Optional.of(null);
+    }
 }
