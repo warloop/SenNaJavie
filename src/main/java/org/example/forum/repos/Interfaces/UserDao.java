@@ -1,14 +1,15 @@
-package org.example.forum.dao;
+package org.example.forum.repos.Interfaces;
 
 
-import org.example.forum.entity.Login;
-import org.example.forum.entity.User;
+import org.example.forum.dto.User.UserRegisterDto;
+import org.example.forum.entities.Login;
+import org.example.forum.entities.User;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
-    boolean registerUser(User user, Login login);
+    boolean registerUser(UserRegisterDto userData);
     void save(User t);
     void update(User t);
     void delete(User t);

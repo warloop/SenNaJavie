@@ -1,11 +1,8 @@
-package org.example.forum.entity;
+package org.example.forum.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DialectOverride;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
-import javax.print.attribute.DateTimeSyntax;
 import java.time.LocalDateTime;
 
 @Entity

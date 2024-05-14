@@ -1,6 +1,6 @@
 package org.example.forum.controllers;
 
-import org.example.forum.dao.UserDao;
+import org.example.forum.repos.Interfaces.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

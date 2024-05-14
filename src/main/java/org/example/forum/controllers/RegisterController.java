@@ -1,8 +1,9 @@
 package org.example.forum.controllers;
 
-import org.example.forum.dao.UserDao;
-import org.example.forum.entity.Login;
-import org.example.forum.entity.User;
+import org.example.forum.dto.User.UserRegisterDto;
+import org.example.forum.repos.Interfaces.UserDao;
+import org.example.forum.entities.Login;
+import org.example.forum.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -35,21 +36,13 @@ public class RegisterController {
             return ResponseEntity.badRequest().body("Pola email i potwierdź email muszą być takie same!");
         }
 
-        User user = new User();
-        Login loginObj = new Login();
+        UserRegisterDto userRegisterData = new UserRegisterDto(name, surname, login, email, password);
 
-        user.setName(name);
-        user.setSurname(surname);
-        user.setEmail(email);
-
-        loginObj.setLogin(login);
-        loginObj.setPassword(password);
-
-        if(dao.registerUser(user, loginObj)){
+        if(dao.registerUser(userRegisterData)){
             return ResponseEntity.ok("Zarejestrowano pomyślnie");
         }
 
-        return ResponseEntity.badRequest().body("Nie udało się zarejestrowac ! Spróbuj ponownie!");
+        return ResponseEntity.badRequest().body("Nie udało się zarejestrowac! Spróbuj ponownie!");
 
     }
 }
