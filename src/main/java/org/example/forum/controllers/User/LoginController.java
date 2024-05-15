@@ -1,10 +1,9 @@
-package org.example.forum.controllers;
+package org.example.forum.controllers.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
-import org.example.forum.repos.Interfaces.UserRepository;
 import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

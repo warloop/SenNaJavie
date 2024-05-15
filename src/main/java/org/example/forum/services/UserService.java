@@ -1,17 +1,13 @@
 package org.example.forum.services;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
 import org.example.forum.dto.User.UserRegisterDto;
-import org.example.forum.entities.User;
-import org.example.forum.repos.Interfaces.UserRepository;
+import org.example.forum.repos.Interfaces.IUserRepository;
 import org.example.forum.services.interfaces.ISecurityService;
 import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /**
  * Serwis odpowiada za powiązanie pomiędzy logiką aplikacji a komunikacją między kontrolerem oraz repozytorium.
@@ -23,7 +19,7 @@ import java.util.Optional;
 public class UserService implements IUserService {
 
     @Autowired
-    private UserRepository USER_REPOSITORY;
+    private IUserRepository USER_REPOSITORY;
 
     @Autowired
     private ISecurityService SECURITY_SERVICE;

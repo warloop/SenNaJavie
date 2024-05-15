@@ -1,4 +1,4 @@
-package org.example.forum.controllers;
+package org.example.forum.controllers.User;
 
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.dto.User.UserRegisterDto;

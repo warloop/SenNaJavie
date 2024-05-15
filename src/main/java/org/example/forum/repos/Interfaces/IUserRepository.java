@@ -6,7 +6,7 @@ import org.example.forum.entities.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository {
+public interface IUserRepository {
 
     void save(User t);
     void update(User t);

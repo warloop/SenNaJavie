@@ -1,14 +1,13 @@
 package org.example.forum.repos;
 
-import io.micrometer.observation.annotation.Observed;
 import org.example.forum.dto.User.UserRegisterDto;
 import org.example.forum.entities.AccountType;
 import org.example.forum.entities.User;
 import org.example.forum.exception.DataAccessException;
+import org.example.forum.repos.Interfaces.IUserRepository;
 import org.example.forum.util.ConnectionFactory;
 import org.springframework.stereotype.Repository;
 
-import javax.swing.text.html.Option;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,7 +21,7 @@ import static org.aspectj.bridge.MessageUtil.fail;
 
 
 @Repository
-public class UserRepository implements org.example.forum.repos.Interfaces.UserRepository {
+public class UserRepository implements IUserRepository {
 
     /**
      * @brief Funkcja rejestruje podstawowe dane nowego użytkownika do tabeli Users.

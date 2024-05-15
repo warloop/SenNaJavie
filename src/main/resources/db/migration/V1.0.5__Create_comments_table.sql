@@ -7,12 +7,32 @@ CREATE TABLE comments (
     add_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     comment_text VARCHAR(256) NOT NULL,
     comment_mark SMALLINT(1) NOT NULL,
-    likes INT NOT NULL DEFAULT 0,
-    dislikes INT NOT NULL DEFAULT 0,
     is_banned BIT NOT NULL DEFAULT 0,
     is_deleted BIT NOT NULL DEFAULT 0,
     deleted_date TIMESTAMP DEFAULT NULL,
     FOREIGN KEY (artice_id) REFERENCES articles(id) ON DELETE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_adder_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE comment_likes (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    comment_id BIGINT NOT NULL,
+    user_adder_id INT NOT NULL,
+    add_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BIT NOT NULL DEFAULT 0,
+    deleted_date TIMESTAMP DEFAULT NULL,
+    FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_adder_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE comment_dislikes (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    comment_id BIGINT NOT NULL,
+    user_adder_id INT NOT NULL,
+    add_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BIT NOT NULL DEFAULT 0,
+    deleted_date TIMESTAMP DEFAULT NULL,
     FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
     FOREIGN KEY (user_adder_id) REFERENCES users(id) ON DELETE CASCADE
 );
