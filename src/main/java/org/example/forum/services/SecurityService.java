@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Pattern;
 
 /**
  * Klasa odpowiedzialna za implementację mechanizmów bezpieczeństwa w apliakcji.
@@ -65,5 +66,30 @@ public class SecurityService implements ISecurityService {
     public boolean comparePassAndPassFromDb(String normal_password, String hashedPass) {
 
         return  this.compareHashesUsingSHA256(this.hashDataUsingSHA256(normal_password), hashedPass);
+    }
+
+    /**
+     * Publiczne enum pozwalające na sprawdzenie czy dana jest zgodna z określonym schematem.
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
+
+    public enum Regex {
+        LOGIN("^[a-ząćęłńóśźżA-ZĄĆĘŁŃÓŚŹŻ0-9]{3,16}$"),
+        NAME("^[a-ząćęłńóśźżA-ZĄĆĘŁŃÓŚŹŻ\\- ]{2,48}$"),
+        SURNAME("^[a-ząćęłńóśźżA-ZĄĆĘŁŃÓŚŹŻ\\- ]{2,48}$"),
+        EMAIL("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"),
+        PASSWORD("^(?=.*[a-ząćęłńóśźż])(?=.*[A-ZĄĆĘŁŃÓŚŹŻ])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-ząćęłńóśźżĄĆĘŁŃÓŚŹŻ\\d@$!%*?&]{8,}$");
+
+        private final String pattern;
+
+        // Konstruktor enum
+        Regex(String pattern) {
+            this.pattern = pattern;
+        }
+
+        public Pattern getPattern() {
+            return Pattern.compile(pattern);
+        }
     }
 }

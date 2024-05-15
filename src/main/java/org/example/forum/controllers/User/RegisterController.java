@@ -2,6 +2,7 @@ package org.example.forum.controllers.User;
 
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.dto.User.UserRegisterDto;
+import org.example.forum.services.SecurityService;
 import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,29 @@ public class RegisterController {
                                            @RequestParam String email, @RequestParam String emailConfirm, @RequestParam String password,
                                            @RequestParam String passwordConfirm)
     {
+
         //początkowa walidacja danych
+
+        if(!(SecurityService.Regex.NAME.getPattern().matcher(name).matches())){
+            return ResponseEntity.badRequest().body("Niepoprawna składnia imienia!");
+        }
+
+        if(!(SecurityService.Regex.SURNAME.getPattern().matcher(surname).matches())){
+            return ResponseEntity.badRequest().body("Niepoprawna składnia nazwiska!");
+        }
+
+        if(!(SecurityService.Regex.LOGIN.getPattern().matcher(login).matches())){
+            return ResponseEntity.badRequest().body("Niepoprawna składnia loginu!");
+        }
+
+        if(!(SecurityService.Regex.PASSWORD.getPattern().matcher(password).matches())){
+            return ResponseEntity.badRequest().body("Niepoprawna składnia hasła!");
+        }
+
+        if(!(SecurityService.Regex.EMAIL.getPattern().matcher(email).matches())){
+            return ResponseEntity.badRequest().body("Niepoprawna składnia email!");
+        }
+
         if(!password.equals(passwordConfirm)){
             return ResponseEntity.badRequest().body("Pola hasło i potwierdź hasło muszą być takie same!");
         }
@@ -49,6 +72,8 @@ public class RegisterController {
             return ResponseEntity.badRequest().body("Pola email i potwierdź email muszą być takie same!");
         }
 
+
+        //Utworzenie DTO
         UserRegisterDto userRegisterData = new UserRegisterDto(name, surname, login, email, password);
 
         //Pobieranie informacji zwrotnej z wykonanej próby rejestracji użytkownika.

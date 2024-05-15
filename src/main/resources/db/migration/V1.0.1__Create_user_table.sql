@@ -13,7 +13,7 @@ CREATE TABLE users (
 CREATE TABLE login (
            id INT PRIMARY KEY AUTO_INCREMENT,
            user_id INT NOT NULL UNIQUE,
-           login VARCHAR(256) NOT NULL UNIQUE,
+           login VARCHAR(16) NOT NULL UNIQUE,
            password VARCHAR(256) NOT NULL,
            active BIT NOT NULL DEFAULT 1,
            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

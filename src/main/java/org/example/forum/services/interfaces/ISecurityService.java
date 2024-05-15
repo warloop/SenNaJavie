@@ -7,4 +7,5 @@ public interface ISecurityService {
     boolean compareHashesUsingSHA256(String hash1, String hash2);
 
     boolean comparePassAndPassFromDb(String normal_password, String hashedPass);
+
 }

@@ -1,22 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration</title>
+    <title>Logowanie</title>
+    <meta name="description" content="Aplikacja webowa zaprojektowana na potrzeby pracowni specjalistycznej z przedmiotu projektowanie aplikacji biznesowych w oparciu o platformę java"/>
+    <meta name="version" content="1.0.2"/>
+    <meta name="author" content="Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk"/>
+
+    <!-- GOOGLE FREE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+
+
 </head>
+<style>
+    body{
+        display: grid;
+        margin: 0;
+        padding: 0;
+        place-items: center;
+        place-content: center;
+        overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        font-size: 10px;
+        font-family: "Roboto Light";
+    }
+    h2{
+        font-size: 3.2em;
+        font-weight: 200;
+        width: 100%;
+        text-align: left;
+        margin-bottom: 20px;
+        margin-top: 10px;
+        font-family: "Roboto Flex";
+        font-weight: 300;
+    }
+    .loginFormBox
+    {
+        box-shadow: 0px 0px 4px 2px rgba(0,0,0,0.15);
+        border-radius: 10px;
+        background-color: #fff;
+        display: grid;
+        place-items: center;
+        padding-left: 30px;
+        padding-right: 30px;
+        padding-top: 20px;
+        padding-bottom: 30px;
+        grid-template-columns: 1fr;
+        width: max-content;
+        height: auto;
+    }
+    input[type="submit"]
+    {
+        border-radius: 5px;
+        background-color: #7FEB9D;
+        text-align: center;
+        color: #5b5b5b;
+        font-family: "Roboto flex";
+        font-weight: 600;
+        font-size: 1.6em;
+        display: grid;
+        place-items: center;
+        padding-left: 30px;
+        padding-right: 30px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        outline: none;
+        border: none;
+        cursor: pointer;
+        transition: 0.15s;
+        margin-top: 50px;
+    }
+    input[type="submit"]:hover
+    {
+        padding-left: 35px;
+        padding-right: 35px;
+        background-color: #68d285;
+        transition: 0.22s;
+    }
+    .horizontalLine
+    {
+        content: "";
+        height: 1px;
+        background-color: #ccc;
+        width: 100%;
+    }
+    footer{
+        width: 100vw;
+        display: grid;
+        place-items: center;
+        text-align:center;
+        height: 5vh;
+        position: fixed;
+        bottom: 0;
+        background-color: #363636;
+        color: #fff;
+        font-size: 1.4em;
+        font-family: "Roboto Light";
+        font-weight: 100;
+    }
+    form
+    {
+        width: 300px;
+        height: auto;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-row-gap: 10px;
+        place-items: center;
+    }
+    a
+    {
+        font-size: 1.2em;
+        font-family: "Roboto flex";
+        color: #000;
+        text-decoration: none;
+    }
+    a:hover
+    {
+        text-decoration: underline;
+    }
+    .textBlock
+    {
+        display: grid;
+        width: 100%;
+        height: auto;
+        padding-top: 10px;
+        place-items: center;
+        grid-row-gap: 0px;
+        grid-template-columns: 1fr;
+    }
+    .textBlock > label{
+        font-size: 1.6em;
+        font-family: "Roboto flex";
+        font-weight: 400;
+        width: 100%;
+        text-align: left;
+        padding-bottom: 3px;
+        padding-top: 3px;
+        text-indent: 5px;
+        color: #7E7E7E;
+    }
+    .textBlock > input{
+        font-size: 1.6em;
+        font-family: "Roboto flex";
+        font-weight: 400;
+        width: 100%;
+        height: 35px;
+        text-align: left;
+        padding-bottom: 3px;
+        padding-top: 3px;
+        text-indent: 5px;
+        background-color: #F1F1F1;
+        color: #000;
+        border-radius: 5px;
+        border: none;
+        outline: none;
+    }
+</style>
 <body>
-<h2>Login Form</h2>
+<div class="loginFormBox">
+    <h2>Logowanie</h2>
+    <div class="horizontalLine"></div>
+    <form action="/login" method="post">
+        <div class="textBlock">
+            <label for="login">Login:</label>
+            <input type="text" id="login" name="login" required pattern="^[a-ząćęłńóśźżA-ZĄĆĘŁŃÓŚŹŻ0-9]{3,16}$">
+        </div>
+        <div class="textBlock">
+            <label for="password">Hasło:</label>
+            <input type="password" id="password" name="password" required pattern="^(?=.*[a-ząćęłńóśźż])(?=.*[A-ZĄĆĘŁŃÓŚŹŻ])(?=.*\d)(?=.*[@$!%*?&])[A-Za-ząćęłńóśźżĄĆĘŁŃÓŚŹŻ\d@$!%*?&]{8,}$">
+        </div>
 
-<p th:if="${param.error}">Niepoprawne hasło</p>
+        <input type="submit" value="Zaloguj się">
+        <p th:if="${param.error}">Niepoprawne hasło</p>
+        <a href="/register" style="margin-top: 10px;">Wróć do rejestracji</a>
+    </form>
+</div>
 
-<form action="/login" method="post">
-    <label for="username">Username:</label><br>
-    <input type="text" id="username" name="login" required><br>
-
-    <label for="password">Password:</label><br>
-    <input type="password" id="password" name="password" required><br>
-    <input type="submit" value="Zaloguj">
-</form>
+<footer>
+    2024 | Programowanie aplikacji biznesowych w oparciu o platformę Java | Wszelkie prawa zastrzeżone |<br>
+        Autorzy: Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk
+</footer>
 </body>
 </html>
