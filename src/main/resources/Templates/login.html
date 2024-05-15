@@ -59,7 +59,7 @@
         border-radius: 5px;
         background-color: #7FEB9D;
         text-align: center;
-        color: #5b5b5b;
+        color: #363636;
         font-family: "Roboto flex";
         font-weight: 600;
         font-size: 1.6em;
@@ -73,20 +73,21 @@
         border: none;
         cursor: pointer;
         transition: 0.15s;
-        margin-top: 50px;
+        margin-top: 30px;
+        margin-bottom: 20px;
     }
     input[type="submit"]:hover
     {
         padding-left: 35px;
         padding-right: 35px;
-        background-color: #68d285;
+        background-color: #4eda75;
         transition: 0.22s;
     }
     .horizontalLine
     {
         content: "";
         height: 1px;
-        background-color: #ccc;
+        background-color: #e4e4e4;
         width: 100%;
     }
     footer{
@@ -94,7 +95,7 @@
         display: grid;
         place-items: center;
         text-align:center;
-        height: 5vh;
+        height: auto;
         position: fixed;
         bottom: 0;
         background-color: #363636;
@@ -102,15 +103,20 @@
         font-size: 1.4em;
         font-family: "Roboto Light";
         font-weight: 100;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 5px;
+        padding-right: 5px;
     }
     form
     {
-        width: 300px;
+        width: 260px;
         height: auto;
         display: grid;
         grid-template-columns: 1fr;
         grid-row-gap: 10px;
         place-items: center;
+        padding-top: 10px;
     }
     a
     {
@@ -141,7 +147,7 @@
         text-align: left;
         padding-bottom: 3px;
         padding-top: 3px;
-        text-indent: 5px;
+        text-indent: 10px;
         color: #7E7E7E;
     }
     .textBlock > input{
@@ -153,7 +159,7 @@
         text-align: left;
         padding-bottom: 3px;
         padding-top: 3px;
-        text-indent: 5px;
+        text-indent: 10px;
         background-color: #F1F1F1;
         color: #000;
         border-radius: 5px;
@@ -168,11 +174,11 @@
     <form action="/login" method="post">
         <div class="textBlock">
             <label for="login">Login:</label>
-            <input type="text" id="login" name="login" required pattern="^[a-ząćęłńóśźżA-ZĄĆĘŁŃÓŚŹŻ0-9]{3,16}$">
+            <input type="text" id="login" name="login" required pattern="^[a-ząćęłńóśźżA-ZĄĆĘŁŃÓŚŹŻ0-9]{3,16}$" placeholder="Login konta">
         </div>
         <div class="textBlock">
             <label for="password">Hasło:</label>
-            <input type="password" id="password" name="password" required pattern="^(?=.*[a-ząćęłńóśźż])(?=.*[A-ZĄĆĘŁŃÓŚŹŻ])(?=.*\d)(?=.*[@$!%*?&])[A-Za-ząćęłńóśźżĄĆĘŁŃÓŚŹŻ\d@$!%*?&]{8,}$">
+            <input type="password" id="password" name="password" required pattern="^(?=.*[a-ząćęłńóśźż])(?=.*[A-ZĄĆĘŁŃÓŚŹŻ])(?=.*\d)(?=.*[@$!%*?&])[A-Za-ząćęłńóśźżĄĆĘŁŃÓŚŹŻ\d@$!%*?&]{8,}$" placeholder="Hasło do konta">
         </div>
 
         <input type="submit" value="Zaloguj się">
