@@ -2,13 +2,11 @@ package org.example.forum.controllers.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.example.forum.dto.System.InformationReturned;
+import org.example.forum.dto.User.LoginInformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
 import org.example.forum.services.SecurityService;
-import org.example.forum.services.interfaces.ISecurityService;
 import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,12 +53,13 @@ public class LoginController {
 
             UserLoginDto userLoginDto = new UserLoginDto(login, password);
 
-            InformationReturned informationReturned = USER_SERVICE.loginUser(userLoginDto);
+            LoginInformationReturned informationReturned = USER_SERVICE.loginUser(userLoginDto);
 
-            if(informationReturned.getCode() == 200) {
+            if((informationReturned.getCode() == 200) && (informationReturned.getUser_id() > 0)) {
 
                 HttpSession session = request.getSession();
                 session.setAttribute("isLogged", "true");
+                session.setAttribute("userId", informationReturned.getUser_id());
 
                 return "redirect:/protected/mainpage";
             }

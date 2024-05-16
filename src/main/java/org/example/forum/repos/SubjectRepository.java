@@ -87,26 +87,18 @@ public class SubjectRepository implements ISubjectRepository {
 
             int affectedRows = statement.executeUpdate();
 
-            if (affectedRows == 0) {
+            if (affectedRows > 0) {
+                conn.commit();
+                return true;
+            } else {
                 conn.rollback();
                 throw new SQLException("Nie udało się dodać użytkownika, proces przerwany!");
             }
 
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    conn.commit();
-                    return true;
-                }
-            }catch (Exception e){
-                conn.rollback();
-                throw new DataAccessException(e);
-            }
-        }catch (SQLException ex) {
-
+        } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
 
-        return false;
     }
 
     /**
@@ -151,7 +143,6 @@ public class SubjectRepository implements ISubjectRepository {
 
         return false;
     }
-
 
     /**
      * Metoda odpowiedzialna za ukrywanie (banowanie) określonych tematów w serwisie.

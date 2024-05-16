@@ -20,4 +20,6 @@ public interface IUserRepository {
     Optional<Boolean> isUserExistsByLogin(String login);
 
     Optional<Boolean> isUserExistsByEmail(String email);
+
+    Optional<Integer> findUserIdByLogin(String login);
 }

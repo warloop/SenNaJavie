@@ -8,6 +8,7 @@ import org.example.forum.repos.Interfaces.IUserRepository;
 import org.example.forum.util.ConnectionFactory;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -308,6 +309,38 @@ public class UserRepository implements IUserRepository {
                         return Optional.of(false);
                     }
                     return Optional.of(true);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
+        return Optional.of(null);
+    }
+
+    /**
+     * Metoda wyszukuje Id_użytkownika na podstawie jego loginu.
+     * @param login Parametr (String) określający login użytkownika
+     * @return Optional<Integer> Zwraca wartość typu int lub null w zależności czy istnieje użytkownik o takim loginie.
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
+    @Override
+    public Optional<Integer> findUserIdByLogin(String login)
+    {
+        final String SQL = "SELECT user_id FROM login WHERE login = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement statement = conn.prepareStatement(SQL)) {
+            statement.setString(1, login);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                    if(id > 0)
+                    {
+                        return Optional.of(id);
+                    }
+                    return Optional.of(null);
                 }
             }
         } catch (SQLException ex) {
