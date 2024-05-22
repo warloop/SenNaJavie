@@ -1,7 +1,6 @@
 CREATE TABLE subjects (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_adder_id INT NOT NULL,
-    add_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     subject_text VARCHAR(128) NOT NULL,
     is_banned BIT NOT NULL DEFAULT 0,
     is_deleted BIT NOT NULL DEFAULT 0,

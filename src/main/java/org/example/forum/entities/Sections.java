@@ -30,10 +30,6 @@ public class Sections{
     private int user_adder_id;
 
     @NonNull
-    @Column(name = "add_date")
-    private LocalDateTime add_date;
-
-    @NonNull
     @Column(name = "article_id")
     private long article_id;
 

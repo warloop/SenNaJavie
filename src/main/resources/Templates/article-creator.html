@@ -169,15 +169,22 @@
 </style>
 <body>
 <div class="loginFormBox">
-    <h2>Utwórz nowy temat</h2>
+    <h2>Utwórz nowy artykuł</h2>
     <div class="horizontalLine"></div>
-    <form action="/protected/subject/create" method="post">
+    <form action="/protected/article/create" method="post">
         <div class="textBlock">
-            <label for="subject">Treść tematu:</label>
-            <textarea type="text" id="subject" name="subjectText" required placeholder="Treść tematu" maxlength="128" minlength="1"></textarea>
+            <label for="subject">Temat:</label>
+            <select id="subject" name="subjectId">
+                <option value="1" selected>Temat pierwszy</option>
+                <option value="2">Temat drugi</option>
+            </select>
+        </div>
+        <div class="textBlock">
+            <label for="article">Treść nazwy artykułu:</label>
+            <textarea type="text" id="article" name="articleTitle" required placeholder="Treść nazwy artykułu" maxlength="256" minlength="1"></textarea>
         </div>
 
-        <input type="submit" value="Utwórz temat">
+        <input type="submit" value="Utwórz artykuł">
         <p th:if="${param.error}">Nie udało się utworzyć tematu.</p>
         <a href="/protected/mainpage" style="margin-top: 10px;">Wróć do strony głównej</a>
     </form>

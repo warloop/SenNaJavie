@@ -30,10 +30,6 @@ public class Subjects{
     private int user_adder_id;
 
     @NonNull
-    @Column(name = "add_date")
-    private LocalDateTime add_date;
-
-    @NonNull
     @Column(name = "subject_text")
     private String subject_text;
 

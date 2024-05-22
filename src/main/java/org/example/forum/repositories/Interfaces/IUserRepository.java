@@ -1,4 +1,4 @@
-package org.example.forum.repos.Interfaces;
+package org.example.forum.repositories.Interfaces;
 
 import org.example.forum.dto.User.UserRegisterDto;
 import org.example.forum.entities.User;

@@ -34,10 +34,6 @@ public class Articles{
     private long subject_id;
 
     @NonNull
-    @Column(name = "add_date")
-    private LocalDateTime add_date;
-
-    @NonNull
     @Column(name = "article_title")
     private String article_title;
 

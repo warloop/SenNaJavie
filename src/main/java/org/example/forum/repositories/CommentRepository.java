@@ -1,6 +1,6 @@
-package org.example.forum.repos;
+package org.example.forum.repositories;
 
-import org.example.forum.repos.Interfaces.ICommentRepository;
+import org.example.forum.repositories.Interfaces.ICommentRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

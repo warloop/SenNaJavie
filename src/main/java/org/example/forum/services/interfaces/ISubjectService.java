@@ -11,4 +11,5 @@ public interface ISubjectService {
 
    InformationReturned addSubject(SubjectAddDto subject);
 
+   Optional<Boolean> isSubjectExists(long SubjectId);
 }

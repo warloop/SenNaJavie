@@ -1,12 +1,14 @@
-package org.example.forum.repos;
+package org.example.forum.repositories;
 
-import jakarta.annotation.Nullable;
 import org.example.forum.dto.Subject.SubjectAddDto;
+import org.example.forum.dto.Subject.SubjectBanDto;
 import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.entities.Subjects;
 import org.example.forum.exception.DataAccessException;
-import org.example.forum.repos.Interfaces.ISubjectRepository;
+import org.example.forum.repositories.Interfaces.ISubjectRepository;
+import org.example.forum.services.interfaces.IActionService;
 import org.example.forum.util.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,6 +24,10 @@ import java.util.Optional;
 
 @Repository
 public class SubjectRepository implements ISubjectRepository {
+
+
+    @Autowired
+    private IActionService ACTION_SERVICE;
 
     /**
      * Metoda zwraca obiekt typu Subject lub wartość null jeżeli obiekt o określonym w argumencie ID nie istnieje.
@@ -48,7 +54,6 @@ public class SubjectRepository implements ISubjectRepository {
 
                         subject.setId(rs.getLong("id"));
                         subject.setUser_adder_id(rs.getInt("user_adder_id"));
-                        subject.setAdd_date(rs.getTimestamp("add_date").toLocalDateTime());
                         subject.setSubject_text(rs.getString("subject_text"));
                         subject.set_banned(rs.getBoolean("is_banned"));
                         subject.set_deleted(rs.getBoolean("is_deleted"));
@@ -73,12 +78,11 @@ public class SubjectRepository implements ISubjectRepository {
      * @author Artur Leszczak
      * @version 1.0.0
      */
-    public boolean addSubject(SubjectAddDto subject)
-    {
-        final String SQL = "INSERT INTO subjects (user_adder_id, subject_text) VALUES (?,?)";
+    public Optional<Long> addSubject(SubjectAddDto subject) {
+        final String SQL = "INSERT INTO subjects (user_adder_id, subject_text) VALUES (?, ?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
+             PreparedStatement statement = conn.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {  // Użycie RETURN_GENERATED_KEYS
 
             conn.setAutoCommit(false);
 
@@ -87,18 +91,28 @@ public class SubjectRepository implements ISubjectRepository {
 
             int affectedRows = statement.executeUpdate();
 
-            if (affectedRows > 0) {
-                conn.commit();
-                return true;
-            } else {
+            if (affectedRows == 0) {
                 conn.rollback();
                 throw new SQLException("Nie udało się dodać użytkownika, proces przerwany!");
             }
 
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
+            try (ResultSet rs = statement.getGeneratedKeys()) {  // Pobieranie wygenerowanych kluczy
+                if (rs.next()) {
+                    conn.commit();
+                    long addedSubjectId = rs.getLong(1);  // Pobieranie pierwszej kolumny (wygenerowane ID)
+                    return Optional.of(addedSubjectId);
+                } else {
+                    conn.rollback();
+                    return Optional.empty();
+                }
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new DataAccessException(e);
+            }
 
+        } catch (SQLException ex) {
+            return Optional.empty();
+        }
     }
 
     /**
@@ -130,6 +144,10 @@ public class SubjectRepository implements ISubjectRepository {
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     conn.commit();
+
+                    //odnotowanie zmiany treści tematu
+                    ACTION_SERVICE.changeSubjectAction(subjectEditDto.getUser_changer_id(), subjectEditDto.getId());
+
                     return true;
                 }
             }catch (Exception e){
@@ -146,13 +164,13 @@ public class SubjectRepository implements ISubjectRepository {
 
     /**
      * Metoda odpowiedzialna za ukrywanie (banowanie) określonych tematów w serwisie.
-     * @param subjectId Wartość long określająca ID tematu, który powinien zostać ukryty bądź wyświetlony.
-     * @param ban_value Wartość boolean określająca, czy temat ma być zbanowany (true) , czy odblokowany (false).
+     * @param subjectBan Obiekt DTO Zawiera wartość typu bool określającą, czy nałożyć blokadę, id_tematu którego
+     * dotyczy, id_użytkownika nakładającego blokadę (Administrator lub Moderator)
      * @return Boolean - metoda zwraca true / false w zależności czy edycja parametru tematu powiodła się.
      * @author Artur Leszczak
      * @version 1.0.0
      */
-    public boolean setBanValueSubjectById(long subjectId, boolean ban_value)
+    public boolean setBanValueSubjectById(SubjectBanDto subjectBan)
     {
         final String SQL = "UPDATE subjects SET is_banned = ? WHERE id = ?";
 
@@ -161,19 +179,31 @@ public class SubjectRepository implements ISubjectRepository {
 
             conn.setAutoCommit(false);
 
-            statement.setBoolean(1, ban_value);
-            statement.setLong(2, subjectId);
+            statement.setBoolean(1, subjectBan.isBan_value());
+            statement.setLong(2, subjectBan.getSubjectId());
 
             int affectedRows = statement.executeUpdate();
 
             if (affectedRows == 0) {
                 conn.rollback();
-                throw new SQLException("Nie udało się zmienić wartości blokady dla subjectId ("+subjectId+")!");
+                throw new SQLException("Nie udało się zmienić wartości blokady dla subjectId ("+ subjectBan.getSubjectId()+")!");
             }
 
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     conn.commit();
+
+                    //odnotowanie zablokowania / odblokowania tematu
+
+                    if(subjectBan.isBan_value())
+                    {
+                        ACTION_SERVICE.banSubjectAction(subjectBan.getUser_id(), subjectBan.getSubjectId());
+                    }
+                    else
+                    {
+                        ACTION_SERVICE.unbanSubjectAction(subjectBan.getUser_id(), subjectBan.getSubjectId());
+                    }
+
                     return true;
                 }
             }catch (Exception e){
@@ -196,17 +226,16 @@ public class SubjectRepository implements ISubjectRepository {
      * @author Artur Leszczak
      * @version 1.0.0
      */
-    public boolean deleteSubjectById(long subjectId)
+    public boolean deleteSubjectById(long subjectId, int user_id, boolean by_owner)
     {
-        final String SQL = "UPDATE subjects SET is_deleted = ? WHERE id = ?";
+        final String SQL = "UPDATE subjects SET is_deleted = 1 WHERE id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement statement = conn.prepareStatement(SQL)) {
 
             conn.setAutoCommit(false);
 
-            statement.setBoolean(1, true);
-            statement.setLong(2, subjectId);
+            statement.setLong(1, subjectId);
 
             int affectedRows = statement.executeUpdate();
 
@@ -218,6 +247,10 @@ public class SubjectRepository implements ISubjectRepository {
             try (ResultSet rs = statement.executeQuery()) {
                 if (rs.next()) {
                     conn.commit();
+
+                    if(by_owner) ACTION_SERVICE.removeSubjectActionByOwner(user_id, subjectId);
+                    else ACTION_SERVICE.removeSubjectActionByModerator(user_id, subjectId);
+
                     return true;
                 }
             }catch (Exception e){
