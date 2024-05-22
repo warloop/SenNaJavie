@@ -8,6 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Klasa zawiera metody odwołujące się do metod obiektów DAO.
+ * @author Artur Leszczak
+ * @version 1.0.0
+ */
+
 @Repository
 public class ArticleRepository implements IArticleRepository {
 

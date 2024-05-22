@@ -22,6 +22,10 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService {
 
+    /**
+     * Wstrzykiwanie zależności
+     */
+
     @Autowired
     private IUserRepository USER_REPOSITORY;
 

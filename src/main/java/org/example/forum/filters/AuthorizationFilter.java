@@ -8,6 +8,13 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+/**
+ * Zadaniem tej klasy jest sprawdzenie czy użytkownk próbujący nawiązać połączenie jest zalogowany i może uzyskać
+ * dostęp do danych ukrytych przed niezalogowanymi użytkownikami.
+ * @author Artur Leszczak
+ * @version 1.0.0
+ */
+
 @WebFilter("/protected/*")
 public class AuthorizationFilter implements Filter
 {

@@ -11,8 +11,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+/**
+ * Klasa odpowiedzialna za komunikację z tabelą articles umieszczoną w bazie danych.
+ * @author Artur Leszczak
+ * @version 1.0.0
+ */
+
 public class ArticleDao implements IArticleDao {
 
+    /**
+     * Metoda wproawdza dane nowego artykułu do bazy danych.
+     * @param data Obeikt typu Dto zawiera podstawowe informacje ptrzebne w celu utworzenia nowego artykułu.
+     * @return Optional<Long> zwraca Long w przypadku poprawnego utworzenia, w przypadku błedu empty.
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
     public Optional<Long> add(ArticleAddDto data) {
         final String insertSQL = "INSERT INTO articles (subject_id, user_adder_id, article_title, is_visible) VALUES (?, ?, ?, ?)";
@@ -39,7 +52,7 @@ public class ArticleDao implements IArticleDao {
 
                 if (rs.next()) {
                     conn.commit();
-                    long addedArticleId = rs.getLong(1);  // Pobieranie pierwszej kolumny (wygenerowane ID)
+                    long addedArticleId = rs.getLong(1);
                     return Optional.of(addedArticleId);
                 } else {
                     conn.rollback();

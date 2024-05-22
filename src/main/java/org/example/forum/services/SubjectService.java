@@ -14,8 +14,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Klasa odpowiadająca za wewnętrzną logikę biznesową aplikacji w przypadku zarządzania Tematami. Waliduje oraz wykonuje
+ * niezbędne obliczenia oraz pobiera odpowiednie dane z osobnych repozytoriów w celu wykonania bardziej złożonych operacji.
+ * @author Artur Leszczak
+ * @version 1.0.0
+ */
+
 @Service
 public class SubjectService implements ISubjectService {
+
+    /**
+     * Wstrzykiwanie zależności
+     */
 
     @Autowired
     ISubjectRepository SUBJECT_REPOSITORY;

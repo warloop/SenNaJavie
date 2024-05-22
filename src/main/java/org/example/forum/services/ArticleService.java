@@ -14,8 +14,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Klasa odpowiadająca za wewnętrzną logikę biznesową aplikacji w przypadku zarządzania Artykułami. Waliduje oraz wykonuje
+ * niezbędne obliczenia oraz pobiera odpowiednie dane z osobnych repozytoriów w celu wykonania bardziej złożonych operacji.
+ * @author Artur Leszczak
+ * @version 1.0.0
+ */
+
 @Service
 public class ArticleService implements IArticleService {
+
+    /**
+     * Wstrzykiwane zależności
+     */
 
     @Autowired
     IArticleRepository ARTICLE_REPOSITORY;
@@ -26,6 +37,16 @@ public class ArticleService implements IArticleService {
     @Autowired
     IActionService ACTION_SERVICE;
 
+    /**
+     * Metoda waliduje dane zawarte w DTO, wywołuje niezbędne metody Repozytorium w celu dodania noewego artykułu, metoda
+     * wywołuje akcję umieszczającą informację o utworzeniu nowego artykułu.
+     * @param articleAdd Obiekt DTO zawierający niezbędne dane potrzebne do utworzenia artykułu - id_tematu,
+     *                   id_użytkownika_tworzącego, temat_artykułu, widoczność_artykułu
+     * @return Zwraca obiekt klasy (InformationReturned) zawierający informację zwrotną składającą się na kod operacji i
+     * wiadomość zwrotną.
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
     public InformationReturned addArticle(ArticleAddDto articleAdd)
     {

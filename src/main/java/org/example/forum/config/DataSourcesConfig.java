@@ -7,6 +7,11 @@ import org.example.forum.dao.SubjectActionDao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Klasa konfiguracji zależności, w przypdaku utworzenia nowego obiektu DAO, aby móc posługiwać się nim poprzez
+ * automatyczne wstryzkiwanie zależności (@Autowired) należy zarejestrować takową klasę DAO w tym pliku.
+ */
+
 @Configuration
 public class DataSourcesConfig {
 

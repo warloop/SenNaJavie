@@ -8,8 +8,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Klasa odpowiadająca za wewnętrzną logikę biznesową aplikacji w przypadku zarządzania Akcjami wywoływanymi podczas
+ * różnych zmian w obiektach tematów, artykułów czy sekcji. Waliduje oraz wykonuje niezbędne obliczenia, pobiera
+ * odpowiednie dane z osobnych repozytoriów w celu wykonania bardziej złożonych operacji.
+ * @author Artur Leszczak
+ * @version 1.0.0
+ */
+
 @Service
 public class ActionService implements IActionService {
+
+    /**
+     * Wstrzykiwanie zależności
+     */
 
     @Autowired
     private IActionRepository ACTION_REPOSITORY;
