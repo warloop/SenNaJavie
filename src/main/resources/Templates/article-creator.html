@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rejestracja</title>
+    <title>Logowanie</title>
     <meta name="description" content="Aplikacja webowa zaprojektowana na potrzeby pracowni specjalistycznej z przedmiotu projektowanie aplikacji biznesowych w oparciu o platformę java"/>
     <meta name="version" content="1.0.2"/>
     <meta name="author" content="Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk"/>
@@ -12,6 +12,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+
+
 </head>
 <style>
     body{
@@ -111,7 +113,7 @@
         width: 260px;
         height: auto;
         display: grid;
-        grid-template-columns: 2fr;
+        grid-template-columns: 1fr;
         grid-row-gap: 10px;
         place-items: center;
         padding-top: 10px;
@@ -148,7 +150,7 @@
         text-indent: 10px;
         color: #7E7E7E;
     }
-    .textBlock > input{
+    .textBlock > textarea{
         font-size: 1.6em;
         font-family: "Roboto flex";
         font-weight: 400;
@@ -167,44 +169,30 @@
 </style>
 <body>
 <div class="loginFormBox">
-    <h2>Rejstracja</h2>
+    <h2>Utwórz nowy artykuł</h2>
     <div class="horizontalLine"></div>
-    <form action="/register" method="post">
+    <form action="/protected/article/create" method="post">
         <div class="textBlock">
-            <label for="name">Imię:</label>
-            <input type="text" id="name" name="name" required>
+            <label for="subject">Temat:</label>
+            <select id="subject" name="subjectId">
+                <option value="1" selected>Temat pierwszy</option>
+                <option value="2">Temat drugi</option>
+            </select>
         </div>
         <div class="textBlock">
-            <label for="surname">Nazwisko:</label>
-            <input type="text" id="surname" name="surname" required>
-        </div>
-
-        <div class="textBlock">
-            <label for="login">Login:</label>
-            <input type="text" id="login" name="login" required>
-        </div>
-        <div class="textBlock">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <label for="article">Treść nazwy artykułu:</label>
+            <textarea type="text" id="article" name="articleTitle" required placeholder="Treść nazwy artykułu" maxlength="256" minlength="1"></textarea>
         </div>
 
-        <div class="textBlock">
-            <label for="emailConfirm">Powtórz email:</label>
-            <input type="email" id="emailConfirm" name="emailConfirm" required>
-        </div>
-        <div class="textBlock">
-            <label for="password">Hasło:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div class="textBlock">
-            <label for="passwordConfirm">Powtórz hasło:</label>
-            <input type="password" id="passwordConfirm" name="passwordConfirm" required>
-        </div>
-
-        <input type="submit" value="Załóż konto">
+        <input type="submit" value="Utwórz artykuł">
+        <p th:if="${param.error}">Nie udało się utworzyć tematu.</p>
+        <a href="/protected/mainpage" style="margin-top: 10px;">Wróć do strony głównej</a>
     </form>
-
-    <a href="/login">Przejź do logowania</a>
 </div>
+
+<footer>
+    2024 | Programowanie aplikacji biznesowych w oparciu o platformę Java | Wszelkie prawa zastrzeżone |<br>
+    Autorzy: Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk
+</footer>
 </body>
 </html>

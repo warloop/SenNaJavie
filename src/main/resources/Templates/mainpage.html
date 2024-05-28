@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum</title>
     <style>
+        /* Istniejący styl */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -44,6 +45,34 @@
             bottom: 0;
             width: 100%;
         }
+
+
+        table {
+            width: 50%;
+            margin-left: 0px;
+        }
+
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        table tr {
+            line-height:30px;
+        }
+        table th {
+            background-color: #444;
+            color: #fff;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #ddd;
+        }
+
     </style>
 </head>
 <body>
@@ -61,6 +90,17 @@
     <p>
         Oto główna strona naszego forum. Zapraszamy do eksplorowania różnych kategorii, zadawania pytań i angażowania się w dyskusje z innymi użytkownikami.</p>
 </section>
+
+<div style = "margin-left: 33.333333333%">
+<table>
+    <tr th:if="${subjects.empty}">
+        <td colspan="2"> No Subjects Available </td>
+    </tr>
+    <tr th:each="subject : ${subjects}">
+        <td><span th:text="${subject.subject_text}"> Title </span></td>
+    </tr>
+</table>
+</div>
 <footer>
     <p>&copy; 2024 Forum Wszystkie prawa zastrzeżone</p>
 </footer>
