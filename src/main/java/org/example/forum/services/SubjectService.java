@@ -104,4 +104,6 @@ public class SubjectService implements ISubjectService {
     public List<Subjects> getAllSubjects(){
         return SUBJECT_REPOSITORY.getAllSubjects();
     }
+
+
 }
