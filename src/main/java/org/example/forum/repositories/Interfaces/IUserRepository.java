@@ -22,4 +22,5 @@ public interface IUserRepository {
     Optional<Boolean> isUserExistsByEmail(String email);
 
     Optional<Integer> findUserIdByLogin(String login);
+    Optional<User> findByUsername(String username);
 }

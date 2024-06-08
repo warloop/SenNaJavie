@@ -2,9 +2,12 @@ package org.example.forum.services;
 
 import org.example.forum.dto.Subject.SubjectAddDto;
 import org.example.forum.dto.System.InformationReturned;
+import org.example.forum.entities.Articles;
 import org.example.forum.entities.Subjects;
 import org.example.forum.exception.SubjectLengthTooLongException;
 import org.example.forum.exception.UserIsNotExistsException;
+import org.example.forum.repositories.Interfaces.IArticleRepository;
+import org.example.forum.repositories.Interfaces.ICommentRepository;
 import org.example.forum.repositories.Interfaces.ISubjectRepository;
 import org.example.forum.repositories.Interfaces.IUserRepository;
 import org.example.forum.services.interfaces.IActionService;
@@ -12,6 +15,7 @@ import org.example.forum.services.interfaces.ISubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.Subject;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +41,10 @@ public class SubjectService implements ISubjectService {
 
     @Autowired
     IActionService ACTION_SERVICE;
+
+    @Autowired
+    IArticleRepository ARTICLE_REPOSITORY;
+
     /**
      * Metoda waliduje oraz przekazuje zlecenie dodania nowego tematu dla repozytorium.
      * @param subject Obiekt typu SubjectAddDto zawierający informacje o temacie oraz id_użytkownika_dodającego
@@ -103,6 +111,10 @@ public class SubjectService implements ISubjectService {
     }
     public List<Subjects> getAllSubjects(){
         return SUBJECT_REPOSITORY.getAllSubjects();
+    }
+
+    public Subjects findSubjectById(long subjectId) {
+        return SUBJECT_REPOSITORY.getSubjectById(subjectId).orElse(null);
     }
 
 

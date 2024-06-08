@@ -2,6 +2,7 @@ package org.example.forum.services;
 
 import org.example.forum.dto.Article.ArticleAddDto;
 import org.example.forum.dto.System.InformationReturned;
+import org.example.forum.entities.Articles;
 import org.example.forum.exception.SubjectLengthTooLongException;
 import org.example.forum.exception.UserIsNotExistsException;
 import org.example.forum.repositories.Interfaces.IArticleRepository;
@@ -12,6 +13,7 @@ import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -82,4 +84,10 @@ public class ArticleService implements IArticleService {
             return new InformationReturned(500, e.getMessage());
         }
     }
+
+    @Override
+    public List<Articles> findByUserId(int userId) {
+        return ARTICLE_REPOSITORY.findByUserAdderId(userId);
+    }
+
 }

@@ -34,10 +34,17 @@ public class LoginController {
         return "login";
     }
     @GetMapping("/protected/mainpage")
-    public String mainPage(Model model) {
+    public String mainPage(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+        if (session != null && "true".equals(session.getAttribute("isLogged"))) {
+            model.addAttribute("username", session.getAttribute("username"));
+        } else {
+            model.addAttribute("username", null);
+        }
         model.addAttribute("subjects", subjectService.getAllSubjects());
         return "mainpage";
     }
+
 
     /**
      * Metoda przekazuje dane logowania do serwisu odpowiedzialnego za logowanie użytkowników.
@@ -50,30 +57,27 @@ public class LoginController {
     @PostMapping("/login")
     public String login(@RequestParam String login, @RequestParam String password, HttpServletRequest request) {
 
-        try{
-
-            if(!(SecurityService.Regex.LOGIN.getPattern().matcher(login).matches())){
+        try {
+            if (!SecurityService.Regex.LOGIN.getPattern().matcher(login).matches()) {
                 throw new Exception("Niepoprawna składnia loginu!");
             }
 
-            if(!(SecurityService.Regex.PASSWORD.getPattern().matcher(password).matches())){
+            if (!SecurityService.Regex.PASSWORD.getPattern().matcher(password).matches()) {
                 throw new Exception("Niepoprawna składnia hasła!");
             }
 
             UserLoginDto userLoginDto = new UserLoginDto(login, password);
-
             LoginInformationReturned informationReturned = USER_SERVICE.loginUser(userLoginDto);
 
-            if((informationReturned.getCode() == 200) && (informationReturned.getUser_id() > 0)) {
-
+            if (informationReturned.getCode() == 200 && informationReturned.getUser_id() > 0) {
                 HttpSession session = request.getSession();
                 session.setAttribute("isLogged", "true");
                 session.setAttribute("userId", informationReturned.getUser_id());
+                session.setAttribute("username", login);
 
                 return "redirect:/protected/mainpage";
             }
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             return "login";
         }
 

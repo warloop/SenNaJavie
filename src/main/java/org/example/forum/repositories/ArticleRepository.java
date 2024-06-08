@@ -2,10 +2,12 @@ package org.example.forum.repositories;
 
 import org.example.forum.dao.Interfaces.IArticleDao;
 import org.example.forum.dto.Article.ArticleAddDto;
+import org.example.forum.entities.Articles;
 import org.example.forum.repositories.Interfaces.IArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -31,5 +33,10 @@ public class ArticleRepository implements IArticleRepository {
     public Optional<Long> createArticle(ArticleAddDto newArticle)
     {
         return ARTICLE_DAO.add(newArticle);
+    }
+
+    @Override
+    public List<Articles> findByUserAdderId(int userAdderId) {
+        return ARTICLE_DAO.findByUserAdderId(userAdderId);
     }
 }

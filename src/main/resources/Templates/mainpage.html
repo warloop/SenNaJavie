@@ -72,12 +72,41 @@
         table tr:hover {
             background-color: #ddd;
         }
-
+        .user-info {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        .user-info a {
+            color: #fff;
+            background-color: #444;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .user-info a:hover {
+            background-color: #555;
+        }
+        .user-info span {
+            padding: 10px 20px;
+            background-color: #444;
+            border-radius: 5px;
+            color: #fff;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 <header>
     <h1>Forum</h1>
+    <div class="user-info">
+        <span th:if="${username != null}">
+            <a th:text="${username}" th:href="@{/my-profile}">Użytkownik</a> | <a th:href="@{/logout}">Wyloguj się</a>
+        </span>
+        <span th:if="${username == null}">
+            <a th:href="@{/login}">Zaloguj się</a>
+        </span>
+    </div>
 </header>
 <nav>
     <a href="#">Home</a>

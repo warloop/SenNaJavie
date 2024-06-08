@@ -14,4 +14,6 @@ public interface ISubjectService {
 
    Optional<Boolean> isSubjectExists(long SubjectId);
    List<Subjects> getAllSubjects();
+   Subjects findSubjectById(long subjectId);
+
 }

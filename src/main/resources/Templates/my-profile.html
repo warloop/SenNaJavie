@@ -4,6 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Twój profil</title>
+    <style>
+        /* Istniejący styl */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #444;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+        }
+        nav a:hover {
+            background-color: #555;
+        }
+        section {
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #ccc;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+
+        table {
+            width: 50%;
+            margin-left: 0px;
+        }
+
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        table tr {
+            line-height:30px;
+        }
+        table th {
+            background-color: #444;
+            color: #fff;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #ddd;
+        }
+        .user-info {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        .user-info a {
+            color: #fff;
+            background-color: #444;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .user-info a:hover {
+            background-color: #555;
+        }
+        .user-info span {
+            padding: 10px 20px;
+            background-color: #444;
+            border-radius: 5px;
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
     <meta name="description" content="Aplikacja webowa zaprojektowana na potrzeby pracowni specjalistycznej z przedmiotu projektowanie aplikacji biznesowych w oparciu o platformę java"/>
     <meta name="version" content="1.0.2"/>
     <meta name="author" content="Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk"/>
@@ -15,7 +106,55 @@
 
 </head>
 <body>
-
-
-<footer></footer>
+<header>
+    <h1>Forum</h1>
+    <div class="user-info">
+        <span th:if="${username != null}">
+            <a th:text="${username}" th:href="@{/my-profile}">Użytkownik</a> | <a th:href="@{/logout}">Wyloguj się</a>
+        </span>
+        <span th:if="${username == null}">
+            <a th:href="@{/login}">Zaloguj się</a>
+        </span>
+    </div>
+</header>
+<nav>
+    <a href="#">Home</a>
+    <a href="#">Categories</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+</nav>
+<section>
+    <h2>Witaj, <span th:text="${username+'!'}">Użytkownik</span></h2>
+    <p><strong>Imię:</strong> <span th:text="${name}">Imię</span></p>
+    <p><strong>Nazwisko:</strong> <span th:text="${surname}">Nazwisko</span></p>
+    <p><strong>Email:</strong> <span th:text="${email}">Email</span></p>
+    <p><strong>Data rejestracji:</strong> <span th:text="${registerDate}">Data rejestracji</span></p>
+</section>
+<section>
+    <h2>Twoje artykuły:</span></h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Tytuł</th>
+            <th>Widoczny</th>
+            <th>Zbanowany</th>
+            <th>Usunięty</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="article : ${articles}">
+            <td th:text="${article.article_title}">Tytuł artykułu</td>
+            <!--<td th:text="${article.subject.subject_text}">Temat</td>-->
+            <td th:text="${article.visible ? 'Tak' : 'Nie'}">Widoczny</td>
+            <!--<td th:text="${article.commentCount}">Liczba komentarzy</td>-->
+            <td th:text="${article.banned ? 'Tak' : 'Nie'}">Zbanowany</td>
+            <td th:text="${article.deleted ? 'Tak' : 'Nie'}">Usunięty</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+<section>
+    <h2>Twoje komentarze:</span></h2>
+</section>
+<footer><p>&copy; 2024 Forum Wszystkie prawa zastrzeżone</p></footer>
 </body>

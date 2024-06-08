@@ -132,5 +132,9 @@ public class UserService implements IUserService {
         return Optional.of(null);
     }
 
+    @Override
+    public Optional<User> getUserByUsername(String username) {
+        return USER_REPOSITORY.findByUsername(username);
+    }
 
 }

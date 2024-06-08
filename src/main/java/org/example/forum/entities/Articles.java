@@ -39,14 +39,14 @@ public class Articles{
 
     @NonNull
     @Column(name = "is_visible")
-    private boolean is_visible = false;
+    private boolean visible = false;
 
     @NonNull
     @Column(name = "is_banned")
-    private boolean is_banned = false;
+    private boolean banned = false;
 
     @NonNull
     @Column(name = "is_deleted")
-    private boolean is_deleted = false;
+    private boolean deleted = false;
 
 }

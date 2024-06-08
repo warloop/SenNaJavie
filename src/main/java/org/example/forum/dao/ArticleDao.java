@@ -2,6 +2,7 @@ package org.example.forum.dao;
 
 import org.example.forum.dao.Interfaces.IArticleDao;
 import org.example.forum.dto.Article.ArticleAddDto;
+import org.example.forum.entities.Articles;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
 
@@ -9,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -69,5 +72,40 @@ public class ArticleDao implements IArticleDao {
 
         }
 
+    }
+
+    @Override
+    public List<Articles> findByUserAdderId(int userAdderId) {
+        final String selectSQL = "SELECT * FROM articles WHERE user_adder_id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+            selectStatement.setInt(1, userAdderId);
+
+            try (ResultSet rs = selectStatement.executeQuery()) {
+                List<Articles> articles = new ArrayList<>();
+
+                while (rs.next()) {
+                    Articles article = new Articles();
+                    article.setId(rs.getLong("id"));
+                    article.setUser_adder_id(rs.getInt("user_adder_id"));
+                    article.setSubject_id(rs.getLong("subject_id"));
+                    article.setArticle_title(rs.getString("article_title"));
+                    article.setVisible(rs.getBoolean("is_visible"));
+                    article.setBanned(rs.getBoolean("is_banned"));
+                    article.setDeleted(rs.getBoolean("is_deleted"));
+
+                    articles.add(article);
+                }
+
+                return articles;
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
     }
 }

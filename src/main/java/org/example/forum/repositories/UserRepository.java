@@ -346,4 +346,36 @@ public class UserRepository implements IUserRepository {
         }
         return Optional.of(null);
     }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        final String SQL = "SELECT u.* FROM users u INNER JOIN login l ON u.id = l.user_id WHERE l.login = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement statement = conn.prepareStatement(SQL)) {
+            statement.setString(1, username);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setName(rs.getString("name"));
+                    user.setSurname(rs.getString("surname"));
+
+                    AccountType accountType = new AccountType();
+                    accountType.setId(rs.getInt("account_type_id"));
+                    accountType.setName("Użytkownik");
+
+                    user.setAccountType(accountType);
+                    user.setEmail(rs.getString("email"));
+                    user.setRegister_date(rs.getTimestamp("register_date").toLocalDateTime());
+                    return Optional.of(user);
+                }
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
+        return Optional.empty();
+    }
+
 }
