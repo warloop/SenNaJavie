@@ -1,17 +1,17 @@
 package org.example.forum.controllers.User;
 
-
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.example.forum.dto.User.LoginInformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
 import org.example.forum.services.SecurityService;
+
 import org.example.forum.services.SubjectService;
 import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +27,7 @@ public class LoginController {
     @Autowired
     SubjectService subjectService;
 
+    @Autowired
     SecurityService SECURITY_SERVICE;
 
     @GetMapping("/login")
@@ -36,6 +37,7 @@ public class LoginController {
     @GetMapping("/protected/mainpage")
     public String mainPage(Model model) {
         model.addAttribute("subjects", subjectService.getAllSubjects());
+
         return "mainpage";
     }
 
