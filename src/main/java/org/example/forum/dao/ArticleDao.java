@@ -146,15 +146,65 @@ public class ArticleDao implements IArticleDao {
         return articles;
     }
 
+    /**
+     * Aktualizuje istniejący artykuł w bazie danych na podstawie podanego identyfikatora artykułu i danych.
+     *
+     * @param articleId Unikalny identyfikator artykułu do zaktualizowania.
+     * @param data Zaktualizowane dane artykułu.
+     * @return Optional zawierający zaktualizowany obiekt Artykułu, jeśli aktualizacja zakończy się powodzeniem, w przeciwnym razie pusty Optional.
+     * @throws DataAccessException Jeśli wystąpi błąd podczas uzyskiwania dostępu do bazy danych.
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
     public Optional<Articles> update(long articleId, Articles data) {
-        //TODO Implement the logic to update an article in the database based on its ID and the provided data
-        // Return an Optional containing the updated Article object if successful, otherwise return an empty Optional
-        return Optional.empty();
+        final String updateSQL = "UPDATE articles SET user_adder_id =?, subject_id =?, article_title =?, is_visible =?, is_banned =?, is_deleted =? WHERE id =?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement updateStatement = conn.prepareStatement(updateSQL)) {
+
+            updateStatement.setInt(1, data.getUser_adder_id());
+            updateStatement.setLong(2, data.getSubject_id());
+            updateStatement.setString(3, data.getArticle_title());
+            updateStatement.setBoolean(4, data.is_visible());
+            updateStatement.setBoolean(5, data.is_banned());
+            updateStatement.setBoolean(6, data.is_deleted());
+            updateStatement.setLong(7, articleId);
+
+            int affectedRows = updateStatement.executeUpdate();
+
+            if (affectedRows > 0) {
+                return Optional.of(data);
+            } else {
+                return Optional.empty();
+            }
+
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
     }
 
+    /**
+     * Usuwa artykuł z bazy danych na podstawie podanego identyfikatora artykułu.
+     *
+     * @param articleId Unikalny identyfikator artykułu do usunięcia.
+     * @throws DataAccessException Jeśli wystąpi błąd podczas uzyskiwania dostępu do bazy danych.
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
     public void delete(long articleId) {
-        //TODO Implement the logic to delete an article from the database based on its ID
+        final String deleteSQL = "DELETE FROM articles WHERE id =?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement deleteStatement = conn.prepareStatement(deleteSQL)) {
+
+            deleteStatement.setLong(1, articleId);
+
+            deleteStatement.executeUpdate();
+
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
     }
 }
