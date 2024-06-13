@@ -11,24 +11,15 @@ import java.sql.SQLException;
 @Configuration
 public class ConnectionFactory {
 
-    @Value("${spring.datasource.url}")
-    private static String url;
+    private static final String PORT = "12832";
+    private static final String DATABASE_NAME = "forum";
+    private static final String URL = "jdbc:mysql://localhost:"+PORT+"/"+DATABASE_NAME;
+    private static final String USER = "forumaplication";
+    private static final String PASSWORD = "tajnehaslo";
 
-    @Value("${spring.datasource.username}")
-    private static String username;
-
-    @Value("${spring.datasource.password}")
-    private static String password;
-    public ConnectionFactory(@Value("${spring.datasource.url}") String url,
-                             @Value("${spring.datasource.username}") String username,
-                             @Value("${spring.datasource.password}") String password) {
-        this.url = url;
-        this.username = username;
-        this.password = password;
-    }
     public static Connection getConnection() {
         try {
-            return DriverManager.getConnection(url, username, password);
+            return DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }

@@ -5,7 +5,7 @@ import org.example.forum.dao.Interfaces.IUserDao;
 import org.example.forum.entities.User;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
 
 import java.sql.*;
 import java.time.LocalDateTime;
