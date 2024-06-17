@@ -7,6 +7,7 @@
     <style>
 
 
+
         body {
             font-family: 'Varela Round', Arial, sans-serif;
             margin: 0;
@@ -114,77 +115,11 @@
         .button button:hover {
             background-color: #191A1D;
         }
-        table {
-            width: 50%;
-            margin-left: 0px;
-        }
-
-        table th, table td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-        table tr {
-            line-height:30px;
-        }
-        table th {
-            background-color: #444;
-            color: #fff;
-        }
-
-        table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        table tr:hover {
-            background-color: #ddd;
-        }
-        .user-info {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-        }
-        .user-info a {
-            color: #fff;
-            background-color: #444;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .user-info a:hover {
-            background-color: #555;
-        }
-        .user-info span {
-            padding: 10px 20px;
-            background-color: #444;
-            border-radius: 5px;
-            color: #fff;
-            text-decoration: none;
-        }
-        .popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
-            padding: 20px;
-            display: none;
-        }
     </style>
 </head>
 <body>
 <header>
     <h1>Forum</h1>
-    <div class="user-info">
-        <span th:if="${username != null}">
-            <a th:text="${username}" th:href="@{/my-profile}">Użytkownik</a> | <a th:href="@{/logout}">Wyloguj się</a>
-        </span>
-        <span th:if="${username == null}">
-            <a th:href="@{/login}">Zaloguj się</a>
-        </span>
-    </div>
-    <div id="popup" class="popup"></div>
 </header>
 <nav>
     <a href="/protected/mainpage">Strona główna</a>
@@ -192,28 +127,22 @@
     <a href="/protected/about">Opis</a>
     <a href="/protected/contact">Kontakt</a>
 </nav>
-<section>
-    <h2>Witaj na naszym forum!</h2>
-    <p style="font-size: small">
-        Oto główna strona naszego forum. Zapraszamy do eksplorowania różnych kategorii, zadawania pytań i angażowania się w dyskusje z innymi użytkownikami.</p>
-</section>
+<div style="margin-top: 100px"></div>
 <div class="button">
-    <a href="/protected/subject/create"><button>Stwórz nowy temat</button></a>
+    <a href="/protected/category/create"><button>Stwórz nową kategorię</button></a>
 </div>
 <div style = "display: ruby-text">
     <table>
-        <tr th:if="${subjects.empty}">
-            <td colspan="2"> Nie ma aktualnie żadnych tematów </td>
+        <tr th:if="${categories.empty}">
+            <td colspan="2"> Aktualnie nie ma żadnych kategorii </td>
         </tr>
-        <tr th:each="subject : ${subjects}">
-            <td><span th:text="${subject.subject_text}"> Title </span></td>
-            <td><a th:href="@{/protected/subject/edit/{id}(id=${subject.id})}">Edytuj</a></td>
+        <tr th:each="category : ${categories}">
+            <td><span th:text="${category.category_name}"> Title </span></td>
         </tr>
     </table>
 </div>
 <footer>
     <p>&copy; 2024 Forum Wszelkie prawa zastrzeżone</p>
 </footer>
-
 </body>
 </html>

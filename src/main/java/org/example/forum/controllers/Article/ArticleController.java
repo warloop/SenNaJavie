@@ -49,8 +49,8 @@ public class ArticleController {
         }
 
         if(SUBJECT_SERVICE.isSubjectExists(SubjectId).isEmpty()) return ResponseEntity.badRequest().body(
-                                                                        "Nie istnieje temat, " +
-                                                                        "który chcesz zartykułować!");
+                "Nie istnieje temat, " +
+                        "który chcesz zartykułować!");
 
         try{
             int UserId = Integer.parseInt(request.getSession().getAttribute("userId").toString());
@@ -60,7 +60,7 @@ public class ArticleController {
             }
 
             ArticleAddDto newSubject = new ArticleAddDto(UserId, SubjectId, articleTitile,
-                                                false, false, false);
+                    false, false, false);
 
             InformationReturned returnedInfo = ARTICLE_SERVICE.addArticle(newSubject);
 
