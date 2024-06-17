@@ -39,4 +39,9 @@ public class ArticleRepository implements IArticleRepository {
     public List<Articles> findByUserAdderId(int userAdderId) {
         return ARTICLE_DAO.findByUserAdderId(userAdderId);
     }
+
+    @Override
+    public List<Articles> findBySubjectId(Long subjectId) {
+        return ARTICLE_DAO.findBySubjectId(subjectId);
+    }
 }

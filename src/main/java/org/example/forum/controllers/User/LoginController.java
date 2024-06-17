@@ -29,7 +29,7 @@ public class LoginController {
 
     SecurityService SECURITY_SERVICE;
 
-    @GetMapping("/login")
+    @GetMapping("/")
     public String loginPage() {
         return "login";
     }
@@ -101,6 +101,6 @@ public class LoginController {
             session.invalidate();
         }
 
-        return "redirect:/login";
+        return "redirect:/";
     }
 }

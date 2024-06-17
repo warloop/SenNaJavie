@@ -27,7 +27,7 @@ public class PageController {
     @Autowired
     private ISubjectService subjectService;
 
-    @GetMapping("/")
+    @GetMapping("/mainpage")
     public String home(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
         if (session != null && "true".equals(session.getAttribute("isLogged"))) {

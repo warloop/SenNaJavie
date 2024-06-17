@@ -90,4 +90,8 @@ public class ArticleService implements IArticleService {
         return ARTICLE_REPOSITORY.findByUserAdderId(userId);
     }
 
+    @Override
+    public List<Articles> getArticlesBySubjectId(Long subjectId) {
+        return ARTICLE_REPOSITORY.findBySubjectId(subjectId);
+    }
 }

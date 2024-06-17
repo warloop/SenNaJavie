@@ -12,5 +12,5 @@ public interface IArticleRepository {
 
     List<Articles> findByUserAdderId(int userAdderId);
 
-
+    List<Articles> findBySubjectId(Long subjectId);
 }

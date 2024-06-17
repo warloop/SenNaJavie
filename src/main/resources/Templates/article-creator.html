@@ -175,8 +175,8 @@
         <div class="textBlock">
             <label for="subject">Temat:</label>
             <select id="subject" name="subjectId">
-                <option value="1" selected>Temat pierwszy</option>
-                <option value="2">Temat drugi</option>
+                <option value="">Wybierz temat...</option>
+                <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.subject_text}"></option>
             </select>
         </div>
         <div class="textBlock">

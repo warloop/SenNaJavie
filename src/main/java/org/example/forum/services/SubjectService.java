@@ -71,7 +71,7 @@ public class SubjectService implements ISubjectService {
                 //dodanie informacji o utworzeniu nowego tematu
                 ACTION_SERVICE.addSubjectAction(subject.getUser_adder_id(), addedSubjectId.get());
 
-                return new InformationReturned(201, "Poprawnie utworzono nowy temat");
+                return new InformationReturned(201, "Poprawnie utworzono nowy temat", "/protected/mainpage");
             }
 
             throw new Exception("Nie udało się dodać tematu!");

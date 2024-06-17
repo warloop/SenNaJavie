@@ -108,4 +108,38 @@ public class ArticleDao implements IArticleDao {
             throw new DataAccessException(ex);
         }
     }
+    @Override
+    public List<Articles> findBySubjectId(Long subjectId) {
+        final String selectSQL = "SELECT * FROM articles WHERE subject_id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+            selectStatement.setLong(1, subjectId);
+
+            try (ResultSet rs = selectStatement.executeQuery()) {
+                List<Articles> articles = new ArrayList<>();
+
+                while (rs.next()) {
+                    Articles article = new Articles();
+                    article.setId(rs.getLong("id"));
+                    article.setUser_adder_id(rs.getInt("user_adder_id"));
+                    article.setSubject_id(rs.getLong("subject_id"));
+                    article.setArticle_title(rs.getString("article_title"));
+                    article.setVisible(rs.getBoolean("is_visible"));
+                    article.setBanned(rs.getBoolean("is_banned"));
+                    article.setDeleted(rs.getBoolean("is_deleted"));
+
+                    articles.add(article);
+                }
+
+                return articles;
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
+    }
 }

@@ -11,4 +11,6 @@ public interface IArticleService {
 
     InformationReturned addArticle(ArticleAddDto articleAdd);
     List<Articles> findByUserId(int userId);
+
+    List<Articles> getArticlesBySubjectId(Long subjectId);
 }

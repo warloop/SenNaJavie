@@ -12,4 +12,5 @@ public interface IArticleDao {
 
     List<Articles> findByUserAdderId(int userAdderId);
 
+    List<Articles> findBySubjectId(Long subjectId);
 }

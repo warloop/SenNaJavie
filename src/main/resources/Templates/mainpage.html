@@ -161,16 +161,7 @@
             color: #fff;
             text-decoration: none;
         }
-        .popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
-            padding: 20px;
-            display: none;
-        }
+
     </style>
 </head>
 <body>
@@ -181,10 +172,9 @@
             <a th:text="${username}" th:href="@{/my-profile}">Użytkownik</a> | <a th:href="@{/logout}">Wyloguj się</a>
         </span>
         <span th:if="${username == null}">
-            <a th:href="@{/login}">Zaloguj się</a>
+            <a th:href="@{/}">Zaloguj się</a>
         </span>
     </div>
-    <div id="popup" class="popup"></div>
 </header>
 <nav>
     <a href="/protected/mainpage">Strona główna</a>
@@ -200,6 +190,9 @@
 <div class="button">
     <a href="/protected/subject/create"><button>Stwórz nowy temat</button></a>
 </div>
+<div class="button">
+    <a href="/protected/article/create"><button>Stwórz nowy artykuł</button></a>
+</div>
 <div style = "display: ruby-text">
     <table>
         <tr th:if="${subjects.empty}">
@@ -208,6 +201,7 @@
         <tr th:each="subject : ${subjects}">
             <td><span th:text="${subject.subject_text}"> Title </span></td>
             <td><a th:href="@{/protected/subject/edit/{id}(id=${subject.id})}">Edytuj</a></td>
+            <td><a th:href="@{/protected/articles/{subjectId}(subjectId=${subject.id})}"><button>Artykuły</button></a></td>
         </tr>
     </table>
 </div>
