@@ -5,26 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum</title>
     <style>
-<<<<<<< HEAD
-        /* Istniejący styl */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-        }
-        nav {
-            background-color: #444;
-            color: #fff;
-            padding: 10px;
-=======
-
-
         body {
             font-family: 'Varela Round', Arial, sans-serif;
             margin: 0;
@@ -48,23 +28,11 @@
             background-color: #191A1D;
             color: #fff;
             padding: 20px 0;
->>>>>>> kuba-klon
             text-align: center;
         }
         nav a {
             color: #fff;
             text-decoration: none;
-<<<<<<< HEAD
-            padding: 10px 20px;
-        }
-        nav a:hover {
-            background-color: #555;
-        }
-        section {
-            padding: 20px;
-            margin: 20px;
-            border: 1px solid #ccc;
-=======
             font-family: 'Varela Round', sans-serif;
             padding: 10px 15px;
             font-size: 18px;
@@ -99,25 +67,16 @@
             background-color: #fff;
             max-width: 800px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
->>>>>>> kuba-klon
         }
         footer {
             background-color: #333;
             color: #fff;
             text-align: center;
-<<<<<<< HEAD
-            padding: 10px;
-=======
             padding: 20px;
->>>>>>> kuba-klon
             position: fixed;
             bottom: 0;
             width: 100%;
         }
-<<<<<<< HEAD
-
-
-=======
         .logo-container {
             flex: 1;
             text-align: left;
@@ -153,7 +112,6 @@
         .button button:hover {
             background-color: #191A1D;
         }
->>>>>>> kuba-klon
         table {
             width: 50%;
             margin-left: 0px;
@@ -179,8 +137,6 @@
         table tr:hover {
             background-color: #ddd;
         }
-<<<<<<< HEAD
-=======
         .user-info {
             position: absolute;
             right: 20px;
@@ -203,43 +159,12 @@
             color: #fff;
             text-decoration: none;
         }
->>>>>>> kuba-klon
 
     </style>
 </head>
 <body>
 <header>
     <h1>Forum</h1>
-<<<<<<< HEAD
-</header>
-<nav>
-    <a href="#">Home</a>
-    <a href="#">Categories</a>
-    <a href="#">About</a>
-    <a href="#">Contact</a>
-</nav>
-<section>
-    <h2>Witaj na naszym forum!</h2>
-    <p>
-        Oto główna strona naszego forum. Zapraszamy do eksplorowania różnych kategorii, zadawania pytań i angażowania się w dyskusje z innymi użytkownikami.</p>
-</section>
-
-<div style = "margin-left: 33.333333333%">
-<table>
-    <tr th:if="${subjects.empty}">
-        <td colspan="2"> No Subjects Available </td>
-    </tr>
-    <tr th:each="subject : ${subjects}">
-        <td><span th:text="${subject.subject_text}"> Title </span></td>
-    </tr>
-</table>
-</div>
-<footer>
-    <p>&copy; 2024 Forum Wszystkie prawa zastrzeżone</p>
-</footer>
-</body>
-</html>
-=======
     <div class="user-info">
         <span th:if="${username != null}">
             <a th:text="${username}" th:href="@{/my-profile}">Użytkownik</a> | <a th:href="@{/logout}">Wyloguj się</a>
@@ -284,4 +209,3 @@
 
 </body>
 </html>
->>>>>>> kuba-klon

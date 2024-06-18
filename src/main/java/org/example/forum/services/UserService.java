@@ -1,30 +1,17 @@
 package org.example.forum.services;
 
-<<<<<<< HEAD
-import java.util.Optional;
 
-=======
->>>>>>> kuba-klon
+import java.util.Optional;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.dto.User.LoginInformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
 import org.example.forum.dto.User.UserRegisterDto;
 import org.example.forum.entities.User;
-<<<<<<< HEAD
-import org.example.forum.exception.UserIsNotExistsException;
-=======
->>>>>>> kuba-klon
 import org.example.forum.repositories.Interfaces.IUserRepository;
 import org.example.forum.services.interfaces.ISecurityService;
 import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-<<<<<<< HEAD
-=======
-import java.util.Optional;
-
->>>>>>> kuba-klon
 /**
  * Serwis odpowiada za powiązanie pomiędzy logiką aplikacji a komunikacją między kontrolerem oraz repozytorium.
  * @author Artur Leszczak
@@ -69,10 +56,10 @@ public class UserService implements IUserService {
 
             if(!USER_REPOSITORY.registerUser(userData)) throw new Exception("Rejestracja nie powiodła się, spróbuj ponownie!");
 
-            return new InformationReturned(200, "Poprawnie zarejestrowano!");
+            return new InformationReturned(200, "Poprawnie zarejestrowano!", "user");
 
         }catch (Exception e){
-            return new InformationReturned(400, e.getMessage());
+            return new InformationReturned(400, e.getMessage(), "user");
         }
 
     }
@@ -144,12 +131,9 @@ public class UserService implements IUserService {
         return Optional.of(null);
     }
 
-<<<<<<< HEAD
-=======
     @Override
     public Optional<User> getUserByUsername(String username) {
         return USER_REPOSITORY.findByUsername(username);
     }
->>>>>>> kuba-klon
 
 }
