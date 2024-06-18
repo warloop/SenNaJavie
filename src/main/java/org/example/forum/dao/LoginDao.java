@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ILoginDao;
 
 import org.example.forum.dao.Interfaces.IUserDao;
@@ -7,14 +8,21 @@ import org.example.forum.entities.Login;
 
 import org.example.forum.entities.User;
 import org.example.forum.exception.DataAccessException;
+import org.example.forum.exception.UserIsNotExistsException;
 import org.example.forum.util.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.*;
 import java.util.Optional;
 
 public class LoginDao implements ILoginDao {
 
-        IUserDao userDao;
+        @Autowired
+        private IUserDao userDao;
+
+        public LoginDao(IUserDao userDao) {
+            this.userDao = userDao;
+        }
 
         /**
          * Pobiera pojedynczy rekord logowania z bazy danych na podstawie podanego identyfikatora.
@@ -27,6 +35,7 @@ public class LoginDao implements ILoginDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Login get(int id) {
             final String selectSQL = "SELECT * FROM login WHERE id =?";
 
@@ -127,6 +136,7 @@ public class LoginDao implements ILoginDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean update(Login login) {
             final String updateSQL = "UPDATE login SET user_id =?, login =?, password =?, active =? WHERE id =?";
 
@@ -159,6 +169,7 @@ public class LoginDao implements ILoginDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean delete(int id) {
             final String deleteSQL = "DELETE FROM login WHERE id =?";
 
@@ -174,6 +185,48 @@ public class LoginDao implements ILoginDao {
             } catch (SQLException ex) {
                 throw new DataAccessException(ex);
             }
+        }
+
+        @Override
+        @Transactional
+        public Optional<Login> getLoginObjectByLogin(String login)
+        {
+            final String sqlSyntax = "SELECT * FROM login WHERE login=?";
+
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement selectStatement = conn.prepareStatement(sqlSyntax)) {
+
+                selectStatement.setString(1, login);
+
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    if (resultSet.next()) {
+
+                        Login login1 = new Login();
+
+                        login1.setId(resultSet.getInt("id"));
+
+                        User user1 = null;
+                        Optional<Integer> userId = Optional.of(resultSet.getInt("user_id"));
+                        if(userId.get() <= 0) { throw new UserIsNotExistsException(404,"Nie znaleziono użytkownika");}
+                        user1 = this.userDao.get(userId.get());
+
+                        login1.setUser_id(user1);
+                        login1.setLogin(resultSet.getString("login"));
+                        login1.setPassword(resultSet.getString("password"));
+                        login1.setActive(resultSet.getBoolean("active"));
+
+                        return Optional.of(login1);
+                    }
+
+                    return Optional.empty();
+                }
+
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }catch (UserIsNotExistsException e) {
+                return Optional.empty();
+            }
+
         }
 
 }

@@ -50,7 +50,7 @@ public class LoginController {
      * @version 1.0.0
      */
     @PostMapping("/login")
-    public String login(@RequestParam String login, @RequestParam String password, HttpServletRequest request) {
+    public String login(@RequestParam String login, @RequestParam String password, HttpServletRequest request){
 
         try{
 

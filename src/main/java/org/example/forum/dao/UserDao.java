@@ -1,19 +1,29 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IAccountTypeDao;
 import org.example.forum.dao.Interfaces.IUserDao;
+import org.example.forum.entities.AccountType;
 import org.example.forum.entities.User;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UserDao implements IUserDao {
 
-    IAccountTypeDao accountTypeDao;
+    @Autowired
+    private IAccountTypeDao accountTypeDao;
+
+    public UserDao(IAccountTypeDao accountTypeDao) {
+        this.accountTypeDao = accountTypeDao;
+    }
 
     /**
      * Dodaje nowego użytkownika do bazy danych.
@@ -35,7 +45,7 @@ public class UserDao implements IUserDao {
             insertStatement.setString(1, user.getName());
             insertStatement.setString(2, user.getSurname());
             insertStatement.setString(3, user.getEmail());
-            insertStatement.setInt(4, user.getAccountType().getId());
+            insertStatement.setInt(4, 1); //set default value (user)
 
             int affectedRows = insertStatement.executeUpdate();
 
@@ -98,6 +108,46 @@ public class UserDao implements IUserDao {
     }
 
     /**
+     * Metoda pobiera wszystkich użytkowników z bazy danych.
+     *
+     * @return Lista obiektów User reprezentujących wszystkich użytkowników w bazie danych.
+     * @throws DataAccessException Wyjątek występuje, gdy wystąpi błąd podczas wykonywania instrukcji SQL.
+     *
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
+    @Override
+    @Transactional
+    public List<User> getAll() {
+        final String selectSQL = "SELECT * FROM users";
+        List<User> findedUsers = new ArrayList<>();
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+            try (ResultSet resultSet = selectStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    User user = new User();
+                    user.setId(resultSet.getInt("id"));
+                    user.setName(resultSet.getString("name"));
+                    user.setSurname(resultSet.getString("surname"));
+                    user.setEmail(resultSet.getString("email"));
+                    user.setAccountType(accountTypeDao.get(resultSet.getInt("account_type_id")));
+                    user.setRegister_date(resultSet.getTimestamp("register_date").toLocalDateTime());
+                    user.set_deleted(resultSet.getBoolean("is_deleted"));
+                    user.setDelete_date(resultSet.getTimestamp("delete_date") != null ? resultSet.getTimestamp("delete_date").toLocalDateTime() : null);
+                    findedUsers.add(user);
+                }
+            }
+
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
+
+        return findedUsers;
+    }
+
+    /**
      * Aktualizuje istniejącego użytkownika w bazie danych.
      *
      * @param user Obiekt użytkownika zawierający zaktualizowane informacje.
@@ -108,6 +158,7 @@ public class UserDao implements IUserDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean update(User user) {
         final String updateSQL = "UPDATE users SET name =?, surname =?, email =?, account_type_id =? WHERE id =?";
 
@@ -140,6 +191,7 @@ public class UserDao implements IUserDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean delete(int id) {
         final String deleteSQL = "UPDATE users SET is_deleted = true, delete_date =? WHERE id =?";
 
@@ -157,7 +209,5 @@ public class UserDao implements IUserDao {
             throw new DataAccessException(ex);
         }
     }
-
-
 
 }

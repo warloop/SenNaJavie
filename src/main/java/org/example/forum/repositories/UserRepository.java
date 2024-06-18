@@ -1,12 +1,25 @@
 package org.example.forum.repositories;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.transaction.Transactional;
+import org.example.forum.dao.Interfaces.ILoginDao;
+import org.example.forum.dao.Interfaces.IUserDao;
+import org.example.forum.dao.UserDao;
+import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.dto.User.UserRegisterDto;
 import org.example.forum.entities.AccountType;
+import org.example.forum.entities.Login;
 import org.example.forum.entities.User;
 import org.example.forum.exception.DataAccessException;
+import org.example.forum.exception.UserIsNotExistsException;
 import org.example.forum.repositories.Interfaces.IUserRepository;
 import org.example.forum.util.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,61 +35,78 @@ import static org.aspectj.bridge.MessageUtil.fail;
 @Repository
 public class UserRepository implements IUserRepository {
 
+    private IUserDao userDao;
+    private ILoginDao loginDao;
+    private final PlatformTransactionManager transactionManager;
+
     /**
-     * @brief Funkcja rejestruje podstawowe dane nowego użytkownika do tabeli Users.
-     * @param user - Jako parametr funkcji otrzymuje obiekt UserRegisterDto, który zawiera dane z formularza rejestracji.
-     * @return boolean - Zwraca true jeżeli dodawanie użytkownika powiedzie się.
+     * Ta klasa jest odpowiedzialna za zarządzanie danymi użytkowników w bazie danych.
+     * Implementuje interfejs IUserRepository i udostępnia metody rejestracji,
+     * zapisywania, aktualizowania, usuwania, wyszukiwania według identyfikatora,
+     * wyszukiwania wszystkich użytkowników, wyszukiwania identyfikatora użytkownika według loginu,
+     * sprawdzania, czy użytkownik istnieje według loginu, oraz sprawdzania, czy użytkownik istnieje według adresu email.
+     *
      * @author Artur Leszczak
      * @version 1.0.1
      */
+    @Autowired
+    public UserRepository(IUserDao UserDao, ILoginDao LoginDao, PlatformTransactionManager transactionManager) {
+        this.userDao = UserDao;
+        this.loginDao = LoginDao;
+        this.transactionManager = transactionManager;
+    }
+
+    /**
+     * Metoda rejestrująca nowego użytkownika w systemie.
+     *
+     * @param postData Obiekt DTO z danymi rejestracji użytkownika.
+     * @return Wartość logiczna, która jest równa true, jeśli rejestracja przebiegła pomyślnie, w przeciwnym razie false.
+     * @throws DataAccessException Wyjątek występuje, gdy wystąpi błąd podczas wykonywania operacji związanych z bazą danych.
+     *
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
-    public boolean registerUser(UserRegisterDto user) {
-        final String insertUserSQL = "INSERT INTO users (name, surname, email, account_type_id) VALUES (?, ?, ?, 1)";
-        final String insertLoginSQL = "INSERT INTO login (user_id, login, password) VALUES (?, ?, ?)";
+    @Transactional
+    public boolean registerUser(UserRegisterDto postData) {
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement insertUserStatement = conn.prepareStatement(insertUserSQL, PreparedStatement.RETURN_GENERATED_KEYS);
-             PreparedStatement insertLoginStatement = conn.prepareStatement(insertLoginSQL)) {
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setName("registerUserTransaction");
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = transactionManager.getTransaction(def);
 
-            //POCZĄTEK TRANSAKCJI
-            conn.setAutoCommit(false);
+        try{
+            User user = new User();
+            user.setName(postData.getName());
+            user.setSurname(postData.getSurname());
+            user.setEmail(postData.getEmail());
 
-            insertUserStatement.setString(1, user.getName());
-            insertUserStatement.setString(2, user.getSurname());
-            insertUserStatement.setString(3, user.getEmail());
+            Optional<Integer> returnedVal = this.userDao.add(user);
 
-            int affectedRows = insertUserStatement.executeUpdate();
-
-            if (affectedRows == 0) {
-                conn.rollback();
-                throw new SQLException("Nie udało się dodać użytkownika, proces przerwany!");
+            if (returnedVal.isEmpty()) {
+                transactionManager.rollback(status);
+                return false;
             }
 
-            try (ResultSet generatedKeys = insertUserStatement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int userId = generatedKeys.getInt(1);
+            Login login = new Login();
+            login.setLogin(postData.getLogin());
+            login.setUser_id(user);
+            login.setPassword(postData.getPassword());
 
-                    insertLoginStatement.setInt(1, userId);
-                    insertLoginStatement.setString(2, user.getLogin());
-                    insertLoginStatement.setString(3, user.getPassword());
+            Optional<Integer> returnedLogin = this.loginDao.add(login);
 
-                    affectedRows = insertLoginStatement.executeUpdate();
-
-                    if (affectedRows == 0) {
-                        conn.rollback();
-                        throw new SQLException("Nie udało się dodać logowania, proces przerwany!");
-                    }
-
-                    conn.commit();
-                    return true;
-                } else {
-                    conn.rollback();
-                    throw new SQLException("Nie udało się pobrać wygenerowanego ID użytkownika!");
-                }
+            if (returnedLogin.isEmpty()) {
+                transactionManager.rollback(status);
+                return false;
             }
-        } catch (SQLException ex) {
+
+            transactionManager.commit(status);
+            return true;
+        }catch (Exception ex){
+            transactionManager.rollback(status);
             throw new DataAccessException(ex);
         }
+
     }
 
     /**
@@ -85,141 +115,72 @@ public class UserRepository implements IUserRepository {
      * @version 1.0.0
      */
     @Override
-    public void save(User user) {
-        final String SQL = "INSERT INTO users (name, surname, email, account_type, register_date, is_deleted, delete_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            statement.setString(1, user.getName());
-            statement.setString(2, user.getSurname());
-            statement.setString(3, user.getEmail());
-            statement.setInt(4, 1); //ustawienie id określającego typ konta na użytkownik
-            statement.setTimestamp(5, Timestamp.valueOf(user.getRegister_date()));
-            statement.setBoolean(6, user.getIs_deleted());
-            statement.setTimestamp(7, Timestamp.valueOf(user.getDelete_date()));
-            statement.executeUpdate();
-            try (ResultSet rs = statement.getGeneratedKeys()) {
-                if (rs.next()) {
-                    user.setId(rs.getInt(1));
-                }
-            } catch (SQLException ex) {
-                throw new DataAccessException(ex);
+    public Optional<User> findById(int id){
+
+        try{
+            User user = this.userDao.get(id);
+
+            if(user == null){
+                throw new UserIsNotExistsException(404,"Nie znaleziono użytkownika o podanym id");
             }
 
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+            return Optional.of(user);
+        }catch (UserIsNotExistsException e)
+        {
+            return Optional.empty();
         }
     }
 
+
     /**
+     * This method retrieves all users from the database.
      *
-     * @author Mateusz Fiedosiuk
-     * @version 1.0.0
-     */
-    @Override
-    public void update(User user) {
-        final String SQL = "UPDATE users SET name = ?, surname = ? email = ?, account_type = ?, is_deleted = ?, delete_date = ? WHERE id = ?";
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
-            statement.setString(1, user.getName());
-            statement.setString(2, user.getSurname());
-            statement.setString(3, user.getEmail());
-            statement.setInt(4, 1); /* ustawia statycznie na wartość odpowiadającą typowi konta -> użytkownik */
-            statement.setBoolean(5, user.getIs_deleted());
-            statement.setTimestamp(6, Timestamp.valueOf(user.getDelete_date()));
-            statement.setInt(6, user.getId());
-            statement.executeUpdate();
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
-    }
-
-    /**
-     *
-     * @author Mateusz Fiedosiuk
-     * @version 1.0.0
-     */
-    @Override
-    public void delete(User user) {
-        final String SQL = "UPDATE users SET is_deleted = ?, deleted_date = ? WHERE id = ?";
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
-            statement.setBoolean(1, user.getIs_deleted());
-            statement.setTimestamp(2, Timestamp.valueOf(user.getDelete_date()));
-            statement.setInt(3, user.getId());
-            statement.executeUpdate();
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
-    }
-
-    /**
-     *
-     * @author Mateusz Fiedosiuk
-     * @version 1.0.0
-     */
-    @Override
-    public Optional<User> findById(int id) {
-        final String SQL = "SELECT * FROM users WHERE id = ?";
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
-            statement.setLong(1, id);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    User user = new User();
-                    user.setId(rs.getInt("id"));
-                    user.setName(rs.getString("name"));
-                    user.setSurname(rs.getString("surname"));
-
-                    AccountType accountType = new AccountType();
-                    accountType.setId(1);
-                    accountType.setName("Użytkownik");
-
-                    user.setAccountType(accountType);
-                    user.setEmail(rs.getString("email"));
-                    user.setRegister_date(rs.getTimestamp("register_date").toLocalDateTime());
-                    return Optional.of(user);
-                }
-            } catch (SQLException ex) {
-                throw new DataAccessException(ex);
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
-        return Optional.empty();
-    }
-
-    /**
+     * @return A list of User objects representing all users in the database.
+     * @throws DataAccessException If there is an error accessing the database.
      *
      * @author Mateusz Fiedosiuk
      * @version 1.0.0
      */
     @Override
     public List<User> findAll() {
-        final String SQL = "SELECT * FROM users";
-        List<User> result = new ArrayList<>();
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL);
-             ResultSet rs = statement.executeQuery();) {
-            while (rs.next()) {
-                User user = new User();
+        List<User> userList = new ArrayList<User>();
 
-                user.setId(rs.getInt("id"));
-                user.setName(rs.getString("name"));
-                user.setSurname(rs.getString("surname"));
-                user.setEmail(rs.getString("email"));
-                user.setRegister_date(rs.getTimestamp("register_date").toLocalDateTime());
-                user.set_deleted(rs.getBoolean("is_deleted"));
-                user.setDelete_date(rs.getTimestamp("delete_date") != null ? rs.getTimestamp("delete_date").toLocalDateTime() : null);
-                result.add(user);
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
-        return result;
+        userList = this.userDao.getAll();
+
+        return userList;
+
     }
 
     /**
+     * Metoda wyszukuje unikalny identyfikator użytkownika na podstawie podanego loginu.
      *
+     * @param login Login użytkownika, dla którego szukany jest identyfikator.
+     * @return Obiekt Optional zawierający unikalny identyfikator użytkownika, jeśli został znaleziony.
+     *         Jeśli użytkownik nie został znaleziony, zwracany jest pusty Optional.
+     * @throws UserIsNotExistsException Wyjątek występuje, gdy użytkownik o podanym loginie nie istnieje.
+     *
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
+    @Override
+    public Optional<Integer> findUserIdByLogin(String login) {
+        try{
+            Optional<Login> takenLoginData = this.loginDao.getLoginObjectByLogin(login);
+
+            if(takenLoginData.isEmpty()){
+                throw new UserIsNotExistsException(404,"Nie znaleziono użytkownika o takim loginie ("+login+")");
+            }
+
+            Login takenLoginDataEntity = takenLoginData.get();
+
+            return Optional.of(takenLoginData.get().getUser_id().getId());
+        }catch(UserIsNotExistsException e){
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Ta metoda wyszukuje użytkownika o podanym loginie i haśle.
      * @param login - Wartość tekstowa reprezentująca login
      * @param password - Wartość tekstowa reprezentująca hasło
      * @return  User | null - Zwraca użytkownika lub null w przypadku niepowodzenia
@@ -229,24 +190,22 @@ public class UserRepository implements IUserRepository {
      @Override
      public Optional<User> findByLoginAndPass(String login, String password)
      {
-         final String SQL = "SELECT user_id FROM login WHERE login = ? AND password = ?";
+        try{
+            //pobranie danych użytkownika z bazy danych po loginie
+            Optional<Login> takenLoginData = this.loginDao.getLoginObjectByLogin(login);
 
-         try (Connection conn = ConnectionFactory.getConnection();
-              PreparedStatement statement = conn.prepareStatement(SQL)) {
-             statement.setString(1, login);
-             statement.setString(2, password);
+            if(takenLoginData.isEmpty()){
+                throw new UserIsNotExistsException(404,"Nie znaleziono użytkownika");
+            }
 
-             try (ResultSet rs = statement.executeQuery()) {
-                 if (rs.next()) {
+            Login takenLoginDataEntity = takenLoginData.get();
 
-                     return this.findById(rs.getInt("user_id"));
+            return Optional.of(takenLoginData.get().getUser_id());
 
-                 }
-             }
-         } catch (SQLException ex) {
-             throw new DataAccessException(ex);
-         }
-         return null;
+        }catch (UserIsNotExistsException e){
+
+                return Optional.empty();
+        }
 
      }
 
@@ -260,27 +219,21 @@ public class UserRepository implements IUserRepository {
     @Override
     public Optional<Boolean> isUserExistsByLogin(String login)
     {
-        final String SQL = "SELECT COUNT(id) FROM users WHERE id = (SELECT user_id FROM login WHERE login = ?) AND is_deleted = 0";
+        try{
+            Optional<Login> takenLoginData = this.loginDao.getLoginObjectByLogin(login);
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
-            statement.setString(1, login);
-
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    int count = rs.getInt(1);
-
-                    if(count == 0)
-                    {
-                        return Optional.of(false);
-                    }
-                    return Optional.of(true);
-                }
+            if(takenLoginData.isEmpty()){
+                throw new UserIsNotExistsException(404,"Nie znaleziono użytkownika");
             }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+
+            return Optional.of(true);
+
+        }catch (UserIsNotExistsException e){
+            return Optional.of(false);
+        }catch (Exception e){
+            return Optional.empty();
         }
-        return Optional.of(null);
+
     }
 
     /**
@@ -315,35 +268,5 @@ public class UserRepository implements IUserRepository {
         return Optional.of(null);
     }
 
-    /**
-     * Metoda wyszukuje Id_użytkownika na podstawie jego loginu.
-     * @param login Parametr (String) określający login użytkownika
-     * @return Optional<Integer> Zwraca wartość typu int lub null w zależności czy istnieje użytkownik o takim loginie.
-     * @author Artur Leszczak
-     * @version 1.0.0
-     */
-    @Override
-    public Optional<Integer> findUserIdByLogin(String login)
-    {
-        final String SQL = "SELECT user_id FROM login WHERE login = ?";
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
-            statement.setString(1, login);
-
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    int id = rs.getInt(1);
-                    if(id > 0)
-                    {
-                        return Optional.of(id);
-                    }
-                    return Optional.of(null);
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
-        return Optional.of(null);
-    }
 }

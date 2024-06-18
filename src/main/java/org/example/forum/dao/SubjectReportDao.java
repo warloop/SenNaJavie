@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ISubjectReportDao;
 
 import org.example.forum.entities.Subjects_reports;
@@ -24,6 +25,7 @@ public class SubjectReportDao implements ISubjectReportDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Subjects_reports get(int id) {
             final String selectSQL = "SELECT * FROM subjects_reports WHERE id =?";
 
@@ -63,6 +65,7 @@ public class SubjectReportDao implements ISubjectReportDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Optional<Integer> add(Subjects_reports subjectsReport) {
             final String insertSQL = "INSERT INTO subjects_reports (subject_id, report_type, user_reporter_id, add_date) VALUES (?,?,?,?)";
 
@@ -100,6 +103,7 @@ public class SubjectReportDao implements ISubjectReportDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean update(Subjects_reports subjectsReport) {
             final String updateSQL = "UPDATE subjects_reports SET subject_id =?, report_type =?, user_reporter_id =?, add_date =? WHERE id =?";
 
@@ -132,6 +136,7 @@ public class SubjectReportDao implements ISubjectReportDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean delete(int id) {
             final String deleteSQL = "DELETE FROM subjects_reports WHERE id =?";
 

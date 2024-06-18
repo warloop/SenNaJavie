@@ -14,4 +14,6 @@ public interface ILoginDao {
 
     Boolean delete(int id);
 
+    Optional<Login> getLoginObjectByLogin(String login);
+
 }

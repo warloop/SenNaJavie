@@ -7,6 +7,7 @@ import org.example.forum.dto.User.LoginInformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
 import org.example.forum.dto.User.UserRegisterDto;
 import org.example.forum.entities.User;
+import org.example.forum.exception.UserIsNotExistsException;
 import org.example.forum.repositories.Interfaces.IUserRepository;
 import org.example.forum.services.interfaces.ISecurityService;
 import org.example.forum.services.interfaces.IUserService;

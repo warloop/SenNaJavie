@@ -9,6 +9,7 @@ public class UserIsNotExistsException extends Throwable {
     private String message;
 
     public UserIsNotExistsException(int code, String error_message) {
+        super("Code: "+code + " | Message: " + error_message);
         this.code = code;
         this.message = error_message;
     }

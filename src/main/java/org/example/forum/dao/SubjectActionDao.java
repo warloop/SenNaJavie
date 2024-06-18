@@ -1,9 +1,12 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
+import org.aspectj.lang.annotation.Aspect;
 import org.example.forum.dao.Interfaces.ISubjectActionDao;
 import org.example.forum.entities.Subject_actions;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.*;
 
@@ -15,6 +18,7 @@ import java.sql.*;
 
 public class SubjectActionDao implements ISubjectActionDao {
 
+
     /**
      * Metoda pobierająca pojedynczy rekord z tabeli 'ubject_actions' w bazie danych na podstawie podanego identyfikatora.
      *
@@ -23,8 +27,9 @@ public class SubjectActionDao implements ISubjectActionDao {
      * @throws DataAccessException Jeśli wystąpi błąd podczas operacji na bazie danych.
      */
     @Override
+    @Transactional
     public Subject_actions get(long id) {
-        final String selectSQL = "SELECT * FROM subject_actions WHERE id = ?";
+        final String selectSQL = "SELECT * FROM subject_action WHERE id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
@@ -60,6 +65,7 @@ public class SubjectActionDao implements ISubjectActionDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean add(int action_id, int user_id, long subject_id)
     {
         final String insertSQL = "INSERT INTO subject_action (action_type, user_adder_id, subject_id) VALUES (?, ?, ?)";
@@ -101,6 +107,7 @@ public class SubjectActionDao implements ISubjectActionDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean update(Subject_actions subjectAction) {
         final String updateSQL = "UPDATE subject_actions SET user_adder_id =?, add_date =?, subject_id =?, action_type_id =? WHERE id =?";
 
@@ -132,6 +139,7 @@ public class SubjectActionDao implements ISubjectActionDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean delete(long id) {
         final String deleteSQL = "DELETE FROM subject_actions WHERE id =?";
 

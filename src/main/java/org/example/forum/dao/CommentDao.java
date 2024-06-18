@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ICommentDao;
 
 import org.example.forum.entities.Comments;
@@ -23,6 +24,7 @@ public class CommentDao implements ICommentDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Comments get(long id) {
             final String selectSQL = "SELECT * FROM comments WHERE id =?";
 
@@ -70,6 +72,7 @@ public class CommentDao implements ICommentDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Optional<Long> add(Comments comment) {
             final String insertSQL = "INSERT INTO comments (article_id, is_answer_to_comment, comment_id, user_adder_id, add_date, comment_text, comment_mark, likes, dislikes, is_banned, is_deleted, deleted_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
@@ -115,6 +118,7 @@ public class CommentDao implements ICommentDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean update(Comments comment) {
             final String updateSQL = "UPDATE comments SET article_id =?, is_answer_to_comment =?, comment_id =?, user_adder_id =?, add_date =?, comment_text =?, comment_mark =?, likes =?, dislikes =?, is_banned =?, is_deleted =?, deleted_date =? WHERE id =?";
 
@@ -155,6 +159,7 @@ public class CommentDao implements ICommentDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean delete(long id) {
             final String deleteSQL = "DELETE FROM comments WHERE id =?";
 

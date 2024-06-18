@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IArticleReportsDao;
 
 import org.example.forum.entities.Article_reports;
@@ -23,6 +24,7 @@ public class ArticleReportsDao implements IArticleReportsDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Article_reports get(long id) {
             final String selectSQL = "SELECT * FROM article_reports WHERE id =?";
 
@@ -62,6 +64,7 @@ public class ArticleReportsDao implements IArticleReportsDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Optional<Long> add(Article_reports articleReport) {
             final String insertSQL = "INSERT INTO article_reports (article_id, report_type, user_reporter_id, add_date) VALUES (?,?,?,?)";
 
@@ -99,6 +102,7 @@ public class ArticleReportsDao implements IArticleReportsDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean update(Article_reports articleReport) {
             final String updateSQL = "UPDATE article_reports SET article_id =?, report_type =?, user_reporter_id =?, add_date =? WHERE id =?";
 
@@ -131,6 +135,7 @@ public class ArticleReportsDao implements IArticleReportsDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean delete(long id) {
             final String deleteSQL = "DELETE FROM article_reports WHERE id =?";
 

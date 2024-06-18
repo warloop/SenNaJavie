@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ICommentReportDao;
 
 import org.example.forum.entities.Comments_reports;
@@ -23,6 +24,7 @@ public class CommentReportDao implements ICommentReportDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Comments_reports get(long id) {
             final String selectSQL = "SELECT * FROM comments_reports WHERE id =?";
 
@@ -62,6 +64,7 @@ public class CommentReportDao implements ICommentReportDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Optional<Long> add(Comments_reports commentsReport) {
             final String insertSQL = "INSERT INTO comments_reports (comment_id, report_type, user_reporter_id, add_date) VALUES (?,?,?,?)";
 
@@ -99,6 +102,7 @@ public class CommentReportDao implements ICommentReportDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean update(Comments_reports commentsReport) {
             final String updateSQL = "UPDATE comments_reports SET comment_id =?, report_type =?, user_reporter_id =?, add_date =? WHERE id =?";
 
@@ -131,6 +135,7 @@ public class CommentReportDao implements ICommentReportDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean delete(long id) {
             final String deleteSQL = "DELETE FROM comments_reports WHERE id =?";
 

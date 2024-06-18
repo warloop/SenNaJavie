@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IAccountTypeDao;
 
 
@@ -24,8 +25,9 @@ public class AccountTypeDao implements IAccountTypeDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public AccountType get(int id) {
-        final String selectSQL = "SELECT * FROM account_types WHERE id =?";
+        final String selectSQL = "SELECT * FROM account_type WHERE id =?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
@@ -61,8 +63,9 @@ public class AccountTypeDao implements IAccountTypeDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Optional<Integer> add(AccountType accountType) {
-        final String insertSQL = "INSERT INTO account_types (name, description) VALUES (?,?)";
+        final String insertSQL = "INSERT INTO account_type (name, description) VALUES (?,?)";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement insertStatement = conn.prepareStatement(insertSQL, Statement.RETURN_GENERATED_KEYS)) {
@@ -96,8 +99,9 @@ public class AccountTypeDao implements IAccountTypeDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean update(AccountType accountType) {
-        final String updateSQL = "UPDATE account_types SET name =?, description =? WHERE id =?";
+        final String updateSQL = "UPDATE account_type SET name =?, description =? WHERE id =?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement updateStatement = conn.prepareStatement(updateSQL)) {
@@ -126,8 +130,9 @@ public class AccountTypeDao implements IAccountTypeDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean delete(int id) {
-        final String deleteSQL = "DELETE FROM account_types WHERE id =?";
+        final String deleteSQL = "DELETE FROM account_type WHERE id =?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement deleteStatement = conn.prepareStatement(deleteSQL)) {

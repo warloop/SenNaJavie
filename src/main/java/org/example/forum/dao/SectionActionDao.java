@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ISectionActionDao;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
@@ -26,6 +27,7 @@ public class SectionActionDao implements ISectionActionDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean add(int action_id, int user_id, long section_id)
     {
         final String insertSQL = "INSERT INTO section_action (action_type, user_adder_id, section_id) VALUES (?, ?, ?)";

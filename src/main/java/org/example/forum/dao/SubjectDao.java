@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ISubjectDao;
 
 import org.example.forum.entities.Subjects;
@@ -23,6 +24,7 @@ public class SubjectDao implements ISubjectDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Subjects get(long id) {
             final String selectSQL = "SELECT * FROM subjects WHERE id =?";
 
@@ -62,6 +64,7 @@ public class SubjectDao implements ISubjectDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Optional<Long> add(Subjects subject) {
             final String insertSQL = "INSERT INTO subjects (user_adder_id, subject_text, is_banned, is_deleted) VALUES (?,?,?,?)";
 
@@ -99,6 +102,7 @@ public class SubjectDao implements ISubjectDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean update(Subjects subject) {
             final String updateSQL = "UPDATE subjects SET user_adder_id =?, subject_text =?, is_banned =?, is_deleted =? WHERE id =?";
 
@@ -131,6 +135,7 @@ public class SubjectDao implements ISubjectDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean delete(long id) {
             final String deleteSQL = "DELETE FROM subjects WHERE id =?";
 

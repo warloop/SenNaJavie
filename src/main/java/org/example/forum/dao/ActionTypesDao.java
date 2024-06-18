@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IActionTypesDao;
 
 import org.example.forum.entities.Action_types;
@@ -24,6 +25,7 @@ public class ActionTypesDao implements IActionTypesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Action_types get(int id) {
             final String selectSQL = "SELECT * FROM action_types WHERE id =?";
 
@@ -61,6 +63,7 @@ public class ActionTypesDao implements IActionTypesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Optional<Integer> add(Action_types actionType) {
             final String insertSQL = "INSERT INTO action_types (type_name, description) VALUES (?,?)";
 
@@ -96,6 +99,7 @@ public class ActionTypesDao implements IActionTypesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean update(Action_types actionType) {
             final String updateSQL = "UPDATE action_types SET type_name =?, description =? WHERE id =?";
 
@@ -126,6 +130,7 @@ public class ActionTypesDao implements IActionTypesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean delete(int id) {
             final String deleteSQL = "DELETE FROM action_types WHERE id =?";
 

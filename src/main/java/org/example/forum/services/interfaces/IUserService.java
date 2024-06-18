@@ -4,6 +4,7 @@ import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.dto.User.LoginInformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
 import org.example.forum.dto.User.UserRegisterDto;
+import org.example.forum.exception.UserIsNotExistsException;
 
 import java.util.Optional;
 

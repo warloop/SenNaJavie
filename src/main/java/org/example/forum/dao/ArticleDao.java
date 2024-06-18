@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IArticleDao;
 import org.example.forum.dto.Article.ArticleAddDto;
 import org.example.forum.entities.Articles;
@@ -32,6 +33,7 @@ public class ArticleDao implements IArticleDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Optional<Long> add(ArticleAddDto data) {
         final String insertSQL = "INSERT INTO articles (subject_id, user_adder_id, article_title, is_visible) VALUES (?,?,?,?)";
 
@@ -83,6 +85,7 @@ public class ArticleDao implements IArticleDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Optional<Articles> getById(long articleId) {
         final String selectSQL = "SELECT * FROM articles WHERE id =?";
 
@@ -127,6 +130,7 @@ public class ArticleDao implements IArticleDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public List<Articles> getAll(int start, int limit) {
         if(start < 0) start = 0;
         if(limit < 25) limit = 25;
@@ -157,6 +161,7 @@ public class ArticleDao implements IArticleDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Optional<Articles> update(long articleId, Articles data) {
         final String updateSQL = "UPDATE articles SET user_adder_id =?, subject_id =?, article_title =?, is_visible =?, is_banned =?, is_deleted =? WHERE id =?";
 
@@ -193,6 +198,7 @@ public class ArticleDao implements IArticleDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public void delete(long articleId) {
         final String deleteSQL = "DELETE FROM articles WHERE id =?";
 

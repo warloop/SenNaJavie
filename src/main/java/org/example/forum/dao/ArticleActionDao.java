@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IArticleActionDao;
 import org.example.forum.entities.Article_actions;
 import org.example.forum.exception.DataAccessException;
@@ -25,6 +26,7 @@ public class ArticleActionDao implements IArticleActionDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean add(int action_id, int user_id, long article_id)
     {
         final String insertSQL = "INSERT INTO article_action (action_type, user_adder_id, article_id) VALUES (?, ?, ?)";
@@ -64,6 +66,7 @@ public class ArticleActionDao implements IArticleActionDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Article_actions get(long id) {
         final String selectSQL = "SELECT * FROM article_actions WHERE id =?";
 
@@ -101,6 +104,7 @@ public class ArticleActionDao implements IArticleActionDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean update(Article_actions articleAction) {
         final String updateSQL = "UPDATE article_actions SET user_adder_id =?, add_date =?, article_id =?, action_type_id =? WHERE id =?";
 
@@ -132,6 +136,7 @@ public class ArticleActionDao implements IArticleActionDao {
      * @version 1.0.0
      */
     @Override
+    @Transactional
     public Boolean delete(long id) {
         final String deleteSQL = "DELETE FROM article_actions WHERE id =?";
 

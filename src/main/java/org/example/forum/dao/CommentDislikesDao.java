@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ICommentDislikesDao;
 
 import org.example.forum.entities.Comment_dislikes;
@@ -23,6 +24,7 @@ public class CommentDislikesDao implements ICommentDislikesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Comment_dislikes get(long id) {
             final String selectSQL = "SELECT * FROM comment_dislikes WHERE id =?";
 
@@ -63,6 +65,7 @@ public class CommentDislikesDao implements ICommentDislikesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Optional<Long> add(Comment_dislikes commentDislike) {
             final String insertSQL = "INSERT INTO comment_dislikes (comment_id, user_adder_id, add_date, is_deleted, deleted_date) VALUES (?,?,?,?,?)";
 
@@ -101,6 +104,7 @@ public class CommentDislikesDao implements ICommentDislikesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean update(Comment_dislikes commentDislike) {
             final String updateSQL = "UPDATE comment_dislikes SET comment_id =?, user_adder_id =?, add_date =?, is_deleted =?, deleted_date =? WHERE id =?";
 
@@ -134,6 +138,7 @@ public class CommentDislikesDao implements ICommentDislikesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean delete(long id) {
             final String deleteSQL = "DELETE FROM comment_dislikes WHERE id =?";
 

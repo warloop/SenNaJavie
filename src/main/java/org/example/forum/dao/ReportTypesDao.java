@@ -1,5 +1,6 @@
 package org.example.forum.dao;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IReportTypesDao;
 
 import org.example.forum.entities.Report_types;
@@ -24,6 +25,7 @@ public class ReportTypesDao implements IReportTypesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Report_types get(int id) {
             final String selectSQL = "SELECT * FROM report_types WHERE id =?";
 
@@ -61,6 +63,7 @@ public class ReportTypesDao implements IReportTypesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Optional<Integer> add(Report_types reportType) {
             final String insertSQL = "INSERT INTO report_types (name, description) VALUES (?,?)";
 
@@ -96,6 +99,7 @@ public class ReportTypesDao implements IReportTypesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean update(Report_types reportType) {
             final String updateSQL = "UPDATE report_types SET name =?, description =? WHERE id =?";
 
@@ -126,6 +130,7 @@ public class ReportTypesDao implements IReportTypesDao {
          * @version 1.0.0
          */
         @Override
+        @Transactional
         public Boolean delete(int id) {
             final String deleteSQL = "DELETE FROM report_types WHERE id =?";
 
