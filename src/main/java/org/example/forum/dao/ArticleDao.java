@@ -41,6 +41,7 @@ public class ArticleDao implements IArticleDao {
              PreparedStatement insertStatement = conn.prepareStatement(insertSQL, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             // Początek transakcji
+
             conn.setAutoCommit(false);
 
             insertStatement.setLong(1, data.getSubjectId());
@@ -119,6 +120,40 @@ public class ArticleDao implements IArticleDao {
         }
     }
 
+    @Override
+    public List<Articles> findByUserAdderId(int userAdderId) {
+        final String selectSQL = "SELECT * FROM articles WHERE user_adder_id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+            selectStatement.setInt(1, userAdderId);
+
+            try (ResultSet rs = selectStatement.executeQuery()) {
+                List<Articles> articles = new ArrayList<>();
+                while (rs.next()) {
+                    // Create an Article object from the ResultSet and return it wrapped in an Optional
+                    Articles article = new Articles(
+                            rs.getLong("id"),
+                            rs.getInt("user_adder_id"),
+                            rs.getLong("subject_id"),
+                            rs.getString("article_title"),
+                            rs.getBoolean("is_visible"),
+                            rs.getBoolean("is_banned"),
+                            rs.getBoolean("is_deleted"));
+
+                    articles.add(article);
+                }
+
+                return articles;
+
+            }
+        } catch (SQLException ex) {
+            // Handle any SQL exceptions
+            throw new DataAccessException(ex);
+        }
+    }
+
     /**
      * Retrieves a list of articles from the database based on the provided start and limit parameters.
      *
@@ -127,27 +162,46 @@ public class ArticleDao implements IArticleDao {
      * @return A List of Articles retrieved from the database based on the provided start and limit parameters.
      * @throws DataAccessException If an error occurs while accessing the database.
      * @author Artur Leszczak
-     * @version 1.0.0
+     * @since 1.0.0
      */
     @Override
     @Transactional
     public List<Articles> getAll(int start, int limit) {
+        final String selectSQL = "SELECT * FROM articles WHERE id >= ? LIMIT ?";
+
         if(start < 0) start = 0;
         if(limit < 25) limit = 25;
         if(limit > 150) limit = 150;
 
-        List<Articles> articles = new ArrayList<>();
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
 
-        // Loop through the database starting from the provided start index and retrieve the specified limit of articles
-        for(int i = start; i < start + limit; i++) {
-            // If no article is found with the current ID, break the loop
-            if(!this.getById(i).isPresent()) break;
+            selectStatement.setInt(1, start);
+            selectStatement.setInt(2, limit);
 
-            // Add the retrieved article to the list
-            articles.add(this.getById(i).get());
+            List<Articles> articles = new ArrayList<>();
+
+            try (ResultSet rs = selectStatement.executeQuery()) {
+
+                while (rs.next()) {
+                    Articles article = new Articles();
+                    article.setId(rs.getLong("id"));
+                    article.setUser_adder_id(rs.getInt("user_adder_id"));
+                    article.setSubject_id(rs.getLong("subject_id"));
+                    article.setArticle_title(rs.getString("article_title"));
+                    article.setVisible(rs.getBoolean("is_visible"));
+                    article.setBanned(rs.getBoolean("is_banned"));
+                    article.setDeleted(rs.getBoolean("is_deleted"));
+
+                    articles.add(article);
+                }
+
+                return articles;
+            }
+
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
         }
-        // Return the list of retrieved articles
-        return articles;
     }
 
     /**
@@ -171,9 +225,9 @@ public class ArticleDao implements IArticleDao {
             updateStatement.setInt(1, data.getUser_adder_id());
             updateStatement.setLong(2, data.getSubject_id());
             updateStatement.setString(3, data.getArticle_title());
-            updateStatement.setBoolean(4, data.is_visible());
-            updateStatement.setBoolean(5, data.is_banned());
-            updateStatement.setBoolean(6, data.is_deleted());
+            updateStatement.setBoolean(4, data.isVisible());
+            updateStatement.setBoolean(5, data.isBanned());
+            updateStatement.setBoolean(6, data.isDeleted());
             updateStatement.setLong(7, articleId);
 
             int affectedRows = updateStatement.executeUpdate();
@@ -189,25 +243,35 @@ public class ArticleDao implements IArticleDao {
         }
     }
 
-    /**
-     * Usuwa artykuł z bazy danych na podstawie podanego identyfikatora artykułu.
-     *
-     * @param articleId Unikalny identyfikator artykułu do usunięcia.
-     * @throws DataAccessException Jeśli wystąpi błąd podczas uzyskiwania dostępu do bazy danych.
-     * @author Artur Leszczak
-     * @version 1.0.0
-     */
     @Override
-    @Transactional
-    public void delete(long articleId) {
-        final String deleteSQL = "DELETE FROM articles WHERE id =?";
+    public List<Articles> findBySubjectId(long subjectId) {
+        final String selectSQL = "SELECT * FROM articles WHERE subject_id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement deleteStatement = conn.prepareStatement(deleteSQL)) {
+             PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
 
-            deleteStatement.setLong(1, articleId);
+            selectStatement.setLong(1, subjectId);
 
-            deleteStatement.executeUpdate();
+            try (ResultSet rs = selectStatement.executeQuery()) {
+                List<Articles> articles = new ArrayList<>();
+
+                while (rs.next()) {
+                    Articles article = new Articles();
+                    article.setId(rs.getLong("id"));
+                    article.setUser_adder_id(rs.getInt("user_adder_id"));
+                    article.setSubject_id(rs.getLong("subject_id"));
+                    article.setArticle_title(rs.getString("article_title"));
+                    article.setVisible(rs.getBoolean("is_visible"));
+                    article.setBanned(rs.getBoolean("is_banned"));
+                    article.setDeleted(rs.getBoolean("is_deleted"));
+
+                    articles.add(article);
+                }
+
+                return articles;
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
 
         } catch (SQLException ex) {
             throw new DataAccessException(ex);

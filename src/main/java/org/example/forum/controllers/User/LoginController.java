@@ -5,18 +5,14 @@ import jakarta.servlet.http.HttpSession;
 import org.example.forum.dto.User.LoginInformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
 import org.example.forum.services.SecurityService;
-
 import org.example.forum.services.SubjectService;
 import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.regex.Pattern;
 
 @Controller
 public class LoginController {
@@ -30,14 +26,19 @@ public class LoginController {
     @Autowired
     SecurityService SECURITY_SERVICE;
 
-    @GetMapping("/login")
+    @GetMapping("/")
     public String loginPage() {
         return "login";
     }
     @GetMapping("/protected/mainpage")
-    public String mainPage(Model model) {
+    public String mainPage(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+        if (session != null && "true".equals(session.getAttribute("isLogged"))) {
+            model.addAttribute("username", session.getAttribute("username"));
+        } else {
+            model.addAttribute("username", null);
+        }
         model.addAttribute("subjects", subjectService.getAllSubjects());
-
         return "mainpage";
     }
 
@@ -50,32 +51,29 @@ public class LoginController {
      * @version 1.0.0
      */
     @PostMapping("/login")
-    public String login(@RequestParam String login, @RequestParam String password, HttpServletRequest request){
+    public String login(@RequestParam String login, @RequestParam String password, HttpServletRequest request) {
 
-        try{
-
-            if(!(SecurityService.Regex.LOGIN.getPattern().matcher(login).matches())){
+        try {
+            if (!SecurityService.Regex.LOGIN.getPattern().matcher(login).matches()) {
                 throw new Exception("Niepoprawna składnia loginu!");
             }
 
-            if(!(SecurityService.Regex.PASSWORD.getPattern().matcher(password).matches())){
+            if (!SecurityService.Regex.PASSWORD.getPattern().matcher(password).matches()) {
                 throw new Exception("Niepoprawna składnia hasła!");
             }
 
             UserLoginDto userLoginDto = new UserLoginDto(login, password);
-
             LoginInformationReturned informationReturned = USER_SERVICE.loginUser(userLoginDto);
 
-            if((informationReturned.getCode() == 200) && (informationReturned.getUser_id() > 0)) {
-
+            if (informationReturned.getCode() == 200 && informationReturned.getUser_id() > 0) {
                 HttpSession session = request.getSession();
                 session.setAttribute("isLogged", "true");
                 session.setAttribute("userId", informationReturned.getUser_id());
+                session.setAttribute("username", login);
 
                 return "redirect:/protected/mainpage";
             }
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             return "login";
         }
 
@@ -99,6 +97,7 @@ public class LoginController {
             session.invalidate();
         }
 
-        return "redirect:/login";
+        return "redirect:/";
+
     }
 }

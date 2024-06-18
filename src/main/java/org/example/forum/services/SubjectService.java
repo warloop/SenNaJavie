@@ -2,15 +2,29 @@ package org.example.forum.services;
 
 import org.example.forum.dto.Subject.SubjectAddDto;
 import org.example.forum.dto.System.InformationReturned;
+<<<<<<< HEAD
 import org.example.forum.entities.Subjects;
 import org.example.forum.exception.SubjectLengthTooLongException;
 import org.example.forum.exception.UserIsNotExistsException;
+=======
+import org.example.forum.entities.Articles;
+import org.example.forum.entities.Subjects;
+import org.example.forum.exception.SubjectLengthTooLongException;
+import org.example.forum.exception.UserIsNotExistsException;
+import org.example.forum.repositories.Interfaces.IArticleRepository;
+import org.example.forum.repositories.Interfaces.ICommentRepository;
+>>>>>>> kuba-klon
 import org.example.forum.repositories.Interfaces.ISubjectRepository;
 import org.example.forum.repositories.Interfaces.IUserRepository;
 import org.example.forum.services.interfaces.IActionService;
 import org.example.forum.services.interfaces.ISubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+<<<<<<< HEAD
+=======
+
+import javax.security.auth.Subject;
+>>>>>>> kuba-klon
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +50,13 @@ public class SubjectService implements ISubjectService {
 
     @Autowired
     IActionService ACTION_SERVICE;
+<<<<<<< HEAD
+=======
+
+    @Autowired
+    IArticleRepository ARTICLE_REPOSITORY;
+
+>>>>>>> kuba-klon
     /**
      * Metoda waliduje oraz przekazuje zlecenie dodania nowego tematu dla repozytorium.
      * @param subject Obiekt typu SubjectAddDto zawierający informacje o temacie oraz id_użytkownika_dodającego
@@ -62,7 +83,11 @@ public class SubjectService implements ISubjectService {
                 //dodanie informacji o utworzeniu nowego tematu
                 ACTION_SERVICE.addSubjectAction(subject.getUser_adder_id(), addedSubjectId.get());
 
+<<<<<<< HEAD
                 return new InformationReturned(201, "Poprawnie utworzono nowy temat");
+=======
+                return new InformationReturned(201, "Poprawnie utworzono nowy temat", "/protected/mainpage");
+>>>>>>> kuba-klon
             }
 
             throw new Exception("Nie udało się dodać tematu!");
@@ -100,9 +125,20 @@ public class SubjectService implements ISubjectService {
 
         return Optional.empty();
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> kuba-klon
     public List<Subjects> getAllSubjects(){
         return SUBJECT_REPOSITORY.getAllSubjects();
     }
 
+<<<<<<< HEAD
+=======
+    public Subjects findSubjectById(long subjectId) {
+        return SUBJECT_REPOSITORY.getSubjectById(subjectId).orElse(null);
+    }
+
+
+>>>>>>> kuba-klon
 }

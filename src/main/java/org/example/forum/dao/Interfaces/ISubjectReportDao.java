@@ -1,7 +1,6 @@
 package org.example.forum.dao.Interfaces;
 
 import org.example.forum.entities.Subjects_reports;
-import org.example.forum.entities.User;
 
 import java.util.Optional;
 

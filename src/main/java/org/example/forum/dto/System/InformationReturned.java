@@ -15,10 +15,12 @@ public class InformationReturned {
 
     private int code;
     private String message;
+    private String redirectUrl;
 
-    public InformationReturned(int code, String message) {
+    public InformationReturned(int code, String message, String redirectUrl) {
         this.code = code;
         this.message = message;
+        this.redirectUrl = redirectUrl;
     }
 
 }

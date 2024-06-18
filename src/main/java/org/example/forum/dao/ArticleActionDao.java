@@ -5,8 +5,11 @@ import org.example.forum.dao.Interfaces.IArticleActionDao;
 import org.example.forum.entities.Article_actions;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
-
 import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 
 /**
  * Klasa odpowiedzialna za komunikację z tabelą article_action umieszczoną w bazie danych.

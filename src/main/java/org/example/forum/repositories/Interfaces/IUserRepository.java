@@ -2,8 +2,6 @@ package org.example.forum.repositories.Interfaces;
 
 import org.example.forum.dto.User.UserRegisterDto;
 import org.example.forum.entities.User;
-import org.example.forum.exception.UserIsNotExistsException;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -22,4 +20,7 @@ public interface IUserRepository {
     Optional<Boolean> isUserExistsByEmail(String email);
 
     Optional<Integer> findUserIdByLogin(String login);
+
+    Optional<User> findByUsername(String username);
+
 }

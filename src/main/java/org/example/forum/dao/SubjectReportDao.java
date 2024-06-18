@@ -2,14 +2,10 @@ package org.example.forum.dao;
 
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ISubjectReportDao;
-
 import org.example.forum.entities.Subjects_reports;
-
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
-
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class SubjectReportDao implements ISubjectReportDao {

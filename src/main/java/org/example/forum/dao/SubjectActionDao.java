@@ -1,14 +1,17 @@
 package org.example.forum.dao;
 
+
 import jakarta.transaction.Transactional;
-import org.aspectj.lang.annotation.Aspect;
 import org.example.forum.dao.Interfaces.ISubjectActionDao;
 import org.example.forum.entities.Subject_actions;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Klasa odpowiedzialna za komunikację z tabelą subject_action umieszczoną w bazie danych.
@@ -17,6 +20,7 @@ import java.sql.*;
  */
 
 public class SubjectActionDao implements ISubjectActionDao {
+
 
 
     /**
@@ -156,4 +160,5 @@ public class SubjectActionDao implements ISubjectActionDao {
             throw new DataAccessException(ex);
         }
     }
+
 }

@@ -1,19 +1,18 @@
 package org.example.forum.dao;
 
+
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IAccountTypeDao;
 import org.example.forum.dao.Interfaces.IUserDao;
-import org.example.forum.entities.AccountType;
 import org.example.forum.entities.User;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.Optional;
 
 public class UserDao implements IUserDao {
@@ -24,6 +23,7 @@ public class UserDao implements IUserDao {
     public UserDao(IAccountTypeDao accountTypeDao) {
         this.accountTypeDao = accountTypeDao;
     }
+
 
     /**
      * Dodaje nowego użytkownika do bazy danych.

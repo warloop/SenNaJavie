@@ -11,4 +11,5 @@ public interface IArticleActionDao {
     Boolean update(Article_actions article_actions);
 
     Boolean delete(long id);
+
 }

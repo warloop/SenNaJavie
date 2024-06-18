@@ -11,8 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.util.Optional;
 
 @Controller
 public class SubjectController {
@@ -27,38 +28,44 @@ public class SubjectController {
     public String createSubjectPageShow() { return "subject-creator"; }
 
     @PostMapping("/protected/subject/create")
-    public ResponseEntity createNewSubject(@RequestParam("subjectText") String subjectText, HttpServletRequest request)
-    {
-        //WALIDACJA PRZEKAZANYCH DANYCH
-        if(subjectText == null || subjectText.length() > 128) {
-            return ResponseEntity.badRequest().body("Niepoprawna długość tematu, temat nie może być pusty oraz nie może przekraczać 128 znaków.");
+    public ResponseEntity<Map<String, String>> createNewSubject(@RequestParam("subjectText") String subjectText, HttpServletRequest request) {
+        Map<String, String> response = new HashMap<>();
+
+        // WALIDACJA PRZEKAZANYCH DANYCH
+        if (subjectText == null || subjectText.length() > 128) {
+            response.put("message", "Niepoprawna długość tematu, temat nie może być pusty oraz nie może przekraczać 128 znaków.");
+            return ResponseEntity.badRequest().body(response);
         }
 
-        if(request.getSession().getAttribute("userId") == null) {
-            return ResponseEntity.badRequest().body("Nie odnaleziono użytkownika w sesji.");
+        if (request.getSession().getAttribute("userId") == null) {
+            response.put("message", "Nie odnaleziono użytkownika w sesji.");
+            return ResponseEntity.badRequest().body(response);
         }
 
-        try{
+        try {
             int UserId = Integer.parseInt(request.getSession().getAttribute("userId").toString());
 
-            if(!USER_SERVICE.isUserExistsByUserIdAndNotBanned(UserId).get()){
-                return ResponseEntity.badRequest().body("Nie odnaleziono użytkownika.");
+            if (!USER_SERVICE.isUserExistsByUserIdAndNotBanned(UserId).get()) {
+                response.put("message", "Nie odnaleziono użytkownika.");
+                return ResponseEntity.badRequest().body(response);
             }
 
             SubjectAddDto newSubject = new SubjectAddDto(UserId, subjectText);
 
             InformationReturned returnedInfo = SUBJECT_SERVICE.addSubject(newSubject);
 
-            if(returnedInfo.getCode() == 201) {
-                return ResponseEntity.ok(returnedInfo.getMessage());
-            }else{
-                return ResponseEntity.badRequest().body(returnedInfo.getMessage());
+            if (returnedInfo.getCode() == 201) {
+                response.put("message", returnedInfo.getMessage());
+                response.put("redirectUrl", "/protected/mainpage"); // Dodanie adresu URL do przekierowania
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("message", returnedInfo.getMessage());
+                return ResponseEntity.badRequest().body(response);
             }
 
-        }catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body("Niepoprawny format ID użytkownika");
+        } catch (NumberFormatException e) {
+            response.put("message", "Niepoprawny format ID użytkownika");
+            return ResponseEntity.badRequest().body(response);
         }
-
     }
-
 }

@@ -43,7 +43,7 @@ public class User {
     @Column(name = "is_deleted")
     private boolean is_deleted = false;
 
-    @Column(name = "register_date")
+    @Column(name = "delete_date")
     private LocalDateTime delete_date = null;
 
     public boolean getIs_deleted(){

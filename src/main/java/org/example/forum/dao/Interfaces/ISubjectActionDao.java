@@ -1,5 +1,6 @@
 package org.example.forum.dao.Interfaces;
 
+
 import org.example.forum.entities.Subject_actions;
 
 public interface ISubjectActionDao {
@@ -11,4 +12,5 @@ public interface ISubjectActionDao {
     Boolean update(Subject_actions subjectAction);
 
     Boolean delete(long id);
+
 }

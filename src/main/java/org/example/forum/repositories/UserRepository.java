@@ -1,11 +1,8 @@
 package org.example.forum.repositories;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ILoginDao;
 import org.example.forum.dao.Interfaces.IUserDao;
-import org.example.forum.dao.UserDao;
-import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.dto.User.UserRegisterDto;
 import org.example.forum.entities.AccountType;
 import org.example.forum.entities.Login;
@@ -20,7 +17,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,9 +24,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.sql.Timestamp;
-
-import static org.aspectj.bridge.MessageUtil.fail;
 
 @Repository
 public class UserRepository implements IUserRepository {
@@ -131,12 +124,7 @@ public class UserRepository implements IUserRepository {
         }
     }
 
-
     /**
-     * This method retrieves all users from the database.
-     *
-     * @return A list of User objects representing all users in the database.
-     * @throws DataAccessException If there is an error accessing the database.
      *
      * @author Mateusz Fiedosiuk
      * @version 1.0.0
@@ -180,7 +168,7 @@ public class UserRepository implements IUserRepository {
     }
 
     /**
-     * Ta metoda wyszukuje użytkownika o podanym loginie i haśle.
+     *
      * @param login - Wartość tekstowa reprezentująca login
      * @param password - Wartość tekstowa reprezentująca hasło
      * @return  User | null - Zwraca użytkownika lub null w przypadku niepowodzenia
@@ -233,7 +221,6 @@ public class UserRepository implements IUserRepository {
         }catch (Exception e){
             return Optional.empty();
         }
-
     }
 
     /**
@@ -268,5 +255,35 @@ public class UserRepository implements IUserRepository {
         return Optional.of(null);
     }
 
+    @Override
+    public Optional<User> findByUsername(String username) {
+        final String SQL = "SELECT u.* FROM users u INNER JOIN login l ON u.id = l.user_id WHERE l.login = ?";
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement statement = conn.prepareStatement(SQL)) {
+            statement.setString(1, username);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    User user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setName(rs.getString("name"));
+                    user.setSurname(rs.getString("surname"));
+
+                    AccountType accountType = new AccountType();
+                    accountType.setId(rs.getInt("account_type_id"));
+                    accountType.setName("Użytkownik");
+
+                    user.setAccountType(accountType);
+                    user.setEmail(rs.getString("email"));
+                    user.setRegister_date(rs.getTimestamp("register_date").toLocalDateTime());
+                    return Optional.of(user);
+                }
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
+        return Optional.empty();
+    }
 
 }

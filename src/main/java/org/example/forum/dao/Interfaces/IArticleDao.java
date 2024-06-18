@@ -16,5 +16,8 @@ public interface IArticleDao {
 
     Optional<Articles> update(long articleId, Articles data);
 
-    void delete(long articleId);
+    List<Articles> findByUserAdderId(int userAdderId);
+
+    List<Articles> findBySubjectId(long subjectId);
+
 }

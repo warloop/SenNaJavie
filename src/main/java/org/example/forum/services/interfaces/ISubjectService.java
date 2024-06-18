@@ -16,4 +16,7 @@ public interface ISubjectService {
 
    List<Subjects> getAllSubjects();
 
+   Subjects findSubjectById(long subjectId);
+
+
 }

@@ -2,12 +2,9 @@ package org.example.forum.dao;
 
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ISubjectDao;
-
 import org.example.forum.entities.Subjects;
-
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
-
 import java.sql.*;
 import java.util.Optional;
 
@@ -65,6 +62,7 @@ public class SubjectDao implements ISubjectDao {
          */
         @Override
         @Transactional
+
         public Optional<Long> add(Subjects subject) {
             final String insertSQL = "INSERT INTO subjects (user_adder_id, subject_text, is_banned, is_deleted) VALUES (?,?,?,?)";
 

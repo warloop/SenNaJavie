@@ -2,9 +2,9 @@ package org.example.forum.controllers.Article;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.forum.dto.Article.ArticleAddDto;
-import org.example.forum.dto.Subject.SubjectAddDto;
 import org.example.forum.dto.System.InformationReturned;
-import org.example.forum.services.interfaces.IActionService;
+import org.example.forum.entities.Articles;
+import org.example.forum.entities.Subjects;
 import org.example.forum.services.interfaces.IArticleService;
 import org.example.forum.services.interfaces.ISubjectService;
 import org.example.forum.services.interfaces.IUserService;
@@ -14,6 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 @Controller
 public class ArticleController {
@@ -28,7 +32,12 @@ public class ArticleController {
     ISubjectService SUBJECT_SERVICE;
 
     @GetMapping("/protected/article/create")
-    public String createSubjectPageShow() { return "article-creator"; }
+
+    public String createSubjectPageShow(Model model) {
+        List<Subjects> subjects = SUBJECT_SERVICE.getAllSubjects();
+        model.addAttribute("subjects", subjects);
+        return "article-creator";
+    }
 
     @PostMapping("/protected/article/create")
     public ResponseEntity createNewSubject(@RequestParam("articleTitle") String articleTitile,
@@ -59,8 +68,7 @@ public class ArticleController {
                 return ResponseEntity.badRequest().body("Nie odnaleziono użytkownika.");
             }
 
-            ArticleAddDto newSubject = new ArticleAddDto(UserId, SubjectId, articleTitile,
-                                                false, false, false);
+            ArticleAddDto newSubject = new ArticleAddDto(UserId, SubjectId, articleTitile, false, false, false);
 
             InformationReturned returnedInfo = ARTICLE_SERVICE.addArticle(newSubject);
 
@@ -74,6 +82,13 @@ public class ArticleController {
             return ResponseEntity.badRequest().body("Niepoprawny format ID użytkownika");
         }
 
+    }
+
+    @GetMapping("/protected/articles/{subjectId}")
+    public String getArticlesBySubjectId(@PathVariable("subjectId") Long subjectId, Model model) {
+        List<Articles> articles = ARTICLE_SERVICE.getArticlesBySubjectId(subjectId);
+        model.addAttribute("articles", articles);
+        return "articles";
     }
 
 }

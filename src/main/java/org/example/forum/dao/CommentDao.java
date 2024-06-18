@@ -1,13 +1,11 @@
 package org.example.forum.dao;
 
+
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ICommentDao;
-
 import org.example.forum.entities.Comments;
-
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
-
 import java.sql.*;
 import java.util.Optional;
 

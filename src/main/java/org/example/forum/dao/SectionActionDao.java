@@ -1,10 +1,10 @@
 package org.example.forum.dao;
 
+
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ISectionActionDao;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

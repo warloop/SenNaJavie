@@ -2,10 +2,8 @@ package org.example.forum.dao;
 
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ILoginDao;
-
 import org.example.forum.dao.Interfaces.IUserDao;
 import org.example.forum.entities.Login;
-
 import org.example.forum.entities.User;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.exception.UserIsNotExistsException;
@@ -186,6 +184,7 @@ public class LoginDao implements ILoginDao {
                 throw new DataAccessException(ex);
             }
         }
+
 
         @Override
         @Transactional

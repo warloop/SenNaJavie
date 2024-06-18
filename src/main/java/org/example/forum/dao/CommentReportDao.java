@@ -2,12 +2,9 @@ package org.example.forum.dao;
 
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ICommentReportDao;
-
 import org.example.forum.entities.Comments_reports;
-
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
-
 import java.sql.*;
 import java.util.Optional;
 
@@ -25,6 +22,7 @@ public class CommentReportDao implements ICommentReportDao {
          */
         @Override
         @Transactional
+
         public Comments_reports get(long id) {
             final String selectSQL = "SELECT * FROM comments_reports WHERE id =?";
 
@@ -65,6 +63,7 @@ public class CommentReportDao implements ICommentReportDao {
          */
         @Override
         @Transactional
+
         public Optional<Long> add(Comments_reports commentsReport) {
             final String insertSQL = "INSERT INTO comments_reports (comment_id, report_type, user_reporter_id, add_date) VALUES (?,?,?,?)";
 

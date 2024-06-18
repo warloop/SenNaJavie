@@ -7,8 +7,6 @@ import org.example.forum.entities.Articles;
 import org.example.forum.repositories.Interfaces.IArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,11 +47,10 @@ public class ArticleRepository implements IArticleRepository {
      * @version 1.0.0
      */
     @Override
-    public Optional<ArticleDto> findById(long id)
-    {
-        try{
+    public Optional<ArticleDto> findById(long id) {
+        try {
 
-            if(id <= 0) throw new IllegalArgumentException("Article ID must be greater than 0.");
+            if (id <= 0) throw new IllegalArgumentException("Article ID must be greater than 0.");
 
             // Create a new instance of ArticleDto
             ArticleDto articlesDto = new ArticleDto();
@@ -62,22 +59,32 @@ public class ArticleRepository implements IArticleRepository {
             Optional<Articles> article = ARTICLE_DAO.getById(id);
 
             // If the article is found, map the data to the ArticleDto object and return it
-            if(article.isPresent())
-            {
+            if (article.isPresent()) {
                 articlesDto.setId(article.get().getId());
                 articlesDto.setTitle_id(article.get().getSubject_id());
-                articlesDto.set_visible(article.get().is_visible());
-                articlesDto.set_banned(article.get().is_banned());
-                articlesDto.set_deleted(article.get().is_deleted());
+                articlesDto.set_visible(article.get().isVisible());
+                articlesDto.set_banned(article.get().isBanned());
+                articlesDto.set_deleted(article.get().isDeleted());
                 articlesDto.setUser_adder_id(article.get().getUser_adder_id());
 
                 return Optional.of(articlesDto);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             // If the article is not found, return an Optional containing null
-            System.out.println("\u001B[31m"+e.getMessage()+"\u001B[0m");
+            System.out.println("\u001B[31m" + e.getMessage() + "\u001B[0m");
         }
         return Optional.of(null);
     }
+
+        @Override
+        public List<Articles> findByUserAdderId(int userAdderId) {
+            return ARTICLE_DAO.findByUserAdderId(userAdderId);
+        }
+
+        @Override
+        public List<Articles> findBySubjectId(long subjectId) {
+            return ARTICLE_DAO.findBySubjectId(subjectId);
+
+        }
 }

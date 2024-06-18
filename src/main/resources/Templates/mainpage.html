@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum</title>
     <style>
+<<<<<<< HEAD
         /* Istniejący styl */
         body {
             font-family: Arial, sans-serif;
@@ -21,11 +22,39 @@
             background-color: #444;
             color: #fff;
             padding: 10px;
+=======
+
+
+        body {
+            font-family: 'Varela Round', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #0093E9;
+            background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 10%;
+            padding-right: 10%;
+        }
+        nav {
+            background-color: #191A1D;
+            color: #fff;
+            padding: 20px 0;
+>>>>>>> kuba-klon
             text-align: center;
         }
         nav a {
             color: #fff;
             text-decoration: none;
+<<<<<<< HEAD
             padding: 10px 20px;
         }
         nav a:hover {
@@ -35,18 +64,96 @@
             padding: 20px;
             margin: 20px;
             border: 1px solid #ccc;
+=======
+            font-family: 'Varela Round', sans-serif;
+            padding: 10px 15px;
+            font-size: 18px;
+            margin: 0 10px;
+            border-radius: 4px;
+            transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+            position: relative;
+        }
+        nav a::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: #0897E7;
+            transition: width 0.3s ease, left 0.3s ease;
+        }
+        nav a:hover::before {
+            width: 100%;
+            left: 0;
+        }
+        nav a:hover {
+            color: #0897E7;
+            transform: scale(1.05);
+        }
+        section {
+            padding: 20px;
+            margin: 40px auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            max-width: 800px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+>>>>>>> kuba-klon
         }
         footer {
             background-color: #333;
             color: #fff;
             text-align: center;
+<<<<<<< HEAD
             padding: 10px;
+=======
+            padding: 20px;
+>>>>>>> kuba-klon
             position: fixed;
             bottom: 0;
             width: 100%;
         }
+<<<<<<< HEAD
 
 
+=======
+        .logo-container {
+            flex: 1;
+            text-align: left;
+        }
+        .welcome-text {
+            flex: 1;
+            text-align: right;
+            font-size: 18px;
+        }
+        h1 {
+            font-family: 'Varela Round', sans-serif;
+            font-size: 56px;
+        }
+        .button{
+            display:ruby-text;
+            margin-bottom:50px;
+        }
+        .button {
+            margin-bottom: 20px;
+        }
+        .button a {
+            display: inline-block;
+            text-decoration: none;
+        }
+        .button button {
+            padding: 15px 20px;
+            background-color: #0093E9;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .button button:hover {
+            background-color: #191A1D;
+        }
+>>>>>>> kuba-klon
         table {
             width: 50%;
             margin-left: 0px;
@@ -72,12 +179,38 @@
         table tr:hover {
             background-color: #ddd;
         }
+<<<<<<< HEAD
+=======
+        .user-info {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        .user-info a {
+            color: #fff;
+            background-color: #444;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .user-info a:hover {
+            background-color: #555;
+        }
+        .user-info span {
+            padding: 10px 20px;
+            background-color: #444;
+            border-radius: 5px;
+            color: #fff;
+            text-decoration: none;
+        }
+>>>>>>> kuba-klon
 
     </style>
 </head>
 <body>
 <header>
     <h1>Forum</h1>
+<<<<<<< HEAD
 </header>
 <nav>
     <a href="#">Home</a>
@@ -106,3 +239,49 @@
 </footer>
 </body>
 </html>
+=======
+    <div class="user-info">
+        <span th:if="${username != null}">
+            <a th:text="${username}" th:href="@{/my-profile}">Użytkownik</a> | <a th:href="@{/logout}">Wyloguj się</a>
+        </span>
+        <span th:if="${username == null}">
+            <a th:href="@{/}">Zaloguj się</a>
+        </span>
+    </div>
+</header>
+<nav>
+    <a href="/protected/mainpage">Strona główna</a>
+    <a href="/protected/category">Kategorie</a>
+    <a href="/protected/about">Opis</a>
+    <a href="/protected/contact">Kontakt</a>
+</nav>
+<section>
+    <h2>Witaj na naszym forum!</h2>
+    <p style="font-size: small">
+        Oto główna strona naszego forum. Zapraszamy do eksplorowania różnych kategorii, zadawania pytań i angażowania się w dyskusje z innymi użytkownikami.</p>
+</section>
+<div class="button">
+    <a href="/protected/subject/create"><button>Stwórz nowy temat</button></a>
+</div>
+<div class="button">
+    <a href="/protected/article/create"><button>Stwórz nowy artykuł</button></a>
+</div>
+<div style = "display: ruby-text">
+    <table>
+        <tr th:if="${subjects.empty}">
+            <td colspan="2"> Nie ma aktualnie żadnych tematów </td>
+        </tr>
+        <tr th:each="subject : ${subjects}">
+            <td><span th:text="${subject.subject_text}"> Title </span></td>
+            <td><a th:href="@{/protected/subject/edit/{id}(id=${subject.id})}">Edytuj</a></td>
+            <td><a th:href="@{/protected/articles/{subjectId}(subjectId=${subject.id})}"><button>Artykuły</button></a></td>
+        </tr>
+    </table>
+</div>
+<footer>
+    <p>&copy; 2024 Forum Wszelkie prawa zastrzeżone</p>
+</footer>
+
+</body>
+</html>
+>>>>>>> kuba-klon

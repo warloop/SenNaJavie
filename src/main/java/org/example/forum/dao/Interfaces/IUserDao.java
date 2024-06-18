@@ -16,4 +16,5 @@ public interface IUserDao {
     Boolean delete(int id);
 
     List<User> getAll();
+
 }

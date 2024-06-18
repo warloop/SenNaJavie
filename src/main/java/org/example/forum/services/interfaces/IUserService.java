@@ -4,7 +4,8 @@ import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.dto.User.LoginInformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
 import org.example.forum.dto.User.UserRegisterDto;
-import org.example.forum.exception.UserIsNotExistsException;
+import org.example.forum.entities.User;
+
 
 import java.util.Optional;
 
@@ -16,4 +17,5 @@ public interface IUserService {
 
     Optional<Boolean> isUserExistsByUserIdAndNotBanned(int UserId);
 
+    Optional<User> getUserByUsername(String username);
 }

@@ -2,14 +2,11 @@ package org.example.forum.dao;
 
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IActionTypesDao;
-
 import org.example.forum.entities.Action_types;
-
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class ActionTypesDao implements IActionTypesDao {

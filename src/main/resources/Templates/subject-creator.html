@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Logowanie</title>
+=======
+    <title>Tworzenie tematu</title>
+>>>>>>> kuba-klon
     <meta name="description" content="Aplikacja webowa zaprojektowana na potrzeby pracowni specjalistycznej z przedmiotu projektowanie aplikacji biznesowych w oparciu o platformę java"/>
     <meta name="version" content="1.0.2"/>
     <meta name="author" content="Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk"/>
@@ -171,10 +175,17 @@
 <div class="loginFormBox">
     <h2>Utwórz nowy temat</h2>
     <div class="horizontalLine"></div>
+<<<<<<< HEAD
     <form action="/protected/subject/create" method="post">
         <div class="textBlock">
             <label for="subject">Treść tematu:</label>
             <textarea type="text" id="subject" name="subjectText" required placeholder="Treść tematu" maxlength="128" minlength="1"></textarea>
+=======
+    <form id="addSubjectForm" action="/protected/subject/create" method="post">
+        <div class="textBlock">
+            <label for="subject">Treść tematu:</label>
+            <textarea id="subject" name="subjectText" required placeholder="Treść tematu" maxlength="128" minlength="1"></textarea>
+>>>>>>> kuba-klon
         </div>
 
         <input type="submit" value="Utwórz temat">
@@ -187,5 +198,44 @@
     2024 | Programowanie aplikacji biznesowych w oparciu o platformę Java | Wszelkie prawa zastrzeżone |<br>
     Autorzy: Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk
 </footer>
+<<<<<<< HEAD
+=======
+
+<script>
+    document.getElementById('addSubjectForm').onsubmit = async function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+
+        const response = await fetch(event.target.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.status === 201) {
+            Swal.fire({
+                title: 'Sukces!',
+                text: result.message,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                window.location.href = result.redirectUrl;
+            });
+        } else {
+            Swal.fire({
+                title: 'Błąd!',
+                text: result.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    };
+</script>
+>>>>>>> kuba-klon
 </body>
 </html>
