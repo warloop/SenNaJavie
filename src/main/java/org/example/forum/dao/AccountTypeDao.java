@@ -25,7 +25,7 @@ public class AccountTypeDao implements IAccountTypeDao {
     @Override
     @Transactional
     public AccountType get(int id) {
-        final String selectSQL = "SELECT * FROM account_types WHERE id =?";
+        final String selectSQL = "SELECT * FROM account_type WHERE id =?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
