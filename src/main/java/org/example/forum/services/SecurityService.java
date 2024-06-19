@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
  * @author Artur Leszczak
  * @version 1.0.0
  */
-
 @Service
 public class SecurityService implements ISecurityService {
 
@@ -73,7 +72,6 @@ public class SecurityService implements ISecurityService {
      * @author Artur Leszczak
      * @version 1.0.0
      */
-
     public enum Regex {
         LOGIN("^[a-ząćęłńóśźżA-ZĄĆĘŁŃÓŚŹŻ0-9]{3,16}$"),
         NAME("^[a-ząćęłńóśźżA-ZĄĆĘŁŃÓŚŹŻ\\- ]{2,48}$"),
