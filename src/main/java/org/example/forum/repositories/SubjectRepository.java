@@ -124,8 +124,7 @@ public class SubjectRepository implements ISubjectRepository {
      * @author Artur Leszczak
      * @version 1.0.0
      */
-    public boolean editSubjectText(SubjectEditDto subjectEditDto)
-    {
+    public boolean editSubjectText(SubjectEditDto subjectEditDto) {
         final String SQL = "UPDATE subjects SET subject_text = ? WHERE id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
@@ -138,31 +137,21 @@ public class SubjectRepository implements ISubjectRepository {
 
             int affectedRows = statement.executeUpdate();
 
-            if (affectedRows == 0) {
+            if (affectedRows == 1) {
+                conn.commit();
+
+
+                return true;
+            } else {
                 conn.rollback();
-                throw new SQLException("Nie udało się zmienić treści tematu dla subjectId ("+subjectEditDto.getId()+")!");
+                throw new SQLException("Nie udało się zmienić treści tematu dla subjectId (" + subjectEditDto.getId() + ")!");
             }
 
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    conn.commit();
-
-                    //odnotowanie zmiany treści tematu
-                    ACTION_SERVICE.changeSubjectAction(subjectEditDto.getUser_changer_id(), subjectEditDto.getId());
-
-                    return true;
-                }
-            }catch (Exception e){
-                conn.rollback();
-                throw new DataAccessException(e);
-            }
-        }catch (SQLException ex) {
-
+        } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
-
-        return false;
     }
+
 
     /**
      * Metoda odpowiedzialna za ukrywanie (banowanie) określonych tematów w serwisie.

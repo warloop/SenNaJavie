@@ -2,17 +2,23 @@ package org.example.forum.controllers.Subject;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.forum.dto.Subject.SubjectAddDto;
+import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.dto.System.InformationReturned;
+import org.example.forum.entities.Subjects;
+import org.example.forum.repositories.Interfaces.ISubjectRepository;
 import org.example.forum.services.interfaces.ISubjectService;
 import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Controller
@@ -24,48 +30,53 @@ public class SubjectController {
     @Autowired
     IUserService USER_SERVICE;
 
+    @Autowired
+    ISubjectRepository SUBJECT_REPOSITORY;
+
     @GetMapping("/protected/subject/create")
     public String createSubjectPageShow() { return "subject-creator"; }
 
     @PostMapping("/protected/subject/create")
-    public ResponseEntity<Map<String, String>> createNewSubject(@RequestParam("subjectText") String subjectText, HttpServletRequest request) {
-        Map<String, String> response = new HashMap<>();
+    public String createSubject(@RequestParam("subjectText") String subjectText, HttpServletRequest request) {
+        int userId = Integer.parseInt(request.getSession().getAttribute("userId").toString());
+        SubjectAddDto newSubject = new SubjectAddDto(userId, subjectText);
+        SUBJECT_SERVICE.addSubject(newSubject);
+        return "redirect:/protected/mainpage";
+    }
 
-        // WALIDACJA PRZEKAZANYCH DANYCH
-        if (subjectText == null || subjectText.length() > 128) {
-            response.put("message", "Niepoprawna długość tematu, temat nie może być pusty oraz nie może przekraczać 128 znaków.");
-            return ResponseEntity.badRequest().body(response);
+    @GetMapping("/protected/subject/edit/{id}")
+    public String editSubjectPage(@PathVariable("id") long id, Model model) {
+        Subjects subject = SUBJECT_SERVICE.findSubjectById(id);
+        if (subject != null) {
+            model.addAttribute("subject", subject);
+            return "edit-subject";
+        } else {
+            return "redirect:/protected/mainpage";
         }
+    }
 
-        if (request.getSession().getAttribute("userId") == null) {
-            response.put("message", "Nie odnaleziono użytkownika w sesji.");
-            return ResponseEntity.badRequest().body(response);
-        }
-
+    @PostMapping("/protected/subject/edit")
+    public String editSubject(@RequestParam("subjectId") long subjectId,
+                              @RequestParam("subjectText") String subjectText,
+                              HttpServletRequest request,
+                              RedirectAttributes redirectAttributes) {
         try {
-            int UserId = Integer.parseInt(request.getSession().getAttribute("userId").toString());
+            int userId = Integer.parseInt(request.getSession().getAttribute("userId").toString());
 
-            if (!USER_SERVICE.isUserExistsByUserIdAndNotBanned(UserId).get()) {
-                response.put("message", "Nie odnaleziono użytkownika.");
-                return ResponseEntity.badRequest().body(response);
-            }
+            SubjectEditDto subjectEditDto = new SubjectEditDto(subjectId, userId, subjectText);
 
-            SubjectAddDto newSubject = new SubjectAddDto(UserId, subjectText);
+            boolean success = SUBJECT_SERVICE.editSubjectText(subjectEditDto);
 
-            InformationReturned returnedInfo = SUBJECT_SERVICE.addSubject(newSubject);
-
-            if (returnedInfo.getCode() == 201) {
-                response.put("message", returnedInfo.getMessage());
-                response.put("redirectUrl", "/protected/mainpage"); // Dodanie adresu URL do przekierowania
-                return ResponseEntity.ok(response);
+            if (success) {
+                redirectAttributes.addFlashAttribute("message", "Edycja tematu zakończona sukcesem.");
             } else {
-                response.put("message", returnedInfo.getMessage());
-                return ResponseEntity.badRequest().body(response);
+                redirectAttributes.addFlashAttribute("error", "Edycja tematu nie powiodła się.");
             }
 
+            return "redirect:/protected/mainpage";
         } catch (NumberFormatException e) {
-            response.put("message", "Niepoprawny format ID użytkownika");
-            return ResponseEntity.badRequest().body(response);
+            redirectAttributes.addFlashAttribute("error", "Niepoprawny format ID użytkownika.");
+            return "redirect:/protected/mainpage";
         }
     }
 }

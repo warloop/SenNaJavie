@@ -77,7 +77,8 @@
             color: #fff;
             text-align: center;
             padding: 20px;
-            position: fixed;
+            position: relative;
+            margin-top: 20px;
             bottom: 0;
             width: 100%;
         }
@@ -189,7 +190,34 @@
         }
 
         section a:hover {
-        background-size: 0 3px, 100% 3px;
+            background-size: 0 3px, 100% 3px;
+        }
+        .action-button {
+            display: inline-block;
+            padding: 8px 15px;
+            margin: 3px;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background-color: #0093E9;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .action-button:hover {
+            background-color: #191A1D;
+            transform: scale(1.05);
+        }
+        .action-button button {
+            padding: 8px 15px;
+            color: #fff;
+            background-color: #0093E9;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .action-button button:hover {
+            background-color: #191A1D;
+            transform: scale(1.05);
         }
     </style>
 
@@ -225,15 +253,17 @@
     <a href="/protected/article/create"><button>Stwórz nowy artykuł</button></a>
 </div>
 
-<div style = "display: ruby-text">
+<div style="display: ruby-text">
     <table>
         <tr th:if="${subjects.empty}">
             <td colspan="2"> Nie ma aktualnie żadnych tematów </td>
         </tr>
         <tr th:each="subject : ${subjects}">
             <td><span th:text="${subject.subject_text}"> Title </span></td>
-            <td><a th:href="@{/protected/subject/edit/{id}(id=${subject.id})}">Edytuj</a></td>
-            <td><a th:href="@{/protected/articles/{subjectId}(subjectId=${subject.id})}"><button>Artykuły</button></a></td>
+            <td>
+                <a th:href="@{/protected/subject/edit/{id}(id=${subject.id})}" class="action-button">Edytuj</a>
+                <a th:href="@{/protected/articles/{subjectId}(subjectId=${subject.id})}" class="action-button">Artykuły</a>
+            </td>
         </tr>
     </table>
 </div>

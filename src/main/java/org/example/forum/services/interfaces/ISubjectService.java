@@ -19,4 +19,5 @@ public interface ISubjectService {
    Subjects findSubjectById(long subjectId);
 
 
+    boolean editSubjectText(SubjectEditDto subjectEditDto);
 }
