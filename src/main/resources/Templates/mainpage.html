@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
     <title>Forum</title>
     <style>
         body {
@@ -60,7 +64,7 @@
             transform: scale(1.05);
         }
         section {
-            padding: 20px;
+            padding: 40px;
             margin: 40px auto;
             border: 1px solid #ccc;
             border-radius: 8px;
@@ -159,11 +163,40 @@
             color: #fff;
             text-decoration: none;
         }
+        section a {
+            color: inherit;
+            text-decoration: none;
+        }
 
+        section a {
+            padding: 6px;
+            background:
+            linear-gradient(
+            to right,
+            rgba(100, 200, 200, 1),
+            rgba(100, 200, 200, 1)
+            ),
+            linear-gradient(
+            to right,
+            rgba(255, 0, 0, 1),
+            rgba(255, 0, 180, 1),
+            rgba(0, 100, 200, 1)
+        );
+        background-size: 100% 3px, 0 3px;
+        background-position: 100% 100%, 0 100%;
+        background-repeat: no-repeat;
+        transition: background-size 400ms;
+        }
+
+        section a:hover {
+        background-size: 0 3px, 100% 3px;
+        }
     </style>
+
 </head>
 <body>
 <header>
+    <div class="logo-container">
     <h1>Forum</h1>
     <div class="user-info">
         <span th:if="${username != null}">
@@ -191,6 +224,7 @@
 <div class="button">
     <a href="/protected/article/create"><button>Stwórz nowy artykuł</button></a>
 </div>
+
 <div style = "display: ruby-text">
     <table>
         <tr th:if="${subjects.empty}">
@@ -203,6 +237,7 @@
         </tr>
     </table>
 </div>
+
 <footer>
     <p>&copy; 2024 Forum Wszelkie prawa zastrzeżone</p>
 </footer>
