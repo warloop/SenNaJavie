@@ -232,57 +232,45 @@ public class UserRepository implements IUserRepository {
     @Override
     public Optional<Boolean> isUserExistsByEmail(String email)
     {
-        final String SQL = "SELECT COUNT(id) FROM users WHERE email = ?";
+        try{
+            Optional<User> user = this.userDao.getUserBySpecifiedColumn("email", email);
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
-            statement.setString(1, email);
-
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    int count = rs.getInt(1);
-
-                    if(count == 0)
-                    {
-                        return Optional.of(false);
-                    }
-                    return Optional.of(true);
-                }
+            if(user.isPresent()){
+                return Optional.of(true);
+            }else{
+                return Optional.of(false);
             }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+        }catch (Exception e){
+            return Optional.of(null);
         }
-        return Optional.of(null);
+
     }
 
+    /**
+     * Metoda służąca do znalezienia użytkownika po jego nazwie użytkownika.
+     *
+     * @param username Nazwa użytkownika, którego szukamy.
+     * @return Obiekt Optional zawierający znalezionego użytkownika, jeśli istnieje, w przeciwnym razie pusty Optional.
+     *
+     * @throws DataAccessException Jeśli wystąpi błąd podczas uzyskiwania dostępu do bazy danych.
+     *
+     * @author Artur Leszczak, Jakub Dąbrowski
+     * @version 1.0.0
+     */
     @Override
     public Optional<User> findByUsername(String username) {
-        final String SQL = "SELECT u.* FROM users u INNER JOIN login l ON u.id = l.user_id WHERE l.login = ?";
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
-            statement.setString(1, username);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    User user = new User();
-                    user.setId(rs.getInt("id"));
-                    user.setName(rs.getString("name"));
-                    user.setSurname(rs.getString("surname"));
 
-                    AccountType accountType = new AccountType();
-                    accountType.setId(rs.getInt("account_type_id"));
-                    accountType.setName("Użytkownik");
+        Optional<Login> login = this.loginDao.getLoginObjectByLogin(username);
 
-                    user.setAccountType(accountType);
-                    user.setEmail(rs.getString("email"));
-                    user.setRegister_date(rs.getTimestamp("register_date").toLocalDateTime());
-                    return Optional.of(user);
-                }
-            } catch (SQLException ex) {
-                throw new DataAccessException(ex);
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
+        if(login.isPresent()){
+
+            int userId = login.get().getUser_id().getId();
+
+            User user = this.userDao.get(userId);
+
+            if(user != null) return Optional.of(user);
         }
+
         return Optional.empty();
     }
 

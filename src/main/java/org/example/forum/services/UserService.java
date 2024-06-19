@@ -34,7 +34,7 @@ public class UserService implements IUserService {
      * Metoda wykonuje niezbędne funkcjonalności oraz logikę odpowiedzialną za rejestrację użytkownika w systemie.
      * @param userData - Obiekt typu DTO zawierający niezbędne dane do wykonania rejestracji.
      * @return InformationReturned DTO - Zwraca obiekt, który posiada komunikat oraz kod operacji.
-     * @author tech. inf. Artur Leszczak
+     * @author Artur Leszczak
      * @version 1.0.0
      */
     @Override
@@ -68,7 +68,7 @@ public class UserService implements IUserService {
      * Metoda wykonuje niezbędne funkcjonalności oraz logikę odpowiedzialną za logowanie użytkownika w systemie.
      * @param userData - Obiekt typu DTO zawierający niezbędne dane do przeprowadzenia logowania.
      * @return InformationReturned DTO - Zwraca obiekt, który posiada komunikat oraz kod operacji.
-     * @author tech. inf. Artur Leszczak
+     * @author Artur Leszczak
      * @version 1.0.0
      */
     @Override
