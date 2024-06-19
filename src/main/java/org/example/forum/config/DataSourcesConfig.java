@@ -36,7 +36,6 @@ public class DataSourcesConfig {
         return new ArticleDao();
     }
 
-
     @Bean
     public AccountTypeDao accountTypeDao() { return new AccountTypeDao(); }
 
@@ -45,5 +44,9 @@ public class DataSourcesConfig {
 
     @Bean
     public LoginDao loginDao() { return new LoginDao(this.userDao()); }
+
+    @Bean
+    public SubjectDao subjectDao() { return new SubjectDao(); }
+
 
 }

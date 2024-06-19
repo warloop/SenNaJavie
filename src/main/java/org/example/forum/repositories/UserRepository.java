@@ -4,23 +4,17 @@ import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ILoginDao;
 import org.example.forum.dao.Interfaces.IUserDao;
 import org.example.forum.dto.User.UserRegisterDto;
-import org.example.forum.entities.AccountType;
 import org.example.forum.entities.Login;
 import org.example.forum.entities.User;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.exception.UserIsNotExistsException;
 import org.example.forum.repositories.Interfaces.IUserRepository;
-import org.example.forum.util.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -247,7 +241,7 @@ public class UserRepository implements IUserRepository {
     }
 
     /**
-     * Metoda służąca do znalezienia użytkownika po jego nazwie użytkownika.
+     * Metoda służąca do znalezienia użytkownika po jego Loginie.
      *
      * @param username Nazwa użytkownika, którego szukamy.
      * @return Obiekt Optional zawierający znalezionego użytkownika, jeśli istnieje, w przeciwnym razie pusty Optional.

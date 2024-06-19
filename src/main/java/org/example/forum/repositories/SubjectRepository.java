@@ -1,5 +1,7 @@
 package org.example.forum.repositories;
 
+import jakarta.transaction.Transactional;
+import org.example.forum.dao.Interfaces.ISubjectDao;
 import org.example.forum.dto.Subject.SubjectAddDto;
 import org.example.forum.dto.Subject.SubjectBanDto;
 import org.example.forum.dto.Subject.SubjectEditDto;
@@ -31,6 +33,14 @@ public class SubjectRepository implements ISubjectRepository {
     @Autowired
     private IActionService ACTION_SERVICE;
 
+    private ISubjectDao subjectDao;
+
+    @Autowired
+    public SubjectRepository(ISubjectDao subjectDAO){
+        this.subjectDao = subjectDAO;
+    }
+
+
     /**
      * Metoda zwraca obiekt typu Subject lub wartość null jeżeli obiekt o określonym w argumencie ID nie istnieje.
      * @param subjectId - ID reprezentujące temat
@@ -38,39 +48,14 @@ public class SubjectRepository implements ISubjectRepository {
      * @author Artur Leszczak
      * @version 1.0.0
      */
+    @Override
     public Optional<Subjects> getSubjectById(long subjectId)
     {
-        final String SQL = "SELECT * FROM subjects WHERE id = ? AND is_banned = 0 AND is_deleted = 0";
+       Subjects subject = this.subjectDao.get(subjectId);
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
-            statement.setLong(1, subjectId);
+       if(subject!= null) return Optional.of(subject);
 
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    int count = rs.getInt(1);
-
-                    if(count > 0)
-                    {
-                        Subjects subject = new Subjects();
-
-                        subject.setId(rs.getLong("id"));
-                        subject.setUser_adder_id(rs.getInt("user_adder_id"));
-                        subject.setSubject_text(rs.getString("subject_text"));
-                        subject.set_banned(rs.getBoolean("is_banned"));
-                        subject.set_deleted(rs.getBoolean("is_deleted"));
-
-                        return Optional.of(subject);
-                    }
-
-
-                    return Optional.of(null);
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
-        return Optional.of(null);
+       return Optional.empty();
     }
 
     /**
@@ -80,41 +65,10 @@ public class SubjectRepository implements ISubjectRepository {
      * @author Artur Leszczak
      * @version 1.0.0
      */
+    @Override
+    @Transactional
     public Optional<Long> addSubject(SubjectAddDto subject) {
-        final String SQL = "INSERT INTO subjects (user_adder_id, subject_text) VALUES (?, ?)";
-
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL, PreparedStatement.RETURN_GENERATED_KEYS)) {  // Użycie RETURN_GENERATED_KEYS
-
-            conn.setAutoCommit(false);
-
-            statement.setInt(1, subject.getUser_adder_id());
-            statement.setString(2, subject.getSubject_text());
-
-            int affectedRows = statement.executeUpdate();
-
-            if (affectedRows == 0) {
-                conn.rollback();
-                throw new SQLException("Nie udało się dodać użytkownika, proces przerwany!");
-            }
-
-            try (ResultSet rs = statement.getGeneratedKeys()) {  // Pobieranie wygenerowanych kluczy
-                if (rs.next()) {
-                    conn.commit();
-                    long addedSubjectId = rs.getLong(1);  // Pobieranie pierwszej kolumny (wygenerowane ID)
-                    return Optional.of(addedSubjectId);
-                } else {
-                    conn.rollback();
-                    return Optional.empty();
-                }
-            } catch (SQLException e) {
-                conn.rollback();
-                throw new DataAccessException(e);
-            }
-
-        } catch (SQLException ex) {
-            return Optional.empty();
-        }
+        return this.subjectDao.add(subject);
     }
 
     /**
@@ -126,41 +80,16 @@ public class SubjectRepository implements ISubjectRepository {
      */
     public boolean editSubjectText(SubjectEditDto subjectEditDto)
     {
-        final String SQL = "UPDATE subjects SET subject_text = ? WHERE id = ?";
+        Subjects sub = this.subjectDao.get(subjectEditDto.getId());
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
+        sub.setSubject_text(subjectEditDto.getSubject_new_text());
 
-            conn.setAutoCommit(false);
-
-            statement.setString(1, subjectEditDto.getSubject_new_text());
-            statement.setLong(2, subjectEditDto.getId());
-
-            int affectedRows = statement.executeUpdate();
-
-            if (affectedRows == 0) {
-                conn.rollback();
-                throw new SQLException("Nie udało się zmienić treści tematu dla subjectId ("+subjectEditDto.getId()+")!");
+        if(sub.getId() == subjectEditDto.getId()){
+            if(this.subjectDao.update(sub)){
+                this.ACTION_SERVICE.changeSubjectAction(subjectEditDto.getUser_changer_id(),sub.getId());
+                return true;
             }
-
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    conn.commit();
-
-                    //odnotowanie zmiany treści tematu
-                    ACTION_SERVICE.changeSubjectAction(subjectEditDto.getUser_changer_id(), subjectEditDto.getId());
-
-                    return true;
-                }
-            }catch (Exception e){
-                conn.rollback();
-                throw new DataAccessException(e);
-            }
-        }catch (SQLException ex) {
-
-            throw new DataAccessException(ex);
         }
-
         return false;
     }
 
@@ -172,53 +101,22 @@ public class SubjectRepository implements ISubjectRepository {
      * @author Artur Leszczak
      * @version 1.0.0
      */
+    @Override
+    @Transactional
     public boolean setBanValueSubjectById(SubjectBanDto subjectBan)
     {
-        final String SQL = "UPDATE subjects SET is_banned = ? WHERE id = ?";
+        Subjects subject = this.subjectDao.get(subjectBan.getSubjectId());
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
+        if(subject == null) return false;
 
-            conn.setAutoCommit(false);
+        subject.set_banned(subjectBan.isBan_value());
 
-            statement.setBoolean(1, subjectBan.isBan_value());
-            statement.setLong(2, subjectBan.getSubjectId());
+        this.subjectDao.update(subject);
 
-            int affectedRows = statement.executeUpdate();
+        if(subjectBan.isBan_value())  this.ACTION_SERVICE.banSubjectAction(subjectBan.getUser_id(), subject.getId());
+        else this.ACTION_SERVICE.unbanSubjectAction(subjectBan.getUser_id(), subject.getId());
 
-            if (affectedRows == 0) {
-                conn.rollback();
-                throw new SQLException("Nie udało się zmienić wartości blokady dla subjectId ("+ subjectBan.getSubjectId()+")!");
-            }
-
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    conn.commit();
-
-                    //odnotowanie zablokowania / odblokowania tematu
-
-                    if(subjectBan.isBan_value())
-                    {
-                        ACTION_SERVICE.banSubjectAction(subjectBan.getUser_id(), subjectBan.getSubjectId());
-                    }
-                    else
-                    {
-                        ACTION_SERVICE.unbanSubjectAction(subjectBan.getUser_id(), subjectBan.getSubjectId());
-                    }
-
-                    return true;
-                }
-            }catch (Exception e){
-                conn.rollback();
-                throw new DataAccessException(e);
-            }
-        }catch (SQLException ex) {
-
-            throw new DataAccessException(ex);
-        }
-
-        return false;
-
+        return true;
     }
 
     /**
@@ -228,67 +126,39 @@ public class SubjectRepository implements ISubjectRepository {
      * @author Artur Leszczak
      * @version 1.0.0
      */
+    @Override
+    @Transactional
     public boolean deleteSubjectById(long subjectId, int user_id, boolean by_owner)
     {
-        final String SQL = "UPDATE subjects SET is_deleted = 1 WHERE id = ?";
+       Subjects sub = this.subjectDao.get(subjectId);
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
+       if(sub.is_deleted()) return false;
 
-            conn.setAutoCommit(false);
+       sub.set_deleted(true);
 
-            statement.setLong(1, subjectId);
-
-            int affectedRows = statement.executeUpdate();
-
-            if (affectedRows == 0) {
-                conn.rollback();
-                throw new SQLException("Nie udało się usunąć subjectId ("+subjectId+")!");
-            }
-
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    conn.commit();
-
-                    if(by_owner) ACTION_SERVICE.removeSubjectActionByOwner(user_id, subjectId);
-                    else ACTION_SERVICE.removeSubjectActionByModerator(user_id, subjectId);
-
-                    return true;
-                }
-            }catch (Exception e){
-                conn.rollback();
-                throw new DataAccessException(e);
-            }
-        }catch (SQLException ex) {
-
-            throw new DataAccessException(ex);
-        }
-
+       if(this.subjectDao.update(sub))
+       {
+           if(by_owner){
+             this.ACTION_SERVICE.removeSubjectActionByOwner(user_id, sub.getId());
+           }else{
+               this.ACTION_SERVICE.removeSubjectActionByModerator(user_id, sub.getId());
+           }
+       }
         return false;
+
     }
 
+    /**
+     * Metoda pobierająca wszystkie tematy z bazy danych.
+     *
+     * @return Lista obiektów typu Subjects. Jeśli nie znaleziono żadnych tematów, zwracana jest pusta lista.
+     *
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
     public List<Subjects> getAllSubjects() {
-        final String SQL = "SELECT * FROM subjects";
-        List<Subjects> result = new ArrayList<>();
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
-
-            try (ResultSet rs = statement.executeQuery()) {
-                while (rs.next()) {
-                        Subjects subject = new Subjects();
-                        subject.setId(rs.getLong("id"));
-                        subject.setUser_adder_id(rs.getInt("user_adder_id"));
-                        subject.setSubject_text(rs.getString("subject_text"));
-                        subject.set_banned(rs.getBoolean("is_banned"));
-                        subject.set_deleted(rs.getBoolean("is_deleted"));
-                        result.add(subject);
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
-        return result;
+        return this.subjectDao.getAll();
     }
 
 }
