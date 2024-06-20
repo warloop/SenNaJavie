@@ -1,10 +1,24 @@
 package org.example.forum.config;
 
-import org.example.forum.dao.*;
-import org.example.forum.dao.ArticleActionDao;
+
+import org.example.forum.dao.AccountTypeDao;
+import org.example.forum.dao.LoginDao;
+import org.example.forum.dao.SubjectDao;
+import org.example.forum.dao.ActionTypesDao;
 import org.example.forum.dao.ArticleDao;
-import org.example.forum.dao.SectionActionDao;
+import org.example.forum.dao.SectionsDao;
 import org.example.forum.dao.SubjectActionDao;
+import org.example.forum.dao.ArticleActionDao;
+import org.example.forum.dao.SectionActionDao;
+import org.example.forum.dao.CommentDao;
+import org.example.forum.dao.CommentDislikesDao;
+import org.example.forum.dao.CommentLikesDao;
+import org.example.forum.dao.ReportTypesDao;
+import org.example.forum.dao.ArticleReportsDao;
+import org.example.forum.dao.SubjectReportDao;
+import org.example.forum.dao.CommentReportDao;
+
+import org.example.forum.dao.UserDao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -33,9 +47,7 @@ public class DataSourcesConfig {
     public SubjectDao subjectDao() { return new SubjectDao(); }
 
     @Bean
-    public ArticleDao articleDao() {
-        return new ArticleDao();
-    }
+    public ArticleDao articleDao() { return new ArticleDao(); }
 
     @Bean
     public SectionsDao sectionDao() { return new SectionsDao();}
