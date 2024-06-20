@@ -105,18 +105,42 @@ public class CommentRepository implements ICommentRepository {
         return false;
     }
 
+    /**
+     * Metoda służąca do edycji istniejącego komentarza w bazie danych.
+     *
+     * @param comment Obiekt CommentEditDto zawierający niezbędne dane do edycji istniejącego komentarza.
+     * @return Prawda, jeśli komentarz został pomyślnie edytowany, fałsz w przeciwnym przypadku.
+     *
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
     public boolean editComment(CommentEditDto comment)
     {
-        //TODO EDYCJA KOMENTARZA
-        return false;
+
+        Comments findedComment = this.commentDao.get(comment.getComment_id());
+
+        if(findedComment == null) return false;
+
+        findedComment.setComment_text(comment.getNew_comment_text());
+
+        return  this.commentDao.update(findedComment);
+
     }
 
+    /**
+     * Metoda służąca do usunięcia komentarza z bazy danych.
+     *
+     * @param commentId Unikalny identyfikator komentarza do usunięcia.
+     * @return Prawda, jeśli komentarz został pomyślnie usunięty, fałsz w przeciwnym przypadku.
+     *
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
-    public boolean deleteComment(long commentId, int user_id)
+    public boolean deleteComment(long commentId)
     {
-        //TODO USUNIECIE KOMENTARZA
-        return false;
+      return this.commentDao.delete(commentId);
     }
 
     /**
@@ -162,18 +186,53 @@ public class CommentRepository implements ICommentRepository {
 
         return false; //użytkownik już się określił.
     }
-
+    /**
+     * Metoda służąca do usunięcia like od konkretnego komentarza dla danego użytkownika.
+     * Ta metoda sprawdza, czy użytkownik wcześniej już dodał like do komentarza.
+     * Jeśli użytkownik wcześniej ustawil like dla komentarza, usuwa rekord like z bazy danych.
+     * Jeśli użytkownik wcześniej nie ustawil like dla komentarza, nie robi niczego i zwraca fałsz.
+     *
+     * @param commentId Unikalny identyfikator komentarza.
+     * @param user_id Unikalny identyfikator użytkownika.
+     * @return Prawda, jeśli użytkownik pomyślnie usunął like, fałsz w przeciwnym przypadku.
+     *
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
     public boolean unlikeComment(long commentId, int user_id)
     {
-        //TODO ODLIKOWANIE KOMENTARZA
+
+        if(this.getUserCommentStatus(commentId,user_id).equals(UserCommentStatus.LIKE)){
+
+            return this.commentLikesDao.delete(commentId);
+
+        }
+
         return false;
     }
 
+    /**
+     * Metoda służąca do usunięcia dislike od konkretnego komentarza dla danego użytkownika.
+     * Ta metoda sprawdza, czy użytkownik wcześniej już dodał dislike do komentarza.
+     * Jeśli użytkownik wcześniej ustawil dislike dla komentarza, usuwa rekord dislike z bazy danych.
+     * Jeśli użytkownik wcześniej nie ustawil dislike dla komentarza, nie robi niczego i zwraca fałsz.
+     *
+     * @param commentId Unikalny identyfikator komentarza.
+     * @param user_id Unikalny identyfikator użytkownika.
+     * @return Prawda, jeśli użytkownik pomyślnie usunął dislike, fałsz w przeciwnym przypadku.
+     *
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
     public boolean undislikeComment(long commentId, int user_id)
     {
-        //TODO ODDISLIKOWANIE KOMENTARZA
+        if(this.getUserCommentStatus(commentId,user_id).equals(UserCommentStatus.DISLIKE)){
+
+            return this.commentDislikesDao.delete(commentId);
+
+        }
         return false;
     }
 

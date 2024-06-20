@@ -27,7 +27,7 @@ public interface ICommentRepository {
 
     boolean editComment(CommentEditDto comment);
 
-    boolean deleteComment(long commentId, int user_id);
+    boolean deleteComment(long commentId);
 
 
 }
