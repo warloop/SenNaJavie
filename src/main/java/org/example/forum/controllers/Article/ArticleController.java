@@ -4,8 +4,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.example.forum.dto.Article.ArticleAddDto;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.entities.Articles;
+import org.example.forum.entities.Sections;
 import org.example.forum.entities.Subjects;
 import org.example.forum.services.interfaces.IArticleService;
+import org.example.forum.services.interfaces.ISectionService;
 import org.example.forum.services.interfaces.ISubjectService;
 import org.example.forum.services.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class ArticleController {
 
     @Autowired
     IArticleService ARTICLE_SERVICE;
+    @Autowired
+    ISectionService SECTION_SERVICE;
+
 
     @Autowired
     IUserService USER_SERVICE;
@@ -94,10 +99,12 @@ public class ArticleController {
     @GetMapping("/protected/articles/article/{articleId}")
     public String getArticleDetails(@PathVariable("articleId") Long articleId, Model model) {
         Articles article = ARTICLE_SERVICE.getArticleById(articleId);
+        List<Sections> sections = SECTION_SERVICE.getAllSectionsByArticleId(articleId);
         if (article == null) {
             return "redirect:/protected/mainpage";
         }
         model.addAttribute("article", article);
+        model.addAttribute("sections", sections);
         return "article-details";
     }
 }
