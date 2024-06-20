@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <title>Forum</title>
+    <link th:href="@{/mainpage.css}" rel="stylesheet">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <h1 style="font-family: 'Varela Round', sans-serif">Forum </h1>
+        <div class="user-info">
+            <span th:if="${username != null}">
+                <a th:text="${username}" th:href="@{/my-profile}">Użytkownik</a> | <a th:href="@{/logout}">Wyloguj się</a>
+            </span>
+            <span th:if="${username == null}">
+                <a th:href="@{/}">Zaloguj się</a>
+            </span>
+        </div>
+    </div>
+</header>
+<nav>
+    <a th:href="@{/protected/mainpage}">Strona główna</a>
+    <a th:href="@{/protected/category}">Kategorie</a>
+    <a th:href="@{/protected/about}">Opis</a>
+    <a th:href="@{/protected/contact}">Kontakt</a>
+</nav>
+<section>
+    <h2>Witaj na naszym forum!</h2>
+    <p style="font-size: small">
+        Oto główna strona naszego forum. Zapraszamy do eksplorowania różnych kategorii, zadawania pytań i angażowania się w dyskusje z innymi użytkownikami.</p>
+</section>
+<div class="button">
+    <a th:href="@{/protected/subject/create}"><button>Stwórz nowy temat</button></a>
+</div>
+<div class="button">
+    <a th:href="@{/protected/article/create}"><button>Stwórz nowy artykuł</button></a>
+</div>
+
+<div style="display: ruby-text">
+    <table>
+        <tr th:if="${subjects.empty}">
+            <td colspan="2"> Nie ma aktualnie żadnych tematów </td>
+        </tr>
+        <tr th:each="subject : ${subjects}">
+            <td><span th:text="${subject.subject_text}"> Title </span></td>
+            <td>
+                <a th:href="@{/protected/subject/edit/{id}(id=${subject.id})}" class="action-button">Edytuj</a>
+                <a th:href="@{/protected/articles/{subjectId}(subjectId=${subject.id})}" class="action-button">Artykuły</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<footer>
+    <p>&copy; 2024 Forum Wszelkie prawa zastrzeżone</p>
+</footer>
+
+</body>
+</html>

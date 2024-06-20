@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Artykuły</title>
+  <link rel="stylesheet" th:href="@{/articles.css}">
+</head>
+<body>
+<header>
+  <h1>Forum</h1>
+</header>
+<nav>
+  <a th:href="@{/protected/mainpage}">Strona główna</a>
+  <a th:href="@{/protected/category}">Kategorie</a>
+  <a th:href="@{/protected/about}">Opis</a>
+  <a th:href="@{/protected/contact}">Kontakt</a>
+</nav>
+<section>
+  <h2>Lista Artykułów</h2>
+  <div id="articles-list">
+    <ul>
+      <li th:each="article : ${articles}">
+        <a th:href="@{/protected/articles/article/{id}(id=${article.id})}" th:text="${article.article_title}">Tytuł artykułu</a>
+      </li>
+    </ul>
+  </div>
+</section>
+<footer>
+  <p>&copy; 2024 Forum Wszelkie prawa zastrzeżone</p>
+</footer>
+</body>
+</html>
