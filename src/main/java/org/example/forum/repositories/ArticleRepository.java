@@ -6,6 +6,7 @@ import org.example.forum.dto.Article.ArticleDto;
 import org.example.forum.entities.Articles;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.repositories.Interfaces.IArticleRepository;
+import org.example.forum.services.interfaces.IActionService;
 import org.example.forum.util.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,8 @@ public class ArticleRepository implements IArticleRepository {
     @Autowired
     private IArticleDao ARTICLE_DAO;
 
+    @Autowired
+    private IActionService ACTION_SERVICE;
     /**
      * Metoda zarządza DAO, wykonuje niezbędne czynności w celu utworzenia artykułu w temacie.
      * @param newArticle Obiekt DTO zawierajcy niezbędne informacje
@@ -39,7 +42,17 @@ public class ArticleRepository implements IArticleRepository {
     @Override
     public Optional<Long> createArticle(ArticleAddDto newArticle)
     {
-        return ARTICLE_DAO.add(newArticle);
+
+        Optional<Long> articleId = ARTICLE_DAO.add(newArticle);
+
+        if(articleId.isPresent()){
+
+            ACTION_SERVICE.addArticleAction(newArticle.getUserAdderId(), articleId.get());
+
+            return articleId;
+        }
+
+        return Optional.empty();
     }
 
     /**
@@ -84,38 +97,30 @@ public class ArticleRepository implements IArticleRepository {
         return Optional.of(null);
     }
 
-        @Override
-        public List<Articles> findByUserAdderId(int userAdderId) {
+    @Override
+    public List<Articles> findByUserAdderId(int userAdderId) {
             return ARTICLE_DAO.findByUserAdderId(userAdderId);
         }
 
-        @Override
-        public List<Articles> findBySubjectId(long subjectId) {
+    @Override
+    public List<Articles> findBySubjectId(long subjectId) {
             return ARTICLE_DAO.findBySubjectId(subjectId);
         }
 
+    /**
+     * Metoda pobiera artykuł po jego unikalnych identyfikatorze.
+     * Używa ArticleDao do pobrania danych artykułu z bazy danych.
+     *
+     * @param articleId Unikalny identyfikator artykułu do pobrania.
+     * @return Obiekt Articles jeśli artykuł został znaleziony, lub zgłasza wyjątek jeśli nie został znaleziony.
+     * @throws DataAccessException Jeśli wystąpi błąd podczas uzyskiwania dostępu do bazy danych.
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
     @Override
     public Articles getArticleById(Long articleId) {
-        final String SQL = "SELECT * FROM articles WHERE id = ?";
 
-        try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement statement = conn.prepareStatement(SQL)) {
+        return ARTICLE_DAO.getById(articleId).get();
 
-            statement.setLong(1, articleId);
-
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    Articles article = new Articles();
-                    article.setId(rs.getLong("id"));
-                    article.setArticle_title(rs.getString("article_title"));
-
-                    return article;
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(ex);
-        }
-
-        return null;
     }
 }

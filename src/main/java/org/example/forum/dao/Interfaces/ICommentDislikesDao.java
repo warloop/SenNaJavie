@@ -8,6 +8,10 @@ public interface ICommentDislikesDao {
 
     Comment_dislikes get(long id);
 
+    boolean isUserDislikeComment(int user_id, long comment_id);
+
+    int countCommentDislikesByCommentId(long commentId);
+
     Optional<Long> add(Comment_dislikes commentDislike);
 
     Boolean update(Comment_dislikes commentDislike);

@@ -22,8 +22,8 @@ import java.util.Optional;
 @Repository
 public class UserRepository implements IUserRepository {
 
-    private IUserDao userDao;
-    private ILoginDao loginDao;
+    private final IUserDao userDao;
+    private final ILoginDao loginDao;
     private final PlatformTransactionManager transactionManager;
 
     /**

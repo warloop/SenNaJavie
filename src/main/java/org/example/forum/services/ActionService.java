@@ -24,8 +24,13 @@ public class ActionService implements IActionService {
      * Wstrzykiwanie zależności
      */
 
+
+    private final IActionRepository ACTION_REPOSITORY;
+
     @Autowired
-    private IActionRepository ACTION_REPOSITORY;
+    public ActionService(IActionRepository actionRepository) {
+        this.ACTION_REPOSITORY = actionRepository;
+    }
 
     /**
      * Metoda wykonuje niezbędne czynności do zapisania w bazie danych o odnotowanych czynnościach

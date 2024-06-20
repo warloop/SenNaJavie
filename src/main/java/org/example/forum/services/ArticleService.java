@@ -32,11 +32,9 @@ public class ArticleService implements IArticleService {
 
     private IArticleRepository ARTICLE_REPOSITORY;
     private IUserRepository USER_REPOSITORY;
-    private IActionService ACTION_SERVICE;
 
     @Autowired
-    public ArticleService(IActionService actionService, IArticleRepository articleRepository, IUserRepository userRepository) {
-        this.ACTION_SERVICE = actionService;
+    public ArticleService(IArticleRepository articleRepository, IUserRepository userRepository) {
         this.ARTICLE_REPOSITORY = articleRepository;
         this.USER_REPOSITORY = userRepository;
     }
@@ -68,8 +66,6 @@ public class ArticleService implements IArticleService {
             Optional<Long> addedArticleId = ARTICLE_REPOSITORY.createArticle(articleAdd);
 
             if (addedArticleId.isPresent() && addedArticleId.get() > 0) {
-                //dodanie informacji o utworzeniu nowego tematu
-                ACTION_SERVICE.addArticleAction(articleAdd.getUserAdderId(), addedArticleId.get());
 
                 return new InformationReturned(201, "Poprawnie utworzono nowy artykuł w temacie", "/article");
             }

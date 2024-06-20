@@ -37,7 +37,7 @@ public class Comments {
 
     @NonNull
     @Column(name = "user_adder_id")
-    private String user_adder_id;
+    private int user_adder_id;
 
     @NonNull
     @Column(name = "add_date")

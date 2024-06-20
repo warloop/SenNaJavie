@@ -52,6 +52,72 @@ public class CommentDislikesDao implements ICommentDislikesDao {
         }
 
         /**
+         * Sprawdza, czy użytkownik wcześniej nie polubił określonego komentarza.
+         *
+         * @param user_id Unikalny identyfikator użytkownika.
+         * @param comment_id Unikalny identyfikator komentarza.
+         * @return Zwraca wartość {@code true}, jeśli użytkownik wcześniej nie polubił komentarza, w przeciwnym razie zwraca wartość {@code false}.
+         * @throws DataAccessException Jeśli wystąpi błąd podczas interakcji z bazą danych.
+         *
+         * @author Artur Leszczak
+         * @version 1.0.0
+         */
+        @Override
+        public boolean isUserDislikeComment(int user_id, long comment_id)
+        {
+
+            final String selectSQL = "SELECT COUNT(id) FROM comment_dislikes WHERE comment_id=? AND user_adder_id=? AND is_deleted=false";
+
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+                selectStatement.setLong(1, comment_id);
+                selectStatement.setInt(1, user_id);
+
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    if (resultSet.next()) {
+
+                        if(resultSet.getInt(1)>=1) return true;
+                    }
+                }
+            }catch (SQLException ex){
+                throw new DataAccessException(ex);
+            }
+            return false;
+        }
+
+        /**
+         * Metoda zlicza liczbę niechęć do określonego komentarza w bazie danych.
+         *
+         * @param commentId Unikalny identyfikator komentarza, dla którego liczona jest liczba niechęć.
+         * @return Liczba niechęć dla określonego komentarza. Jeśli nie znaleziono żadnych niechęć, zwracana jest wartość 0.
+         * @throws DataAccessException Jeśli wystąpi błąd podczas interakcji z bazą danych.
+         *
+         * @author Artur Leszczak
+         * @version 1.0.0
+         */
+        @Override
+        public int countCommentDislikesByCommentId(long commentId){
+            final String selectSQL = "SELECT COUNT(id) FROM comment_dislikes WHERE comment_id=? AND is_deleted=false";
+
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+                selectStatement.setLong(1, commentId);
+
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    if (resultSet.next()) {
+
+                        return resultSet.getInt(1);
+                    }
+                }
+            }catch (SQLException ex){
+                throw new DataAccessException(ex);
+            }
+            return 0;
+        }
+
+        /**
          * Metoda dodająca nową niechęć do komentarza do bazy danych.
          *
          * @param commentDislike Obiekt typu Comment_dislikes z danymi do dodania.

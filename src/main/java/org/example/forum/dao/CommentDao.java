@@ -1,12 +1,13 @@
 package org.example.forum.dao;
 
-
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ICommentDao;
 import org.example.forum.entities.Comments;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class CommentDao implements ICommentDao {
@@ -38,7 +39,7 @@ public class CommentDao implements ICommentDao {
                         comment.setArticleId(resultSet.getLong("article_id"));
                         comment.setAnswerToComment(resultSet.getBoolean("is_answer_to_comment"));
                         comment.setCommentId(resultSet.getLong("comment_id"));
-                        comment.setUser_adder_id(resultSet.getString("user_adder_id"));
+                        comment.setUser_adder_id(resultSet.getInt("user_adder_id"));
                         comment.setAdd_date(resultSet.getTimestamp("add_date").toLocalDateTime());
                         comment.setComment_text(resultSet.getString("comment_text"));
                         comment.setComment_mark(resultSet.getShort("comment_mark"));
@@ -61,9 +62,60 @@ public class CommentDao implements ICommentDao {
         /**
          * Metoda dodająca nowy komentarz do bazy danych.
          *
-         * @param comment Obiekt typu Comments z danymi do dodania.
+         * @param articleId Numer identyfikacyjny artykułu, który oznacza komentarz.
          * @return Zwraca opcjonalny obiekt Long, który zawiera identyfikator nowo dodanego komentarza.
          *         Jeśli dodanie nie powiodło się, zwraca pusty Optional.
+         * @throws DataAccessException Jeśli wystąpi błąd podczas interakcji z bazą danych.
+         *
+         * @author Artur Leszczak
+         * @version 1.0.0
+         */
+        @Override
+        @Transactional
+        public List<Comments> getCommentsByArticleId(long articleId) {
+
+            final String selectSQL = "SELECT * FROM comments WHERE article_id =?";
+
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+                selectStatement.setLong(1, articleId);
+
+                List<Comments> comments = new ArrayList<>();
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+
+                    while (resultSet.next()) {
+                        Comments comment = new Comments();
+                        comment.setId(resultSet.getLong("id"));
+                        comment.setArticleId(resultSet.getLong("article_id"));
+                        comment.setAnswerToComment(resultSet.getBoolean("is_answer_to_comment"));
+                        comment.setCommentId(resultSet.getLong("comment_id"));
+                        comment.setUser_adder_id(resultSet.getInt("user_adder_id"));
+                        comment.setAdd_date(resultSet.getTimestamp("add_date").toLocalDateTime());
+                        comment.setComment_text(resultSet.getString("comment_text"));
+                        comment.setComment_mark(resultSet.getShort("comment_mark"));
+                        comment.setLikes(resultSet.getInt("likes"));
+                        comment.setDislikes(resultSet.getInt("dislikes"));
+                        comment.setBanned(resultSet.getBoolean("is_banned"));
+                        comment.setDeleted(resultSet.getBoolean("is_deleted"));
+                        comment.setDeleted_date(resultSet.getTimestamp("deleted_date") != null ? resultSet.getTimestamp("deleted_date").toLocalDateTime() : null);
+
+                        comments.add(comment);
+                    }
+
+                }
+                return comments;
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+
+        }
+
+        /**
+         * Dodaje nowy komentarz do bazy danych.
+         *
+         * @param comment Obiekt typu Comments z nowymi danymi.
+         * @return Obiekt Optional zawierający identyfikator nowo dodanego komentarza. Jeśli dodanie nie powiodło się, zwraca pusty Optional.
          * @throws DataAccessException Jeśli wystąpi błąd podczas interakcji z bazą danych.
          *
          * @author Artur Leszczak
@@ -80,7 +132,7 @@ public class CommentDao implements ICommentDao {
                 insertStatement.setLong(1, comment.getArticleId());
                 insertStatement.setBoolean(2, comment.isAnswerToComment());
                 insertStatement.setLong(3, comment.getCommentId());
-                insertStatement.setString(4, comment.getUser_adder_id());
+                insertStatement.setInt(4, comment.getUser_adder_id());
                 insertStatement.setTimestamp(5, Timestamp.valueOf(comment.getAdd_date()));
                 insertStatement.setString(6, comment.getComment_text());
                 insertStatement.setShort(7, comment.getComment_mark());
@@ -126,7 +178,7 @@ public class CommentDao implements ICommentDao {
                 updateStatement.setLong(1, comment.getArticleId());
                 updateStatement.setBoolean(2, comment.isAnswerToComment());
                 updateStatement.setLong(3, comment.getCommentId());
-                updateStatement.setString(4, comment.getUser_adder_id());
+                updateStatement.setInt(4, comment.getUser_adder_id());
                 updateStatement.setTimestamp(5, Timestamp.valueOf(comment.getAdd_date()));
                 updateStatement.setString(6, comment.getComment_text());
                 updateStatement.setShort(7, comment.getComment_mark());

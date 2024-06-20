@@ -8,6 +8,10 @@ public interface ICommentLikesDao {
 
     Comment_likes get(long id);
 
+    boolean isUserLikeComment(int user_id, long comment_id);
+
+    int countCommentLikesByCommentId(long commentId);
+
     Optional<Long> add(Comment_likes commentLike);
 
     Boolean update( Comment_likes commentLike);

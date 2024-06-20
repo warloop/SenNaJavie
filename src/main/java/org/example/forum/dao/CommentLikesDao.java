@@ -52,6 +52,73 @@ public class CommentLikesDao implements ICommentLikesDao {
         }
 
         /**
+         * Sprawdza, czy dany użytkownik już polubił określony komentarz.
+         *
+         * @param user_id Unikalny identyfikator użytkownika.
+         * @param comment_id Unikalny identyfikator komentarza.
+         * @return {@code true}, jeśli użytkownik polubił komentarz, {@code false} w przeciwnym przypadku.
+         * @throws DataAccessException Jeśli wystąpi błąd podczas interakcji z bazą danych.
+         *
+         * @author Artur Leszczak
+         * @version 1.0.0
+         */
+        @Override
+        public boolean isUserLikeComment(int user_id, long comment_id)
+        {
+
+            final String selectSQL = "SELECT COUNT(id) FROM comment_likes WHERE comment_id=? AND user_adder_id=? AND is_deleted=false";
+
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+                selectStatement.setLong(1, comment_id);
+                selectStatement.setInt(1, user_id);
+
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    if (resultSet.next()) {
+
+                        if(resultSet.getInt(1)>=1) return true;
+                    }
+                }
+            }catch (SQLException ex){
+                throw new DataAccessException(ex);
+            }
+            return false;
+        }
+
+        /**
+         * Metoda zliczająca liczbę polubień dla danego komentarza w bazie danych.
+         *
+         * @param commentId Unikalny identyfikator komentarza, dla którego chcemy uzyskać liczbę polubień.
+         * @return Liczba całkowita reprezentująca liczbę polubień dla danego komentarza.
+         *         Zwraca 0, jeśli nie znaleziono żadnych polubień dla danego komentarza.
+         * @throws DataAccessException Jeśli wystąpi błąd podczas interakcji z bazą danych.
+         *
+         * @author Artur Leszczak
+         * @version 1.0.0
+         */
+        @Override
+        public int countCommentLikesByCommentId(long commentId){
+            final String selectSQL = "SELECT COUNT(id) FROM comment_likes WHERE comment_id=? AND is_deleted=false";
+
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+                selectStatement.setLong(1, commentId);
+
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    if (resultSet.next()) {
+
+                        return resultSet.getInt(1);
+                    }
+                }
+            }catch (SQLException ex){
+                throw new DataAccessException(ex);
+            }
+            return 0;
+        }
+
+    /**
          * Metoda dodająca nowe polubienie komentarza do bazy danych.
          *
          * @param commentLike Obiekt typu Comment_likes z danymi do dodania.
