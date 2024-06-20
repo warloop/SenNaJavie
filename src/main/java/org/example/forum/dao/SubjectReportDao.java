@@ -1,14 +1,18 @@
 package org.example.forum.dao;
 
 import jakarta.transaction.Transactional;
+import org.example.forum.dao.Interfaces.IReportTypesDao;
 import org.example.forum.dao.Interfaces.ISubjectReportDao;
 import org.example.forum.entities.Subjects_reports;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.*;
 import java.util.Optional;
 
 public class SubjectReportDao implements ISubjectReportDao {
+
 
         /**
          * Pobiera pojedynczy rekord zgłoszenia przedmiotu z bazy danych na podstawie podanego identyfikatora.

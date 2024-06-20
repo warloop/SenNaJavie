@@ -2,13 +2,17 @@ package org.example.forum.dao;
 
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.ICommentReportDao;
+import org.example.forum.dao.Interfaces.IReportTypesDao;
 import org.example.forum.entities.Comments_reports;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.*;
 import java.util.Optional;
 
 public class CommentReportDao implements ICommentReportDao {
+
 
         /**
          * Pobiera pojedynczy rekord zgłoszenia komentarza z bazy danych na podstawie podanego identyfikatora.

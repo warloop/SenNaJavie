@@ -3,13 +3,17 @@ package org.example.forum.dao;
 
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IArticleReportsDao;
+import org.example.forum.dao.Interfaces.IReportTypesDao;
 import org.example.forum.entities.Article_reports;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.*;
 import java.util.Optional;
 
 public class ArticleReportsDao implements IArticleReportsDao {
+
 
         /**
          * Pobiera pojedynczy rekord raportu artykułu z bazy danych na podstawie podanego identyfikatora.

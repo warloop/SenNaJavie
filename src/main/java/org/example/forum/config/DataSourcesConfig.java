@@ -16,6 +16,33 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DataSourcesConfig {
 
+    //\/\/\/\/\/\/\/\/\/\/\/\/\/\/ USERS \/\/\/\/\/\/\/\/\/\/\/\/\/\///
+
+    @Bean
+    public AccountTypeDao accountTypeDao() { return new AccountTypeDao(); }
+
+    @Bean
+    public UserDao userDao() { return new UserDao(this.accountTypeDao()); }
+
+    @Bean
+    public LoginDao loginDao() { return new LoginDao(this.userDao()); }
+
+    //\/\/\/\/\/\/\/\/\/\/\/\/\/\/ CONTENT \/\/\/\/\/\/\/\/\/\/\/\/\/\///
+
+    @Bean
+    public SubjectDao subjectDao() { return new SubjectDao(); }
+
+    @Bean
+    public ArticleDao articleDao() {
+        return new ArticleDao();
+    }
+
+    @Bean
+    public SectionsDao sectionDao() { return new SectionsDao();}
+
+    @Bean
+    public ActionTypesDao actionTypesDao() { return new ActionTypesDao();}
+
     @Bean
     public SubjectActionDao subjectActionDao() {
         return new SubjectActionDao();
@@ -31,22 +58,29 @@ public class DataSourcesConfig {
         return new SectionActionDao();
     }
 
-    @Bean
-    public ArticleDao articleDao() {
-        return new ArticleDao();
-    }
+    //\/\/\/\/\/\/\/\/\/\/\/\/\/\/ COMMENTS \/\/\/\/\/\/\/\/\/\/\/\/\/\///
 
     @Bean
-    public AccountTypeDao accountTypeDao() { return new AccountTypeDao(); }
+    public CommentDao commentDao() { return new CommentDao(); }
 
     @Bean
-    public UserDao userDao() { return new UserDao(this.accountTypeDao()); }
+    public CommentLikesDao commentLikesDao() {return new CommentLikesDao();}
 
     @Bean
-    public LoginDao loginDao() { return new LoginDao(this.userDao()); }
+    public CommentDislikesDao commentDislikesDao() {return new CommentDislikesDao();}
+
+    //\/\/\/\/\/\/\/\/\/\/\/\/\/\/ REPORTS \/\/\/\/\/\/\/\/\/\/\/\/\/\///
 
     @Bean
-    public SubjectDao subjectDao() { return new SubjectDao(); }
+    public ReportTypesDao reportTypeDao() { return new ReportTypesDao();}
 
+    @Bean
+    public ArticleReportsDao articleReportDao() { return new ArticleReportsDao();}
+
+    @Bean
+    public SubjectReportDao subjectReportDao() { return new SubjectReportDao();}
+
+    @Bean
+    public CommentReportDao commentReportDao() { return new CommentReportDao();}
 
 }
