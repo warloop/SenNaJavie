@@ -162,6 +162,25 @@ public class SubjectDao implements ISubjectDao {
                 throw new DataAccessException(ex);
             }
         }
+    public void delete1(long id) {
+        final String deleteSQL = "DELETE FROM subjects WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement deleteStatement = conn.prepareStatement(deleteSQL)) {
+
+            deleteStatement.setLong(1, id);
+
+            int affectedRows = deleteStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Deleting subject failed, no rows affected.");
+            }
+
+        } catch (SQLException ex) {
+            // Możesz obsłużyć wyjątek, zalogować lub rzucić własny wyjątek
+            ex.printStackTrace(); // Przykład obsługi wyjątku - do dostosowania
+        }
+    }
 
 
         /**

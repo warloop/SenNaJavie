@@ -5,7 +5,7 @@ CREATE TABLE subject_action (
         subject_id BIGINT NOT NULL,
         action_type INT NOT NULL,
         FOREIGN KEY (user_adder_id) REFERENCES users(id) ON DELETE NO ACTION,
-        FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE NO ACTION,
+        FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE,
         FOREIGN KEY (action_type) REFERENCES action_types(id) ON DELETE NO ACTION
 );
 

@@ -1,6 +1,7 @@
 package org.example.forum.controllers.Subject;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.forum.dao.SubjectDao;
 import org.example.forum.dto.Subject.SubjectAddDto;
 import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.dto.System.InformationReturned;
@@ -33,6 +34,8 @@ public class SubjectController {
     @Autowired
     ISubjectRepository SUBJECT_REPOSITORY;
 
+    @Autowired
+    SubjectDao dao;
     @GetMapping("/protected/subject/create")
     public String createSubjectPageShow() { return "subject-creator"; }
 
@@ -79,4 +82,12 @@ public class SubjectController {
             return "redirect:/protected/mainpage";
         }
     }
+    @PostMapping("/protected/subject/delete/{id}")
+    public String deleteSubject(@PathVariable("id") long id, RedirectAttributes redirectAttributes) {
+
+       dao.delete1(id);
+
+        return "redirect:/protected/mainpage";
+    }
 }
+

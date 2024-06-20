@@ -39,6 +39,7 @@
     <a th:href="@{/protected/article/create}"><button>Stwórz nowy artykuł</button></a>
 </div>
 
+
 <div style="display: ruby-text">
     <table>
         <tr th:if="${subjects.empty}">
@@ -49,6 +50,9 @@
             <td>
                 <a th:href="@{/protected/subject/edit/{id}(id=${subject.id})}" class="action-button">Edytuj</a>
                 <a th:href="@{/protected/articles/{subjectId}(subjectId=${subject.id})}" class="action-button">Artykuły</a>
+                <form th:action="@{/protected/subject/delete/{id}(id=${subject.id})}" method="post" class="delete-form">
+                    <button type="submit" class="action-button">Usuń</button>
+                </form>
             </td>
         </tr>
     </table>

@@ -20,4 +20,5 @@ public interface ISubjectService {
 
 
     boolean editSubjectText(SubjectEditDto subjectEditDto);
+    public boolean deleteSubjectById(long subjectId, int user_id, boolean by_owner);
 }
