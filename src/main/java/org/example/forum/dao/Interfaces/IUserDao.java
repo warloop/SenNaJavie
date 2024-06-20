@@ -17,4 +17,8 @@ public interface IUserDao {
 
     List<User> getAll();
 
+    Optional<User> getUserBySpecifiedColumn(String columnName, int data);
+
+    Optional<User> getUserBySpecifiedColumn(String columnName, String data);
+
 }

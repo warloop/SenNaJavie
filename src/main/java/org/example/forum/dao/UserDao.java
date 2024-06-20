@@ -1,6 +1,5 @@
 package org.example.forum.dao;
 
-
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IAccountTypeDao;
 import org.example.forum.dao.Interfaces.IUserDao;
@@ -12,7 +11,6 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Optional;
 
 public class UserDao implements IUserDao {
@@ -208,6 +206,89 @@ public class UserDao implements IUserDao {
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
         }
+    }
+
+    /**
+     * Pobiera użytkownika z bazy danych na podstawie określonej kolumny i danych.
+     *
+     * @param columnName Nazwa kolumny, w której ma być wyszukiwany określony danych.
+     * @param data [int] Dane, które mają być wyszukane w określonej kolumnie.
+     * @return Obiekt Optional zawierający obiekt User, jeśli został znaleziony, w przeciwnym razie pusty Optional.
+     * @throws DataAccessException Jeśli wystąpi błąd podczas wykonywania instrukcji SQL.
+     *
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
+    @Override
+    @Transactional
+    public Optional<User> getUserBySpecifiedColumn(String columnName, int data) {
+
+        final String selectSQL = "SELECT * FROM users WHERE ? = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+            selectStatement.setString(1, columnName);
+            selectStatement.setInt(2, data);
+
+            try (ResultSet resultSet = selectStatement.executeQuery()) {
+                if (resultSet.next()) {
+
+                    User user = this.get(resultSet.getInt("id"));
+
+                    if(user != null) {
+                        return Optional.of(user);
+                    }
+
+                }
+            }
+
+        }catch (SQLException ex){
+            throw new DataAccessException(ex);
+        }
+
+        return Optional.empty();
+    }
+
+    /**
+     * Pobiera użytkownika z bazy danych na podstawie określonej kolumny i danych.
+     *
+     * @param columnName Nazwa kolumny, w której ma być wyszukiwany określony danych.
+     * @param data [string] Dane, które mają być wyszukane w określonej kolumnie.
+     * @return Obiekt Optional zawierający obiekt User, jeśli został znaleziony, w przeciwnym razie pusty Optional.
+     * @throws DataAccessException Jeśli wystąpi błąd podczas wykonywania instrukcji SQL.
+     *
+     * @author Artur Leszczak
+     * @version 1.0.0
+     */
+    @Override
+    @Transactional
+    public Optional<User> getUserBySpecifiedColumn(String columnName, String data) {
+        final String selectSQL = "SELECT * FROM users WHERE ? = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+            selectStatement.setString(1, columnName);
+            selectStatement.setString(2, data);
+
+            try (ResultSet resultSet = selectStatement.executeQuery()) {
+                if (resultSet.next()) {
+
+                    User user = this.get(resultSet.getInt("id"));
+
+                    if(user != null) {
+                        return Optional.of(user);
+                    }
+
+                }
+            }
+
+        }catch (SQLException ex){
+            throw new DataAccessException(ex);
+        }
+
+        return Optional.empty();
     }
 
 }
