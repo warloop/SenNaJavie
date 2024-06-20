@@ -16,4 +16,6 @@ public interface IArticleRepository {
 
      List<Articles> findBySubjectId(long subjectId);
 
+    Articles getArticleById(Long articleId);
+
 }

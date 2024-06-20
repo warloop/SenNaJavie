@@ -17,4 +17,6 @@ public interface IArticleService {
 
     List<Articles> getArticlesBySubjectId(Long subjectId);
 
+    Articles getArticleById(Long articleId);
+
 }

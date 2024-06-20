@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Artykuły</title>
+  <meta charset="UTF-8">
+  <title>Artykuł</title>
   <style>
-
     body {
       font-family: 'Varela Round', Arial, sans-serif;
       margin: 0;
@@ -78,89 +77,30 @@
       bottom: 0;
       width: 100%;
     }
-    .logo-container {
-      flex: 1;
-      text-align: left;
-    }
-    .welcome-text {
-      flex: 1;
-      text-align: right;
-      font-size: 18px;
-    }
     h1 {
       font-family: 'Varela Round', sans-serif;
-      font-size: 56px;
-    }
-    .button{
-      display:ruby-text;
-      margin-bottom:50px;
-    }
-    .button {
+      font-size: 36px;
       margin-bottom: 20px;
     }
-    .button a {
-      display: inline-block;
-      text-decoration: none;
+    .article-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
     }
-    .button button {
-      padding: 15px 20px;
+    .button {
       background-color: #0093E9;
       color: white;
+      padding: 10px 20px;
       border: none;
-      border-radius: 10px;
+      border-radius: 5px;
+      text-decoration: none;
+      cursor: pointer;
       transition: background-color 0.3s ease;
     }
-    .button button:hover {
+    .button:hover {
       background-color: #191A1D;
     }
-    table {
-      width: 50%;
-      margin-left: 0px;
-    }
-
-    table th, table td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: center;
-    }
-    table tr {
-      line-height:30px;
-    }
-    table th {
-      background-color: #444;
-      color: #fff;
-    }
-
-    table tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-
-    table tr:hover {
-      background-color: #ddd;
-    }
-    .user-info {
-      position: absolute;
-      right: 20px;
-      top: 20px;
-    }
-    .user-info a {
-      color: #fff;
-      background-color: #444;
-      padding: 10px 20px;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-    .user-info a:hover {
-      background-color: #555;
-    }
-    .user-info span {
-      padding: 10px 20px;
-      background-color: #444;
-      border-radius: 5px;
-      color: #fff;
-      text-decoration: none;
-    }
-
   </style>
 </head>
 <body>
@@ -174,18 +114,20 @@
   <a href="/protected/contact">Kontakt</a>
 </nav>
 <section>
-  <h2>Lista Artykułów</h2>
-  <div id="articles-list">
-    <ul>
-      <li th:each="article : ${articles}">
-        <a th:href="@{/protected/articles/article/{id}(id=${article.id})}" th:text="${article.article_title}">Tytuł artykułu</a>
-      </li>
-    </ul>
+  <div class="article-actions">
+    <h2 th:text="${article.article_title}">Tytuł artykułu</h2>
+    <div>
+      <a class="button" th:href="@{/protected/subject/create}">Stwórz sekcję</a>
+      <a class="button" th:href="@{/protected/subject/edit/{id}(id=${article.id})}">Edytuj artykuł</a>
+      <a class="button" th:href="@{/protected/subject/delete/{id}(id=${article.id})}">Usuń artykuł</a>
+    </div>
+  </div>
+  <div>
+   <!-- <p th:text="${article.article_content}">Zawartość artykułu</p> -->
   </div>
 </section>
 <footer>
   <p>&copy; 2024 Forum Wszelkie prawa zastrzeżone</p>
 </footer>
-
 </body>
 </html>

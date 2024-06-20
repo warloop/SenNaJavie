@@ -4,9 +4,16 @@ import org.example.forum.dao.Interfaces.IArticleDao;
 import org.example.forum.dto.Article.ArticleAddDto;
 import org.example.forum.dto.Article.ArticleDto;
 import org.example.forum.entities.Articles;
+import org.example.forum.exception.DataAccessException;
 import org.example.forum.repositories.Interfaces.IArticleRepository;
+import org.example.forum.util.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,6 +92,30 @@ public class ArticleRepository implements IArticleRepository {
         @Override
         public List<Articles> findBySubjectId(long subjectId) {
             return ARTICLE_DAO.findBySubjectId(subjectId);
-
         }
+
+    @Override
+    public Articles getArticleById(Long articleId) {
+        final String SQL = "SELECT * FROM articles WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement statement = conn.prepareStatement(SQL)) {
+
+            statement.setLong(1, articleId);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    Articles article = new Articles();
+                    article.setId(rs.getLong("id"));
+                    article.setArticle_title(rs.getString("article_title"));
+
+                    return article;
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
+
+        return null;
+    }
 }

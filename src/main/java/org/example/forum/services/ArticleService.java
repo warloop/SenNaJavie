@@ -129,6 +129,10 @@ public class ArticleService implements IArticleService {
     @Override
     public List<Articles> getArticlesBySubjectId(Long subjectId) {
         return ARTICLE_REPOSITORY.findBySubjectId(subjectId);
+    }
 
+    @Override
+    public Articles getArticleById(Long articleId) {
+        return ARTICLE_REPOSITORY.getArticleById(articleId);
     }
 }

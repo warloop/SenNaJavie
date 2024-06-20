@@ -91,4 +91,13 @@ public class ArticleController {
         return "articles";
     }
 
+    @GetMapping("/protected/articles/article/{articleId}")
+    public String getArticleDetails(@PathVariable("articleId") Long articleId, Model model) {
+        Articles article = ARTICLE_SERVICE.getArticleById(articleId);
+        if (article == null) {
+            return "redirect:/protected/mainpage";
+        }
+        model.addAttribute("article", article);
+        return "article-details";
+    }
 }
