@@ -106,6 +106,7 @@ h1 {
 }
 .button button:hover {
     background-color: #191A1D;
+    cursor: pointer;
 }
 section a {
     color: inherit;
