@@ -7,15 +7,16 @@ import java.util.Optional;
 
 public interface ISectionRepository {
 
-    Optional<Sections> get(long sectionId);
+    Optional<Sections> getSectionById(long sectionId);
 
-    List<Sections> getSectionsAllInArticle(long articleId);
+    List<Sections> getAllSectionsByArticleId(long articleId);
 
-    boolean add(Sections section);
+    Optional<Long> add(Sections section);
 
     boolean update(Sections section, int userUpdaterId);
 
     boolean changeVisibility(long sectionId, boolean is_visible, int userUpdaterId);
 
     boolean delete(long sectionId, int userDeleter);
+
 }

@@ -101,6 +101,31 @@
     .button:hover {
       background-color: #191A1D;
     }
+    table {
+      width: 50%;
+      margin-left: 0px;
+    }
+
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    table tr {
+      line-height:30px;
+    }
+    table th {
+      background-color: #444;
+      color: #fff;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    table tr:hover {
+      background-color: #ddd;
+    }
   </style>
 </head>
 <body>
@@ -117,13 +142,22 @@
   <div class="article-actions">
     <h2 th:text="${article.article_title}">Tytuł artykułu</h2>
     <div>
-      <a class="button" th:href="@{/protected/subject/create}">Stwórz sekcję</a>
+      <a class="button" th:href="@{/protected/articles/article/{id}/create(id=${article.id})}">Stwórz sekcję</a>
       <a class="button" th:href="@{/protected/subject/edit/{id}(id=${article.id})}">Edytuj artykuł</a>
       <a class="button" th:href="@{/protected/subject/delete/{id}(id=${article.id})}">Usuń artykuł</a>
     </div>
   </div>
-  <div>
-   <!-- <p th:text="${article.article_content}">Zawartość artykułu</p> -->
+
+  <h3>Sekcje artykułu:</h3>
+  <div style="display: ruby-text">
+    <table>
+      <tr th:if="${sections.empty}">
+        <td colspan="2"> Nie ma aktualnie żadnych sekcji do tego artykułu </td>
+      </tr>
+      <tr th:each="section : ${sections}">
+      <td><span th:text="${section.section_text}">Sekcja artykułu</span></td>
+      </tr>
+    </table>
   </div>
 </section>
 <footer>

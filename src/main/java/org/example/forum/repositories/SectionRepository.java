@@ -7,9 +7,9 @@ import org.example.forum.repositories.Interfaces.ISectionRepository;
 import org.example.forum.services.interfaces.IActionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
+
 /**
  * Klasa odpowiedzialna za zarządzanie sekcjami w forum.
  * Implementuje interfejs {@link ISectionRepository} i korzysta z {@link ISectionsDao} i {@link IActionRepository} do uzyskiwania dostępu do danych.
@@ -52,7 +52,7 @@ public class SectionRepository implements ISectionRepository {
      * @version 1.0.0
      */
     @Override
-    public Optional<Sections> get(long sectionId) {
+    public Optional<Sections> getSectionById(long sectionId) {
         return sectionsDao.get(sectionId);
     }
 
@@ -66,7 +66,7 @@ public class SectionRepository implements ISectionRepository {
      * @version 1.0.0
      */
     @Override
-    public List<Sections> getSectionsAllInArticle(long articleId) {
+    public List<Sections> getAllSectionsByArticleId(long articleId) {
         return sectionsDao.getSectionsAllInArticle(articleId);
     }
 
@@ -79,15 +79,15 @@ public class SectionRepository implements ISectionRepository {
      * @version 1.0.0
      */
     @Override
-    public boolean add(Sections section) {
+    public Optional<Long> add(Sections section) {
 
         Optional<Long> createdSectionId = this.sectionsDao.add(section);
 
         if (createdSectionId.isPresent()) {
             ACTION_SERVICE.addSectionAction(section.getUser_adder_id(),createdSectionId.get());
-            return true;
+            return createdSectionId;
         }
-        return false;
+        return createdSectionId;
     }
 
     /**
@@ -162,6 +162,5 @@ public class SectionRepository implements ISectionRepository {
         }
         return false;
     }
-
 
 }
