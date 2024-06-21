@@ -29,5 +29,4 @@ public interface ICommentRepository {
 
     boolean deleteComment(long commentId);
 
-
 }

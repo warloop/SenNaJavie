@@ -1,5 +1,6 @@
 package org.example.forum.services;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dto.Subject.SubjectAddDto;
 import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.dto.System.InformationReturned;
@@ -13,8 +14,6 @@ import org.example.forum.services.interfaces.IActionService;
 import org.example.forum.services.interfaces.ISubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.security.auth.Subject;
 import java.util.List;
 import java.util.Optional;
 
@@ -123,4 +122,29 @@ public class SubjectService implements ISubjectService {
     public boolean editSubjectText(SubjectEditDto subjectEditDto) {
         return SUBJECT_REPOSITORY.editSubjectText(subjectEditDto);
     }
+
+    @Override
+    @Transactional
+    public boolean deleteSubjectById(long subjectId, int userId) {
+        try {
+
+            boolean byOwner = SUBJECT_REPOSITORY.getSubjectById(subjectId).get().getUser_adder_id() == userId;
+
+            boolean success = SUBJECT_REPOSITORY.deleteSubjectById(subjectId, userId, byOwner);
+
+            if (success) {
+                if (byOwner) {
+                    ACTION_SERVICE.removeSubjectActionByOwner(userId, subjectId);
+                } else {
+                    ACTION_SERVICE.removeSubjectActionByModerator(userId, subjectId);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 }

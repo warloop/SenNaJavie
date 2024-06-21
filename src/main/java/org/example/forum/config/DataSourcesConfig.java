@@ -1,6 +1,5 @@
 package org.example.forum.config;
 
-
 import org.example.forum.dao.AccountTypeDao;
 import org.example.forum.dao.LoginDao;
 import org.example.forum.dao.SubjectDao;

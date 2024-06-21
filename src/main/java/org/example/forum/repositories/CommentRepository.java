@@ -186,6 +186,7 @@ public class CommentRepository implements ICommentRepository {
 
         return false; //użytkownik już się określił.
     }
+
     /**
      * Metoda służąca do usunięcia like od konkretnego komentarza dla danego użytkownika.
      * Ta metoda sprawdza, czy użytkownik wcześniej już dodał like do komentarza.

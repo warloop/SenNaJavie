@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
-
 /**
  * Klasa odpowiedzialna za zarządzanie sekcjami w forum.
  * Implementuje interfejs {@link ISectionRepository} i korzysta z {@link ISectionsDao} i {@link IActionRepository} do uzyskiwania dostępu do danych.

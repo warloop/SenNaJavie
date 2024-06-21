@@ -1,6 +1,7 @@
 package org.example.forum.controllers.Subject;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.forum.dao.SubjectDao;
 import org.example.forum.dto.Subject.SubjectAddDto;
 import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.dto.System.InformationReturned;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
@@ -29,9 +31,8 @@ public class SubjectController {
 
     @Autowired
     IUserService USER_SERVICE;
-
     @Autowired
-    ISubjectRepository SUBJECT_REPOSITORY;
+    private RequestContextFilter requestContextFilter;
 
     @GetMapping("/protected/subject/create")
     public String createSubjectPageShow() { return "subject-creator"; }
@@ -79,4 +80,15 @@ public class SubjectController {
             return "redirect:/protected/mainpage";
         }
     }
+
+    @PostMapping("/protected/subject/delete/{id}")
+    public String deleteSubject(@PathVariable("id") long id, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+
+        int userId = Integer.parseInt(request.getSession().getAttribute("userId").toString());
+
+        SUBJECT_SERVICE.deleteSubjectById(id,userId);
+
+        return "redirect:/protected/mainpage";
+    }
 }
+

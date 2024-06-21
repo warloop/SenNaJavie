@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,165 +7,12 @@
     <meta name="description" content="Aplikacja webowa zaprojektowana na potrzeby pracowni specjalistycznej z przedmiotu projektowanie aplikacji biznesowych w oparciu o platformę java"/>
     <meta name="version" content="1.0.2"/>
     <meta name="author" content="Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk"/>
-
-    <link rel="stylesheet" href="style.css">
     <!-- GOOGLE FREE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/register.css}">
 </head>
-<style>
-    body{
-        display: grid;
-        margin: 0;
-        padding: 0;
-        place-items: center;
-        place-content: center;
-        overflow: hidden;
-        width: 100vw;
-        height: 100vh;
-        position: absolute;
-        font-size: 10px;
-        font-family: "Roboto Light";
-    }
-    h2{
-        font-size: 3.2em;
-        font-weight: 200;
-        width: 100%;
-        text-align: left;
-        margin-bottom: 5px;
-        margin-top: 10px;
-        font-family: "Roboto Flex";
-        font-weight: 300;
-    }
-    .loginFormBox
-    {
-        box-shadow: 0px 0px 4px 2px rgba(0,0,0,0.15);
-        border-radius: 10px;
-        background-color: #fff;
-        display: grid;
-        place-items: center;
-        padding-left: 30px;
-        padding-right: 30px;
-        padding-top: 10px;
-        padding-bottom: 30px;
-        grid-template-columns: 1fr;
-        width: max-content;
-        height: auto;
-    }
-    input[type="submit"]
-    {
-        border-radius: 5px;
-        background-color: #0093E9;
-        text-align: center;
-        color: #363636;
-        font-family: "Roboto flex";
-        font-weight: 600;
-        font-size: 1.6em;
-        display: grid;
-        place-items: center;
-        padding-left: 30px;
-        padding-right: 30px;
-        padding-top: 12px;
-        padding-bottom: 12px;
-        outline: none;
-        border: none;
-        cursor: pointer;
-        transition: 0.15s;
-        margin-top: 20px;
-        margin-bottom: 20px;
-    }
-    input[type="submit"]:hover
-    {
-        padding-left: 35px;
-        padding-right: 35px;
-        background-color: #0093E9;
-        transition: 0.22s;
-    }
-    .horizontalLine
-    {
-        content: "";
-        height: 1px;
-        background-color: #e4e4e4;
-        width: 100%;
-    }
-    footer{
-        width: 100vw;
-        display: grid;
-        place-items: center;
-        text-align:center;
-        height: auto;
-        position: fixed;
-        bottom: 0;
-        background-color: #363636;
-        color: #fff;
-        font-size: 1.4em;
-        font-family: "Roboto Light";
-        font-weight: 100;
-        padding-top: 15px;
-        padding-bottom: 15px;
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-    form
-    {
-        width: 260px;
-        height: auto;
-        display: grid;
-        grid-template-columns: 2fr;
-        grid-row-gap: 2px;
-        place-items: center;
-        padding-top: 10px;
-    }
-    a
-    {
-        font-size: 1.2em;
-        font-family: "Roboto flex";
-        color: #000;
-        text-decoration: none;
-    }
-    a:hover
-    {
-        text-decoration: underline;
-    }
-    .textBlock
-    {
-        display: grid;
-        width: 100%;
-        height: auto;
-        padding-top: 10px;
-        place-items: center;
-        grid-row-gap: 0px;
-        grid-template-columns: 1fr;
-    }
-    .textBlock > label{
-        font-size: 1.6em;
-        font-family: "Roboto flex";
-        font-weight: 400;
-        width: 100%;
-        text-align: left;
-        padding-bottom: 3px;
-        padding-top: 3px;
-        text-indent: 10px;
-        color: #7E7E7E;
-    }
-    .textBlock > input{
-        font-size: 1.6em;
-        font-family: "Roboto flex";
-        font-weight: 400;
-        width: 100%;
-        height: 35px;
-        text-align: left;
-        padding-bottom: 3px;
-        padding-top: 3px;
-        text-indent: 10px;
-        background-color: #F1F1F1;
-        color: #000;
-        border-radius: 5px;
-        border: none;
-        outline: none;
-    }
-</style>
 <body>
 <div class="loginFormBox">
     <h2>Rejestracja</h2>
@@ -173,40 +20,39 @@
     <form action="/register" method="post">
         <div class="textBlock">
             <label for="name">Imię:</label>
-            <input type="text" id="name" name="name" required>
+            <input type="text" id="name" name="name" th:required="true">
         </div>
         <div class="textBlock">
             <label for="surname">Nazwisko:</label>
-            <input type="text" id="surname" name="surname" required>
+            <input type="text" id="surname" name="surname" th:required="true">
         </div>
 
         <div class="textBlock">
             <label for="login">Login:</label>
-            <input type="text" id="login" name="login" required>
+            <input type="text" id="login" name="login" th:required="true">
         </div>
         <div class="textBlock">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" th:required="true">
         </div>
 
         <div class="textBlock">
             <label for="emailConfirm">Powtórz email:</label>
-            <input type="email" id="emailConfirm" name="emailConfirm" required>
+            <input type="email" id="emailConfirm" name="emailConfirm" th:required="true">
         </div>
         <div class="textBlock">
             <label for="password">Hasło:</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" th:required="true">
         </div>
         <div class="textBlock">
             <label for="passwordConfirm">Powtórz hasło:</label>
-            <input type="password" id="passwordConfirm" name="passwordConfirm" required>
+            <input type="password" id="passwordConfirm" name="passwordConfirm" th:required="true">
         </div>
 
         <input type="submit" value="Załóż konto" style="color: white">
     </form>
 
     <a href="/">Przejdź do logowania</a>
-
 </div>
 </body>
 </html>

@@ -12,3 +12,4 @@ public interface ISectionService {
     Sections findSectionById(long id);
     List<Sections> getAllSectionsByArticleId(long articleId);
 }
+

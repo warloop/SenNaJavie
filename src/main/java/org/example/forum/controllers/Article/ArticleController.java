@@ -26,9 +26,9 @@ public class ArticleController {
 
     @Autowired
     IArticleService ARTICLE_SERVICE;
+
     @Autowired
     ISectionService SECTION_SERVICE;
-
 
     @Autowired
     IUserService USER_SERVICE;
@@ -100,11 +100,13 @@ public class ArticleController {
     public String getArticleDetails(@PathVariable("articleId") Long articleId, Model model) {
         Articles article = ARTICLE_SERVICE.getArticleById(articleId);
         List<Sections> sections = SECTION_SERVICE.getAllSectionsByArticleId(articleId);
+
         if (article == null) {
             return "redirect:/protected/mainpage";
         }
         model.addAttribute("article", article);
         model.addAttribute("sections", sections);
+
         return "article-details";
     }
 }

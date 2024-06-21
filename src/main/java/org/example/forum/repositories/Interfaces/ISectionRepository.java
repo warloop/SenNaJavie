@@ -18,5 +18,4 @@ public interface ISectionRepository {
     boolean changeVisibility(long sectionId, boolean is_visible, int userUpdaterId);
 
     boolean delete(long sectionId, int userDeleter);
-
 }

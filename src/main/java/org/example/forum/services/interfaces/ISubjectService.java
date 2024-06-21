@@ -18,6 +18,8 @@ public interface ISubjectService {
 
    Subjects findSubjectById(long subjectId);
 
+   boolean editSubjectText(SubjectEditDto subjectEditDto);
 
-    boolean editSubjectText(SubjectEditDto subjectEditDto);
+   boolean deleteSubjectById(long subjectId, int user_id);
+
 }

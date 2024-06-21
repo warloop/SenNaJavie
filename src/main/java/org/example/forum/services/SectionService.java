@@ -15,6 +15,7 @@ public class SectionService implements ISectionService {
 
     @Autowired
     ISectionRepository SECTION_REPOSITORY;
+
     @Override
     public void addSection(SectionAddDto sectionAddDto) {
         Sections section = new Sections(
