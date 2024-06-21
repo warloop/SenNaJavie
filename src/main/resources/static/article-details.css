@@ -92,7 +92,31 @@ h1 {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-.button button:hover {
+.button:hover {
     background-color: #191A1D;
-    cursor: pointer;
+}
+table {
+    width: 50%;
+    margin-left: 0px;
+}
+
+table th, table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+table tr {
+    line-height:30px;
+}
+table th {
+    background-color: #444;
+    color: #fff;
+}
+
+table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table tr:hover {
+    background-color: #ddd;
 }
