@@ -42,4 +42,9 @@ public class Article_reports {
     @NonNull
     @Column(name = "add_date")
     private LocalDateTime report_date;
+
+    @NonNull
+    @Column(name = "is_viewed")
+    private boolean is_viewed;
+
 }

@@ -7,3 +7,5 @@ CREATE TABLE report_types (
 INSERT INTO report_types (id, name, description) VALUES (1,"Przekleństwa w treści", "Zgłaszany wątek zawiera w swojej treści wulgaryzmy.");
 INSERT INTO report_types (id, name, description) VALUES (2,"Groźby karalne", "Zgłaszany wątek zawiera w swojej treści groźby wystosunkowane do konkretnej osoby.");
 INSERT INTO report_types (id, name, description) VALUES (3,"Nękanie", "Zgłaszany wątek nakierowany jest na nękanie konkretnej osoby / grupy.");
+INSERT INTO report_types (id, name, description) VALUES (4,"Spam", "Zgłaszany wątek jest spamem.");
+INSERT INTO report_types (id, name, description) VALUES (5,"Inne", "Wszelkie inne naruszenia regulaminu / prawa.");
