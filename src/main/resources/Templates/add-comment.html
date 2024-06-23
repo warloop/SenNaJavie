@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Dodaj komentarz</title>
+  <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<header>
+  <h1>Dodaj komentarz</h1>
+</header>
+<section>
+  <div>
+    <h2>Dodaj nowy komentarz</h2>
+    <form th:action="@{/comments/add}" method="post">
+      <input type="hidden" name="article_id" th:value="${articleId}">
+      <input type="hidden" name="user_adder_id" value="1"> <!-- Zastąp wartość rzeczywistym ID użytkownika -->
+      <textarea name="comment_text" placeholder="Napisz swój komentarz tutaj..." required></textarea>
+      <button type="submit">Dodaj komentarz</button>
+    </form>
+  </div>
+</section>
+</body>
+</html>

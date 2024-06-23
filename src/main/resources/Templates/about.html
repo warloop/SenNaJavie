@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Opis</title>
+    <link rel="stylesheet" th:href="@{/about.css}">
+</head>
+<body>
+<header>
+    <h1>Forum</h1>
+</header>
+<nav>
+
+    <a th:href="@{/protected/mainpage}">Strona główna</a>
+    <a th:href="@{/protected/category}">Kategorie</a>
+    <a th:href="@{/protected/about}">Opis</a>
+    <a th:href="@{/protected/contact}">Kontakt</a>
+</nav>
+<section style="font-family: 'Varela Round', sans-serif;">
+    <h3>Opis aplikacji</h3>
+    <p style="text-align: left">
+        Aplikacja webowa forum to interaktywna platforma online, która umożliwia użytkownikom dzielenie się informacjami, prowadzenie dyskusji na różnorodne tematy oraz wymianę opinii. Główne cechy aplikacji forum obejmują możliwość tworzenia wątków (tematów dyskusji) oraz odpowiadania na nie, co pozwala na rozwinięcie tematów przez różnych użytkowników. Forum zazwyczaj oferuje kategorie tematyczne, aby łatwiej grupować dyskusje według ich rodzaju, co ułatwia użytkownikom znajdowanie interesujących ich treści. Dodatkowo, aplikacje forum często zawierają funkcje takie jak wyszukiwanie wątków, powiadomienia o nowych odpowiedziach, systemy reputacji i rang użytkowników oraz moderację treści, aby zapewnić porządek i zgodność z zasadami społeczności.
+    </p>
+</section>
+
+<footer>
+    <p>&copy; 2024 Forum Wszelkie prawa zastrzeżone</p>
+</footer>
+</body>
+</html>
