@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tworzenie tematu</title>
+    <meta name="description" content="Aplikacja webowa zaprojektowana na potrzeby pracowni specjalistycznej z przedmiotu projektowanie aplikacji biznesowych w oparciu o platformę java"/>
+    <meta name="version" content="1.0.2"/>
+    <meta name="author" content="Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk"/>
+    <!-- GOOGLE FREE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/subject-creator.css}">
+</head>
+<body>
+<div class="loginFormBox">
+    <h2>Utwórz nowy temat</h2>
+    <div class="horizontalLine"></div>
+
+    <form id="addSubjectForm" action="/protected/subject/create" method="post">
+        <div class="textBlock">
+            <label for="subject">Treść tematu:</label>
+            <textarea id="subject" name="subjectText" th:required="true" placeholder="Treść tematu" maxlength="128" minlength="1"></textarea>
+        </div>
+
+        <input type="submit" value="Utwórz temat">
+        <p th:if="${param.error}">Nie udało się utworzyć tematu.</p>
+        <a href="/protected/mainpage" style="margin-top: 10px;">Wróć do strony głównej</a>
+    </form>
+</div>
+
+<footer>
+    2024 | Programowanie aplikacji biznesowych w oparciu o platformę Java | Wszelkie prawa zastrzeżone |<br>
+    Autorzy: Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk
+</footer>
+</body>
+</html>
+
