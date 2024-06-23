@@ -1,14 +1,13 @@
 package org.example.forum.dao;
 
 import jakarta.transaction.Transactional;
-import org.example.forum.dao.Interfaces.IReportTypesDao;
 import org.example.forum.dao.Interfaces.ISubjectReportDao;
 import org.example.forum.entities.Subjects_reports;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class SubjectReportDao implements ISubjectReportDao {
@@ -25,14 +24,13 @@ public class SubjectReportDao implements ISubjectReportDao {
          * @version 1.0.0
          */
         @Override
-        @Transactional
-        public Subjects_reports get(int id) {
+        public Subjects_reports get(long id) {
             final String selectSQL = "SELECT * FROM subjects_reports WHERE id =?";
 
             try (Connection conn = ConnectionFactory.getConnection();
                  PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
 
-                selectStatement.setInt(1, id);
+                selectStatement.setLong(1, id);
 
                 try (ResultSet resultSet = selectStatement.executeQuery()) {
                     if (resultSet.next()) {
@@ -42,10 +40,68 @@ public class SubjectReportDao implements ISubjectReportDao {
                         subjectsReport.setReport_type(resultSet.getInt("report_type"));
                         subjectsReport.setUser_reporter_id(resultSet.getInt("user_reporter_id"));
                         subjectsReport.setReport_date(resultSet.getTimestamp("add_date").toLocalDateTime());
+                        subjectsReport.set_viewed(resultSet.getBoolean("is_viewed"));
                         return subjectsReport;
                     } else {
                         return null;
                     }
+                }
+
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        }
+
+        @Override
+        public List<Subjects_reports> getAllNotViewed(){
+            final String selectSQL = "SELECT * FROM subjects_reports WHERE is_viewed == false";
+
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    List<Subjects_reports> subjects = new ArrayList<Subjects_reports>();
+                    while(resultSet.next()) {
+                        Subjects_reports subjectsReport = new Subjects_reports();
+                        subjectsReport.setId(resultSet.getInt("id"));
+                        subjectsReport.setSubject_id(resultSet.getLong("subject_id"));
+                        subjectsReport.setReport_type(resultSet.getInt("report_type"));
+                        subjectsReport.setUser_reporter_id(resultSet.getInt("user_reporter_id"));
+                        subjectsReport.setReport_date(resultSet.getTimestamp("add_date").toLocalDateTime());
+                        subjectsReport.set_viewed(resultSet.getBoolean("is_viewed"));
+
+                        subjects.add(subjectsReport);
+                    }
+                    return subjects;
+                }
+
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        }
+
+
+        @Override
+        public List<Subjects_reports> getAll(){
+            final String selectSQL = "SELECT * FROM subjects_reports";
+
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    List<Subjects_reports> subjects = new ArrayList<Subjects_reports>();
+                    while(resultSet.next()) {
+                        Subjects_reports subjectsReport = new Subjects_reports();
+                        subjectsReport.setId(resultSet.getInt("id"));
+                        subjectsReport.setSubject_id(resultSet.getLong("subject_id"));
+                        subjectsReport.setReport_type(resultSet.getInt("report_type"));
+                        subjectsReport.setUser_reporter_id(resultSet.getInt("user_reporter_id"));
+                        subjectsReport.setReport_date(resultSet.getTimestamp("add_date").toLocalDateTime());
+                        subjectsReport.set_viewed(resultSet.getBoolean("is_viewed"));
+
+                        subjects.add(subjectsReport);
+                    }
+                    return subjects;
                 }
 
             } catch (SQLException ex) {
@@ -66,7 +122,7 @@ public class SubjectReportDao implements ISubjectReportDao {
          */
         @Override
         @Transactional
-        public Optional<Integer> add(Subjects_reports subjectsReport) {
+        public Optional<Long> add(Subjects_reports subjectsReport) {
             final String insertSQL = "INSERT INTO subjects_reports (subject_id, report_type, user_reporter_id, add_date) VALUES (?,?,?,?)";
 
             try (Connection conn = ConnectionFactory.getConnection();
@@ -105,7 +161,7 @@ public class SubjectReportDao implements ISubjectReportDao {
         @Override
         @Transactional
         public Boolean update(Subjects_reports subjectsReport) {
-            final String updateSQL = "UPDATE subjects_reports SET subject_id =?, report_type =?, user_reporter_id =?, add_date =? WHERE id =?";
+            final String updateSQL = "UPDATE subjects_reports SET subject_id =?, report_type =?, user_reporter_id =?, add_date =?, is_viewed =? WHERE id =?";
 
             try (Connection conn = ConnectionFactory.getConnection();
                  PreparedStatement updateStatement = conn.prepareStatement(updateSQL)) {
@@ -114,7 +170,8 @@ public class SubjectReportDao implements ISubjectReportDao {
                 updateStatement.setInt(2, subjectsReport.getReport_type());
                 updateStatement.setInt(3, subjectsReport.getUser_reporter_id());
                 updateStatement.setTimestamp(4, Timestamp.valueOf(subjectsReport.getReport_date()));
-                updateStatement.setInt(5, subjectsReport.getId());
+                updateStatement.setBoolean(5, subjectsReport.is_viewed());
+                updateStatement.setLong(6, subjectsReport.getId());
 
                 int affectedRows = updateStatement.executeUpdate();
 
@@ -137,13 +194,13 @@ public class SubjectReportDao implements ISubjectReportDao {
          */
         @Override
         @Transactional
-        public Boolean delete(int id) {
+        public Boolean delete(long id) {
             final String deleteSQL = "DELETE FROM subjects_reports WHERE id =?";
 
             try (Connection conn = ConnectionFactory.getConnection();
                  PreparedStatement deleteStatement = conn.prepareStatement(deleteSQL)) {
 
-                deleteStatement.setInt(1, id);
+                deleteStatement.setLong(1, id);
 
                 int affectedRows = deleteStatement.executeUpdate();
 

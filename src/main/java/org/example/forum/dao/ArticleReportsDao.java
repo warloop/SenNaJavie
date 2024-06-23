@@ -3,13 +3,12 @@ package org.example.forum.dao;
 
 import jakarta.transaction.Transactional;
 import org.example.forum.dao.Interfaces.IArticleReportsDao;
-import org.example.forum.dao.Interfaces.IReportTypesDao;
 import org.example.forum.entities.Article_reports;
 import org.example.forum.exception.DataAccessException;
 import org.example.forum.util.ConnectionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ArticleReportsDao implements IArticleReportsDao {
@@ -47,6 +46,63 @@ public class ArticleReportsDao implements IArticleReportsDao {
                     } else {
                         return null;
                     }
+                }
+
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        }
+
+        @Override
+        public List<Article_reports> getAllNotViewed(){
+            final String selectSQL = "SELECT * FROM article_reports WHERE is_viewed == false";
+
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    List<Article_reports> article = new ArrayList<Article_reports>();
+                    while(resultSet.next()) {
+                        Article_reports commentReport = new Article_reports();
+                        commentReport.setId(resultSet.getInt("id"));
+                        commentReport.setArticle_id(resultSet.getLong("article_id"));
+                        commentReport.setReport_type(resultSet.getInt("report_type"));
+                        commentReport.setUser_reporter_id(resultSet.getInt("user_reporter_id"));
+                        commentReport.setReport_date(resultSet.getTimestamp("add_date").toLocalDateTime());
+                        commentReport.set_viewed(resultSet.getBoolean("is_viewed"));
+
+                        article.add(commentReport);
+                    }
+                    return article;
+                }
+
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
+        }
+
+
+        @Override
+        public List<Article_reports> getAll(){
+            final String selectSQL = "SELECT * FROM comments_reports";
+
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    List<Article_reports> article = new ArrayList<Article_reports>();
+                    while(resultSet.next()) {
+                        Article_reports commentReport = new Article_reports();
+                        commentReport.setId(resultSet.getInt("id"));
+                        commentReport.setArticle_id(resultSet.getLong("article_id"));
+                        commentReport.setReport_type(resultSet.getInt("report_type"));
+                        commentReport.setUser_reporter_id(resultSet.getInt("user_reporter_id"));
+                        commentReport.setReport_date(resultSet.getTimestamp("add_date").toLocalDateTime());
+                        commentReport.set_viewed(resultSet.getBoolean("is_viewed"));
+
+                        article.add(commentReport);
+                    }
+                    return article;
                 }
 
             } catch (SQLException ex) {
@@ -106,7 +162,7 @@ public class ArticleReportsDao implements IArticleReportsDao {
         @Override
         @Transactional
         public Boolean update(Article_reports articleReport) {
-            final String updateSQL = "UPDATE article_reports SET article_id =?, report_type =?, user_reporter_id =?, add_date =? WHERE id =?";
+            final String updateSQL = "UPDATE article_reports SET article_id =?, report_type =?, user_reporter_id =?, add_date =?, is_viewed=? WHERE id =?";
 
             try (Connection conn = ConnectionFactory.getConnection();
                  PreparedStatement updateStatement = conn.prepareStatement(updateSQL)) {
@@ -115,7 +171,8 @@ public class ArticleReportsDao implements IArticleReportsDao {
                 updateStatement.setInt(2, articleReport.getReport_type());
                 updateStatement.setInt(3, articleReport.getUser_reporter_id());
                 updateStatement.setTimestamp(4, Timestamp.valueOf(articleReport.getReport_date()));
-                updateStatement.setLong(5, articleReport.getId());
+                updateStatement.setBoolean(5, articleReport.is_viewed());
+                updateStatement.setLong(6, articleReport.getId());
 
                 int affectedRows = updateStatement.executeUpdate();
 
