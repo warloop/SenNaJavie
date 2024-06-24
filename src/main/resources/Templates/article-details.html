@@ -19,11 +19,11 @@
   <div class="article-actions">
     <h2 th:text="${article.article_title}">Tytuł artykułu</h2>
     <div>
-      <a class="button" th:href="@{/protected/articles/article/{id}/create(id=${article.id})}">Stwórz sekcję</a>
-      <a class="button" th:href="@{/protected/articles/article/{id}/edit(id=${article.id})}">Edytuj artykuł</a>
+      <a class="button" th:if="${session.isAdmin}" th:href="@{/protected/articles/article/{id}/create(id=${article.id})}">Stwórz sekcję</a>
+      <a class="button" th:if="${session.isAdmin}" th:href="@{/protected/articles/article/{id}/edit(id=${article.id})}">Edytuj artykuł</a>
       <a class="button" th:href="@{/protected/articles/article/{id}/report(id=${article.id})}">Zgłoś artykuł</a>
      <div>
-      <form th:action="@{/protected/articles/article/{id}/delete(id=${article.id})}" method="post">
+      <form th:if="${session.isAdmin}" th:action="@{/protected/articles/article/{id}/delete(id=${article.id})}" method="post">
         <button type="submit" class="button">Usuń artykuł</button>
       </form>
      </div>
