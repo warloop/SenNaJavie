@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Zgłoś artykuł</title>
+  <link rel="stylesheet" th:href="@{/report-article.css}">
+</head>
+<body>
+<div class="loginFormBox">
+  <h2>Zgłoś artykuł</h2>
+  <div class="horizontalLine"></div>
+  <form th:action="@{/protected/articles/article/report}" method="post">
+    <div class="textBlock">
+    <input type="hidden" name="articleId" th:value="${articleId}" />
+    <label for="reportReason">Powód zgłoszenia:</label>
+    <select name="reportReason" id="reportReason">
+      <option th:each="reason : ${reportReasons}" th:value="${reason}" th:text="${reason}">Powód</option>
+    </select>
+    </div>
+    <button type="submit">Zgłoś</button>
+    <a th:href="@{/protected/mainpage}" style="margin-top: 10px;">Wróć do strony głównej</a>
+  </form>
+</div>
+<footer>
+  <p>&copy; 2024 Forum Wszelkie prawa zastrzeżone</p>
+</footer>
+</body>
+</html>

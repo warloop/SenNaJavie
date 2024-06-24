@@ -9,7 +9,9 @@ import org.example.forum.dto.Article.ArticleEditDto;
 import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.entities.*;
+import org.example.forum.enums.ReportReasons;
 import org.example.forum.repositories.Interfaces.ICommentRepository;
+import org.example.forum.repositories.Interfaces.IReportRepository;
 import org.example.forum.services.interfaces.IArticleService;
 import org.example.forum.services.interfaces.ISectionService;
 import org.example.forum.services.interfaces.ISubjectService;
@@ -47,6 +49,9 @@ public class ArticleController {
 
     @Autowired
     ArticleDao ARTICLE_DAO;
+
+    @Autowired
+    IReportRepository REPORT_REPOSITORY;
 
     @GetMapping("/protected/article/create")
 
@@ -178,5 +183,30 @@ public class ArticleController {
         model.addAttribute("articleId", articleId);
         return "add-comment";
     }
+    @GetMapping("/protected/articles/article/{id}/report")
+    public String showReportForm(@PathVariable("id") long articleId, Model model) {
+        model.addAttribute("articleId", articleId);
+        model.addAttribute("reportReasons", ReportReasons.values());
+        return "report-article";
+    }
 
+    @PostMapping("/protected/articles/article/report")
+    public String reportArticle(@RequestParam("articleId") long articleId,
+                                @RequestParam("reportReason") ReportReasons reportReason,
+                                HttpServletRequest request, Model model) {
+        try {
+            int userId = Integer.parseInt(request.getSession().getAttribute("userId").toString());
+            boolean success = REPORT_REPOSITORY.reportArticle(articleId, userId, reportReason);
+
+            if (success) {
+                model.addAttribute("message", "Artykuł został zgłoszony.");
+            } else {
+                model.addAttribute("error", "Nie udało się zgłosić artykułu.");
+            }
+            return "redirect:/protected/articles/article/" + articleId;
+        } catch (NumberFormatException e) {
+            model.addAttribute("error", "Niepoprawny format ID użytkownika.");
+            return "redirect:/protected/articles/article/" + articleId;
+        }
+    }
 }
