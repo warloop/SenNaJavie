@@ -2,23 +2,36 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dodaj komentarz</title>
-  <link rel="stylesheet" th:href="@{/styles.css}">
+  <!-- GOOGLE FREE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/add-comment.css}">
 </head>
 <body>
-<header>
-  <h1>Dodaj komentarz</h1>
-</header>
-<section>
-  <div>
-    <h2>Dodaj nowy komentarz</h2>
-    <form th:action="@{/comments/add}" method="post">
+<div class="commentFormBox">
+  <h2>Dodaj nowy komentarz</h2>
+  <div class="horizontalLine"></div>
+  <form th:action="@{/comments/add}" method="post">
+    <div class="textBlock">
       <input type="hidden" name="article_id" th:value="${articleId}">
       <input type="hidden" name="user_adder_id" th:value="${user_adder_id}">
-      <textarea name="comment_text" placeholder="Napisz swój komentarz tutaj..." required></textarea>
-      <button type="submit">Dodaj komentarz</button>
-    </form>
-  </div>
-</section>
+    </div>
+    <div class="textBlock">
+      <label for="comment_text">Treść komentarza:</label>
+      <textarea id="comment_text" name="comment_text" placeholder="Napisz swój komentarz tutaj..." required></textarea>
+    </div>
+    <input type="submit" value="Dodaj komentarz">
+    <a th:href="@{/protected/mainpage}" style="margin-top: 10px;">Wróć do strony głównej</a>
+  </form>
+</div>
+
+<footer>
+  2024 | Programowanie aplikacji biznesowych w oparciu o platformę Java | Wszelkie prawa zastrzeżone |<br>
+  Autorzy: Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk
+</footer>
 </body>
 </html>

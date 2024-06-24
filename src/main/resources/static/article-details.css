@@ -140,6 +140,29 @@ table tr:hover {
 /* Stylizacja dla kontenera z sekcjami artykułu */
 .article-sections {
     margin-top: 20px;
+<<<<<<< HEAD
+}
+
+.article-sections h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.article-sections table {
+    width: 100%;
+}
+
+.article-sections table td {
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.article-sections table td:hover {
+    background-color: #f0f0f0;
+=======
+>>>>>>> origin/wyglad2
 }
 
 .article-sections h3 {
