@@ -65,9 +65,7 @@ public class RoleRepository {
     }
     public List<Role> getRolesByUserId(int userId) {
         List<Role> roles = new ArrayList<>();
-        final String sql = "SELECT r.id, r.name FROM roles r " +
-                "INNER JOIN user_roles ur ON r.id = ur.role_id " +
-                "WHERE ur.user_id = ?";
+        final String sql = "SELECT r.id, r.name FROM roles r INNER JOIN user_roles ur ON r.id = ur.role_id WHERE ur.user_id = ?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

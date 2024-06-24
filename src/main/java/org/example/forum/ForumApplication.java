@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class ForumApplication {
 
     public static void main(String[] args) {
-        Flyway flyway = Flyway.configure().dataSource("jdbc:mysql://localhost:3306/forum", "root", "password").load();
+        Flyway flyway = Flyway.configure().dataSource("jdbc:mysql://localhost:12832/forum", "forumaplication", "tajnehaslo").load();
 
         // Repair step to fix checksum mismatch
         flyway.repair();
