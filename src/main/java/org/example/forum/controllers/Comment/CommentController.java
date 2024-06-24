@@ -33,7 +33,7 @@ public class CommentController {
     @PostMapping("/add")
     public String addComment(@ModelAttribute CommentAddDto commentAddDto) {
         commentRepository.addComment(commentAddDto);
-        return "redirect:/protected/articles";
+        return "redirect:/protected/mainpage";
     }
 
     @PostMapping("/edit")
