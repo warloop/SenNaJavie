@@ -148,11 +148,20 @@ public class SubjectDao implements ISubjectDao {
         @Transactional
         public Boolean delete(long id) {
 
-            Subjects sub = this.get(id);
+            final String deleteSQL = "DELETE FROM subjects WHERE id =?";
 
-            sub.set_deleted(true);
+            try (Connection conn = ConnectionFactory.getConnection();
+                 PreparedStatement deleteStatement = conn.prepareStatement(deleteSQL)) {
 
-            return this.update(sub);
+                deleteStatement.setLong(1, id);
+
+                int affectedRows = deleteStatement.executeUpdate();
+
+                return affectedRows > 0;
+
+            } catch (SQLException ex) {
+                throw new DataAccessException(ex);
+            }
 
         }
 
