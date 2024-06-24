@@ -1,9 +1,13 @@
 package org.example.forum.services;
 
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 import org.example.forum.dto.Article.ArticleAddDto;
 import org.example.forum.dto.Article.ArticleDto;
+import org.example.forum.dto.Article.ArticleEditDto;
 import org.example.forum.dto.Article.ArticleReportDto;
+import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.entities.Articles;
 import org.example.forum.exception.SubjectLengthTooLongException;
@@ -34,7 +38,8 @@ public class ArticleService implements IArticleService {
 
     @Autowired
     private IUserRepository USER_REPOSITORY;
-
+    @Autowired
+    IActionService ACTION_SERVICE;
 
 
 
@@ -99,7 +104,7 @@ public class ArticleService implements IArticleService {
                 throw new IllegalArgumentException("Invalid input data.");
             }
 
-            Optional<ArticleDto> existingArticle = ARTICLE_REPOSITORY.findById(article.getArticleId());
+            Optional<Articles> existingArticle = ARTICLE_REPOSITORY.findById(article.getArticleId());
             if (existingArticle.isEmpty()) {
                 throw new IllegalArgumentException("Article with the given ID does not exist.");
             }
@@ -128,5 +133,34 @@ public class ArticleService implements IArticleService {
     @Override
     public Articles getArticleById(Long articleId) {
         return ARTICLE_REPOSITORY.getArticleById(articleId);
+    }
+
+    @Override
+    public boolean updateArticle(ArticleEditDto articleEditDto) {
+        return ARTICLE_REPOSITORY.editArticleText(articleEditDto);
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteArticle(long articleId, int userId) {
+        try {
+
+            boolean byOwner = ARTICLE_REPOSITORY.getArticleById(articleId).getUser_adder_id() == userId;
+
+            boolean success = ARTICLE_REPOSITORY.deleteArticle(articleId, userId, byOwner);
+
+            if (success) {
+                if (byOwner) {
+                    ACTION_SERVICE.removeArticleActionByOwner(userId, articleId);
+                } else {
+                    ACTION_SERVICE.removeArticleActionByModerator(userId, articleId);
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

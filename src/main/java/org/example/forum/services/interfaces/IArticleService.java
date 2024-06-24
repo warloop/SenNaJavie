@@ -1,7 +1,11 @@
 package org.example.forum.services.interfaces;
 
+import jakarta.transaction.Transactional;
 import org.example.forum.dto.Article.ArticleAddDto;
+import org.example.forum.dto.Article.ArticleDto;
+import org.example.forum.dto.Article.ArticleEditDto;
 import org.example.forum.dto.Article.ArticleReportDto;
+import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.entities.Articles;
 import java.util.List;
@@ -19,4 +23,7 @@ public interface IArticleService {
 
     Articles getArticleById(Long articleId);
 
+    boolean updateArticle(ArticleEditDto articleEditDto);
+
+    boolean deleteArticle(long articleId, int userId);
 }

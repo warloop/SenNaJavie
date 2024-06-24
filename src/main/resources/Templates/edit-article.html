@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edycja tematu</title>
+  <meta name="description" content="Aplikacja webowa zaprojektowana na potrzeby pracowni specjalistycznej z przedmiotu projektowanie aplikacji biznesowych w oparciu o platformę java"/>
+  <meta name="version" content="1.0.2"/>
+  <meta name="author" content="Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk"/>
+  <!-- GOOGLE FREE FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link th:href="@{https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap}" rel="stylesheet">
+  <link th:href="@{/edit-subject.css}" rel="stylesheet">
+</head>
+<body>
+<div class="loginFormBox">
+  <h2>Edytuj temat</h2>
+  <div class="horizontalLine"></div>
+  <form id="editSubjectForm" th:action="@{/protected/article/edit}" method="post">
+    <input type="hidden" id="articleId" name="articleId" th:value="${article.id}">
+    <div class="textBlock">
+      <label for="articleTitle">Treść artykułu:</label>
+      <textarea id="articleTitle" name="articleTitle" required th:text="${article.article_title}" maxlength="128" minlength="1"></textarea>
+    </div>
+
+    <input type="submit" value="Zapisz zmiany">
+    <p th:if="${param.error}">Nie udało się edytować artykułu.</p>
+    <a th:href="@{/protected/mainpage}" style="margin-top: 10px;">Wróć do strony głównej</a>
+  </form>
+</div>
+
+<footer>
+  2024 | Programowanie aplikacji biznesowych w oparciu o platformę Java | Wszelkie prawa zastrzeżone |<br>
+  Autorzy: Artur Leszczak, Mateusz Fiedosiuk, Jakub Dąbrowski, Filip Kucharczyk
+</footer>
+</body>
+</html>

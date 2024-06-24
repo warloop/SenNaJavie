@@ -5,6 +5,7 @@ body {
     background-color: #f4f4f4;
     color: #333;
 }
+
 header {
     background-color: #0093E9;
     background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
@@ -17,12 +18,14 @@ header {
     padding-left: 10%;
     padding-right: 10%;
 }
+
 nav {
     background-color: #191A1D;
     color: #fff;
     padding: 20px 0;
     text-align: center;
 }
+
 nav a {
     color: #fff;
     text-decoration: none;
@@ -34,6 +37,7 @@ nav a {
     transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
     position: relative;
 }
+
 nav a::before {
     content: '';
     position: absolute;
@@ -44,14 +48,17 @@ nav a::before {
     background-color: #0897E7;
     transition: width 0.3s ease, left 0.3s ease;
 }
+
 nav a:hover::before {
     width: 100%;
     left: 0;
 }
+
 nav a:hover {
     color: #0897E7;
     transform: scale(1.05);
 }
+
 section {
     padding: 20px;
     margin: 40px auto;
@@ -61,6 +68,7 @@ section {
     max-width: 800px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 footer {
     background-color: #333;
     color: #fff;
@@ -71,17 +79,24 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
 h1 {
     font-family: 'Varela Round', sans-serif;
     font-size: 36px;
     margin-bottom: 20px;
 }
+
 .article-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
+
+.article-actions h2 {
+    font-size: 19px;
+}
+
 .button {
     background-color: #0093E9;
     color: white;
@@ -92,30 +107,57 @@ h1 {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 .button:hover {
     background-color: #191A1D;
 }
+
 table {
     width: 100%;
-    margin: 20px 0;
     border-collapse: collapse;
+    margin: 20px 0;
 }
 
 table th, table td {
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 15px;
     text-align: left;
 }
+
 table th {
-    background-color: #0093E9;
+    background-color: #444;
     color: #fff;
 }
+
 table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
+
 table tr:hover {
     background-color: #ddd;
 }
-footer p {
-    font-size: 14px;
+
+/* Stylizacja dla kontenera z sekcjami artykułu */
+.article-sections {
+    margin-top: 20px;
+}
+
+.article-sections h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.article-sections table {
+    width: 100%;
+}
+
+.article-sections table td {
+    background-color: #fafafa;
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.article-sections table td:hover {
+    background-color: #f0f0f0;
 }

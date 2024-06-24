@@ -2,7 +2,11 @@ package org.example.forum.controllers.Article;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.example.forum.dao.ArticleDao;
+import org.example.forum.dao.Interfaces.IArticleDao;
 import org.example.forum.dto.Article.ArticleAddDto;
+import org.example.forum.dto.Article.ArticleEditDto;
+import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.entities.*;
 import org.example.forum.repositories.Interfaces.ICommentRepository;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +44,9 @@ public class ArticleController {
 
     @Autowired
     ICommentRepository COMMENT_REPOSITORY;
+
+    @Autowired
+    ArticleDao ARTICLE_DAO;
 
     @GetMapping("/protected/article/create")
 
@@ -82,16 +90,60 @@ public class ArticleController {
             InformationReturned returnedInfo = ARTICLE_SERVICE.addArticle(newSubject);
 
             if(returnedInfo.getCode() == 201) {
-                return ResponseEntity.ok(returnedInfo.getMessage());
-            }else{
+                return ResponseEntity.status(302).header("Location", "/protected/mainpage").build();
+            } else {
                 return ResponseEntity.badRequest().body(returnedInfo.getMessage());
             }
+
 
         }catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body("Niepoprawny format ID użytkownika");
         }
 
     }
+
+    @GetMapping("/protected/articles/article/{id}/edit")
+    public String editArticlePage(@PathVariable("id") long id, Model model) {
+        Articles article = ARTICLE_SERVICE.getArticleById(id);
+        if (article != null) {
+            model.addAttribute("article", article);
+            return "edit-article";
+        } else {
+            return "redirect:/protected/mainpage";
+        }
+    }
+
+    @PostMapping("/protected/article/edit")
+    public String editArticle(@RequestParam("articleId") long articleId,
+                              @RequestParam("articleTitle") String articleTitle,
+                              HttpServletRequest request,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            int userId = Integer.parseInt(request.getSession().getAttribute("userId").toString());
+
+            ArticleEditDto articleEditDto = new ArticleEditDto(articleId, userId, articleTitle);
+
+            boolean success = ARTICLE_SERVICE.updateArticle(articleEditDto);
+
+            if (success) {
+                redirectAttributes.addFlashAttribute("message", "Edycja artykułu zakończona sukcesem.");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Edycja artykułu nie powiodła się.");
+            }
+
+            return "redirect:/protected/mainpage";
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("error", "Niepoprawny format ID użytkownika.");
+            return "redirect:/protected/mainpage";
+        }
+    }
+
+    @PostMapping("/protected/articles/article/{id}/delete")
+    public String deleteArticle(@PathVariable("id") long id) {
+        ARTICLE_DAO.delete(id);
+        return "redirect:/protected/mainpage";
+    }
+
 
     @GetMapping("/protected/articles/{subjectId}")
     public String getArticlesBySubjectId(@PathVariable("subjectId") Long subjectId, Model model) {

@@ -79,7 +79,7 @@ public class ArticleDao implements IArticleDao {
     /**
      * Retrieves an article from the database based on its ID.
      *
-     * @param articleId The unique identifier of the article to retrieve.
+     * @param id The unique identifier of the article to retrieve.
      * @return An Optional containing the retrieved Article object if found, otherwise an empty Optional.
      * @throws DataAccessException If an error occurs while accessing the database.
      * @author Artur Leszczak
@@ -87,35 +87,31 @@ public class ArticleDao implements IArticleDao {
      */
     @Override
     @Transactional
-    public Optional<Articles> getById(long articleId) {
-        final String selectSQL = "SELECT * FROM articles WHERE id =?";
+    public Articles getById(long id) {
+        final String selectSQL = "SELECT * FROM articles WHERE id =? AND is_deleted = false";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
 
-            selectStatement.setLong(1, articleId);
+            selectStatement.setLong(1, id);
 
-            try (ResultSet rs = selectStatement.executeQuery()) {
-
-                if (rs.next()) {
-                    // Create an Article object from the ResultSet and return it wrapped in an Optional
-                    Articles article = new Articles(
-                            rs.getLong("id"),
-                            rs.getInt("user_adder_id"),
-                            rs.getLong("subject_id"),
-                            rs.getString("article_title"),
-                            rs.getBoolean("is_visible"),
-                            rs.getBoolean("is_banned"),
-                            rs.getBoolean("is_deleted")
-                    );
-                    return Optional.of(article);
+            try (ResultSet resultSet = selectStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Articles article = new Articles();
+                    article.setId(resultSet.getLong("id"));
+                    article.setUser_adder_id(resultSet.getInt("user_adder_id"));
+                    article.setSubject_id(resultSet.getLong("subject_id"));
+                    article.setArticle_title(resultSet.getString("article_title"));
+                    article.setVisible(resultSet.getBoolean("is_visible"));
+                    article.setBanned(resultSet.getBoolean("is_banned"));
+                    article.setDeleted(resultSet.getBoolean("is_deleted"));
+                    return article;
                 } else {
-                    // If no article is found with the given ID, return an empty Optional
-                    return Optional.empty();
+                    return null;
                 }
             }
+
         } catch (SQLException ex) {
-            // Handle any SQL exceptions
             throw new DataAccessException(ex);
         }
     }
@@ -204,39 +200,43 @@ public class ArticleDao implements IArticleDao {
         }
     }
 
-    /**
-     * Aktualizuje istniejący artykuł w bazie danych na podstawie podanego identyfikatora artykułu i danych.
-     *
-     * @param articleId Unikalny identyfikator artykułu do zaktualizowania.
-     * @param data Zaktualizowane dane artykułu.
-     * @return Optional zawierający zaktualizowany obiekt Artykułu, jeśli aktualizacja zakończy się powodzeniem, w przeciwnym razie pusty Optional.
-     * @throws DataAccessException Jeśli wystąpi błąd podczas uzyskiwania dostępu do bazy danych.
-     * @author Artur Leszczak
-     * @version 1.0.0
-     */
+
     @Override
     @Transactional
-    public Optional<Articles> update(long articleId, Articles data) {
-        final String updateSQL = "UPDATE articles SET user_adder_id =?, subject_id =?, article_title =?, is_visible =?, is_banned =?, is_deleted =? WHERE id =?";
+    public Boolean update(Articles articles) {
+        final String updateSQL = "UPDATE articles SET user_adder_id =?, article_title =?, is_banned =?, is_deleted =? WHERE id =?";
 
         try (Connection conn = ConnectionFactory.getConnection();
              PreparedStatement updateStatement = conn.prepareStatement(updateSQL)) {
 
-            updateStatement.setInt(1, data.getUser_adder_id());
-            updateStatement.setLong(2, data.getSubject_id());
-            updateStatement.setString(3, data.getArticle_title());
-            updateStatement.setBoolean(4, data.isVisible());
-            updateStatement.setBoolean(5, data.isBanned());
-            updateStatement.setBoolean(6, data.isDeleted());
-            updateStatement.setLong(7, articleId);
+            updateStatement.setInt(1, articles.getUser_adder_id());
+            updateStatement.setString(2, articles.getArticle_title());
+            updateStatement.setBoolean(3, articles.isBanned());
+            updateStatement.setBoolean(4, articles.isDeleted());
+            updateStatement.setLong(5, articles.getId());
 
             int affectedRows = updateStatement.executeUpdate();
 
-            if (affectedRows > 0) {
-                return Optional.of(data);
-            } else {
-                return Optional.empty();
-            }
+            return affectedRows > 0;
+
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean delete(long articleId) {
+        final String deleteSQL = "DELETE FROM articles WHERE id = ?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement deleteStatement = conn.prepareStatement(deleteSQL)) {
+
+            deleteStatement.setLong(1, articleId);
+
+            int affectedRows = deleteStatement.executeUpdate();
+
+            return affectedRows > 0;
 
         } catch (SQLException ex) {
             throw new DataAccessException(ex);
