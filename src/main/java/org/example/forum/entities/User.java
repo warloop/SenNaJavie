@@ -2,7 +2,6 @@ package org.example.forum.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -48,7 +47,6 @@ public class User {
     @Column(name = "delete_date")
     private LocalDateTime delete_date = null;
 
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -56,6 +54,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
     public boolean getIs_deleted(){
         return this.is_deleted;
     }

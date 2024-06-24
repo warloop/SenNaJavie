@@ -20,17 +20,26 @@
     <h2 th:text="${article.article_title}">Tytuł artykułu</h2>
     <div>
       <a class="button" th:href="@{/protected/articles/article/{id}/create(id=${article.id})}">Stwórz sekcję</a>
+<<<<<<< HEAD
       <a class="button" th:href="@{/protected/articles/article/{id}/edit(id=${article.id})}">Edytuj artykuł</a>
      <div>
       <form th:action="@{/protected/articles/article/{id}/delete(id=${article.id})}" method="post">
         <button type="submit" class="button">Usuń artykuł</button>
       </form>
      </div>
+=======
+      <a class="button" th:href="@{/protected/subject/edit/{id}(id=${article.id})}">Edytuj artykuł</a>
+      <a class="button" th:href="@{/protected/subject/delete/{id}(id=${article.id})}">Usuń artykuł</a>
+>>>>>>> main
     </div>
   </div>
 
   <h3>Sekcje artykułu:</h3>
+<<<<<<< HEAD
   <div>
+=======
+  <div style="display: ruby-text">
+>>>>>>> main
     <table>
       <tr th:if="${sections.empty}">
         <td colspan="2"> Nie ma aktualnie żadnych sekcji do tego artykułu </td>
@@ -40,6 +49,7 @@
       </tr>
     </table>
   </div>
+<<<<<<< HEAD
 
   <h3>Komentarze:</h3>
   <div>
@@ -54,9 +64,15 @@
       </tr>
     </table>
   </div>
+=======
+>>>>>>> main
 </section>
 <footer>
   <p>&copy; 2024 Forum Wszelkie prawa zastrzeżone</p>
 </footer>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> main

@@ -1,7 +1,7 @@
 CREATE TABLE account_type (
-                              id SMALLINT PRIMARY KEY AUTO_INCREMENT,
-                              name VARCHAR(32) NOT NULL,
-                              description VARCHAR(256)
+    id SMALLINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(32) NOT NULL,
+    description VARCHAR(256)
 );
 
 INSERT INTO account_type (id, name, description) VALUES (1, "Użytkownik", "Zwykły użytkownik witryny");

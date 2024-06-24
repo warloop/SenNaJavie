@@ -36,6 +36,7 @@ h2{
     width: max-content;
     height: auto;
 }
+
 input[type="submit"] {
     background-color: #0093E9;
     color: white;
@@ -68,8 +69,6 @@ textarea:focus {
     border-color: #0093E9;
     outline: none;
 }
-
-
 
 .horizontalLine
 {

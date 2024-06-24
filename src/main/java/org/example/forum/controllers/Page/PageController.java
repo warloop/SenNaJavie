@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import javax.swing.text.View;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ public class PageController {
 
     @Autowired
     private IArticleService articleService;
+
     @Autowired
     private ICommentRepository commentRepository;
 
@@ -82,8 +82,6 @@ public class PageController {
         }
         return "mainpage";
     }
-
-
     @GetMapping("/my-profile")
     public String myProfile(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);
@@ -103,7 +101,6 @@ public class PageController {
                 List<Articles> articles = articleService.findByUserId(user.getId());
 
                 model.addAttribute("articles", articles);
-
                 List<Comments> comments = commentRepository.getCommentsByUserId(user.getId());
                 model.addAttribute("comments", comments);
 
@@ -115,5 +112,4 @@ public class PageController {
             return "redirect:/login";
         }
     }
-
 }

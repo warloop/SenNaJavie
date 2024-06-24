@@ -1,20 +1,16 @@
 package org.example.forum.services;
 
 import java.util.Optional;
-
 import jakarta.transaction.Transactional;
 import org.example.forum.dto.Article.ArticleAddDto;
-import org.example.forum.dto.Article.ArticleDto;
 import org.example.forum.dto.Article.ArticleEditDto;
 import org.example.forum.dto.Article.ArticleReportDto;
-import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.entities.Articles;
 import org.example.forum.exception.SubjectLengthTooLongException;
 import org.example.forum.exception.UserIsNotExistsException;
 import org.example.forum.repositories.Interfaces.IArticleRepository;
 import org.example.forum.repositories.Interfaces.IUserRepository;
-import org.example.forum.services.interfaces.IActionService;
 import org.example.forum.services.interfaces.IArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,15 +29,14 @@ public class ArticleService implements IArticleService {
     /**
      * Wstrzykiwane zależności
      */
-    @Autowired
     private IArticleRepository ARTICLE_REPOSITORY;
-
-    @Autowired
     private IUserRepository USER_REPOSITORY;
+
     @Autowired
-    IActionService ACTION_SERVICE;
-
-
+    public ArticleService(IArticleRepository articleRepository, IUserRepository userRepository) {
+        this.ARTICLE_REPOSITORY = articleRepository;
+        this.USER_REPOSITORY = userRepository;
+    }
 
     /**
      * Metoda waliduje dane zawarte w DTO, wywołuje niezbędne metody Repozytorium w celu dodania noewego artykułu, metoda
@@ -105,6 +100,7 @@ public class ArticleService implements IArticleService {
             }
 
             Optional<Articles> existingArticle = ARTICLE_REPOSITORY.findById(article.getArticleId());
+
             if (existingArticle.isEmpty()) {
                 throw new IllegalArgumentException("Article with the given ID does not exist.");
             }
@@ -146,21 +142,13 @@ public class ArticleService implements IArticleService {
         try {
 
             boolean byOwner = ARTICLE_REPOSITORY.getArticleById(articleId).getUser_adder_id() == userId;
-
             boolean success = ARTICLE_REPOSITORY.deleteArticle(articleId, userId, byOwner);
 
-            if (success) {
-                if (byOwner) {
-                    ACTION_SERVICE.removeArticleActionByOwner(userId, articleId);
-                } else {
-                    ACTION_SERVICE.removeArticleActionByModerator(userId, articleId);
-                }
-                return true;
-            } else {
-                return false;
-            }
+            return success;
+
         } catch (Exception e) {
             return false;
         }
     }
+
 }

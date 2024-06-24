@@ -23,5 +23,8 @@ public class InformationReturned {
         this.redirectUrl = redirectUrl;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 }

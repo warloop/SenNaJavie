@@ -40,6 +40,7 @@ public class CommentRepository implements ICommentRepository {
      * Interfejs obiektu DAO, komentarze-nie-polubienia
      */
     private final ICommentDislikesDao commentDislikesDao;
+
     private final IUserDao userDao;
 
     /**
@@ -74,14 +75,7 @@ public class CommentRepository implements ICommentRepository {
      */
     @Override
     public List<Comments> getCommentsByArticleId(long articleId) {
-        List<Comments> comments = this.commentDao.getCommentsByArticleId(articleId);
-
-        comments.forEach(comment -> {
-            User user = this.userDao.get(comment.getUser_adder_id());
-            comment.setUser(user);
-        });
-
-        return comments;
+        return this.commentDao.getCommentsByArticleId(articleId);
     }
 
     /**
@@ -119,9 +113,9 @@ public class CommentRepository implements ICommentRepository {
         comments.setLikes(0);
         comments.setDislikes(0);
 
-        Optional<Long> idComment =  this.commentDao.add(comments);
+        Optional<Long> idComent =  this.commentDao.add(comments);
 
-        if(idComment.isPresent()) return true;
+        if(idComent.isPresent()) return true;
 
         return false;
     }

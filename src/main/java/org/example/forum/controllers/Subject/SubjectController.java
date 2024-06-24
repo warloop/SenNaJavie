@@ -25,6 +25,7 @@ import java.util.Optional;
 
 @Controller
 public class SubjectController {
+
     @Autowired
     SubjectDao dao;
 
@@ -86,6 +87,7 @@ public class SubjectController {
     @PostMapping("/protected/subject/delete/{id}")
     public String deleteSubject(@PathVariable("id") long id) {
         dao.delete(id);
+
         return "redirect:/protected/mainpage";
     }
 }

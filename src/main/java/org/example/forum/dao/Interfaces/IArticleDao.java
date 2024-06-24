@@ -11,16 +11,16 @@ public interface IArticleDao {
 
     Optional<Long> add(ArticleAddDto data);
 
-    Articles getById(long articleId);
+    Optional<Articles> getById(long articleId);
 
     List<Articles> getAll(int start, int limit);
 
+    boolean update(long articleId, Articles data);
+
     List<Articles> findByUserAdderId(int userAdderId);
 
-    Boolean update(Articles articles);
+    List<Articles> findBySubjectId(long subjectId);
 
     boolean delete(long articleId);
-
-    List<Articles> findBySubjectId(long subjectId);
 
 }

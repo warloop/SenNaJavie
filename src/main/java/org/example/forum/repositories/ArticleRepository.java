@@ -10,7 +10,6 @@ import org.example.forum.repositories.Interfaces.IArticleRepository;
 import org.example.forum.services.interfaces.IActionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -65,11 +64,12 @@ public class ArticleRepository implements IArticleRepository {
     @Override
     public Optional<Articles> findById(long articleId)
     {
-        Articles article = this.ARTICLE_DAO.getById(articleId);
+        Optional<Articles> article = this.ARTICLE_DAO.getById(articleId);
 
-        if(article!= null) return Optional.of(article);
+        if(article!= null) return article;
 
         return Optional.empty();
+
     }
 
     @Override
@@ -95,18 +95,17 @@ public class ArticleRepository implements IArticleRepository {
     @Override
     public Articles getArticleById(Long articleId) {
 
-        return ARTICLE_DAO.getById(articleId);
+        return ARTICLE_DAO.getById(articleId).get();
 
     }
 
     public boolean editArticleText(ArticleEditDto articleEditDto)
     {
-        Articles art = this.ARTICLE_DAO.getById(articleEditDto.getId());
-
+        Articles art = this.ARTICLE_DAO.getById(articleEditDto.getId()).get();
 
         art.setArticle_title(articleEditDto.getArticle_new_text());
         if(art.getId() == articleEditDto.getId()){
-            if(this.ARTICLE_DAO.update(art)){
+            if(this.ARTICLE_DAO.update(art.getId(), art)){
                 this.ACTION_SERVICE.changeArticleAction(articleEditDto.getUser_changer_id(),art.getId());
                 return true;
             }
@@ -124,13 +123,13 @@ public class ArticleRepository implements IArticleRepository {
     @Transactional
     public boolean deleteArticle(long articleId, int user_id, boolean by_owner)
     {
-        Articles art = this.ARTICLE_DAO.getById(articleId);
+        Articles art = this.ARTICLE_DAO.getById(articleId).get();
 
         if(art.isDeleted()) return false;
 
         art.setDeleted(true);
 
-        if(this.ARTICLE_DAO.update(art))
+        if(this.ARTICLE_DAO.update(art.getId(),art))
         {
             if(by_owner){
                 this.ACTION_SERVICE.removeArticleActionByOwner(user_id, art.getId());
@@ -139,6 +138,5 @@ public class ArticleRepository implements IArticleRepository {
             }
         }
         return false;
-
     }
 }

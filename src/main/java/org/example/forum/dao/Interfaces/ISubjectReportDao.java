@@ -1,17 +1,21 @@
 package org.example.forum.dao.Interfaces;
 
 import org.example.forum.entities.Subjects_reports;
-
+import java.util.List;
 import java.util.Optional;
 
 public interface ISubjectReportDao {
 
-    Subjects_reports get(int id);
+    Subjects_reports get(long id);
 
-    Optional<Integer> add(Subjects_reports articleReport);
+    List<Subjects_reports> getAllNotViewed();
+
+    List<Subjects_reports> getAll();
+
+    Optional<Long> add(Subjects_reports articleReport);
 
     Boolean update(Subjects_reports articleReport);
 
-    Boolean delete(int id);
+    Boolean delete(long id);
 
 }

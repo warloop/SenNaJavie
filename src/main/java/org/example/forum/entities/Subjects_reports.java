@@ -14,18 +14,17 @@ import java.time.LocalDateTime;
  */
 
 @Entity
-@Table(name="subjects_reports")
+@Table(name="subject_reports")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @RequiredArgsConstructor
 @ToString
-
 public class Subjects_reports {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @NonNull
     @Column(name = "subject_id")
@@ -42,5 +41,9 @@ public class Subjects_reports {
     @NonNull
     @Column(name = "add_date")
     private LocalDateTime report_date;
+
+    @NonNull
+    @Column(name = "is_viewed")
+    private boolean is_viewed;
 
 }

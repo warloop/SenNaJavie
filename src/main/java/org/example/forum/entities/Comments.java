@@ -2,8 +2,6 @@ package org.example.forum.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.expression.spel.ast.NullLiteral;
-
 import java.time.LocalDateTime;
 
 /**

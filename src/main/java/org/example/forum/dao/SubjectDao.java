@@ -147,21 +147,15 @@ public class SubjectDao implements ISubjectDao {
         @Override
         @Transactional
         public Boolean delete(long id) {
-            final String deleteSQL = "DELETE FROM subjects WHERE id =?";
 
-            try (Connection conn = ConnectionFactory.getConnection();
-                 PreparedStatement deleteStatement = conn.prepareStatement(deleteSQL)) {
+            Subjects sub = this.get(id);
 
-                deleteStatement.setLong(1, id);
+            sub.set_deleted(true);
 
-                int affectedRows = deleteStatement.executeUpdate();
+            return this.update(sub);
 
-                return affectedRows > 0;
-
-            } catch (SQLException ex) {
-                throw new DataAccessException(ex);
-            }
         }
+
         /**
          * Metoda służąca do pobierania przedmiotu z bazy danych na podstawie określonej kolumny i danych.
          *

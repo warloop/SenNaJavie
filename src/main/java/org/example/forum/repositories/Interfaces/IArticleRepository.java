@@ -1,6 +1,5 @@
 package org.example.forum.repositories.Interfaces;
 
-import jakarta.transaction.Transactional;
 import org.example.forum.dto.Article.ArticleAddDto;
 import org.example.forum.dto.Article.ArticleDto;
 import org.example.forum.dto.Article.ArticleEditDto;
@@ -18,9 +17,10 @@ public interface IArticleRepository {
 
      List<Articles> findBySubjectId(long subjectId);
 
-    Articles getArticleById(Long articleId);
+     Articles getArticleById(Long articleId);
 
-    boolean editArticleText(ArticleEditDto articleEditDto);
+     boolean editArticleText(ArticleEditDto articleEditDto);
 
-    boolean deleteArticle(long articleId, int user_id, boolean by_owner);
+     boolean deleteArticle(long articleId, int user_id, boolean by_owner);
+
 }

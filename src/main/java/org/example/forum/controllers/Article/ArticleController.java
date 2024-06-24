@@ -3,10 +3,8 @@ package org.example.forum.controllers.Article;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.example.forum.dao.ArticleDao;
-import org.example.forum.dao.Interfaces.IArticleDao;
 import org.example.forum.dto.Article.ArticleAddDto;
 import org.example.forum.dto.Article.ArticleEditDto;
-import org.example.forum.dto.Subject.SubjectEditDto;
 import org.example.forum.dto.System.InformationReturned;
 import org.example.forum.entities.*;
 import org.example.forum.repositories.Interfaces.ICommentRepository;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -95,7 +92,6 @@ public class ArticleController {
                 return ResponseEntity.badRequest().body(returnedInfo.getMessage());
             }
 
-
         }catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body("Niepoprawny format ID użytkownika");
         }
@@ -144,7 +140,6 @@ public class ArticleController {
         return "redirect:/protected/mainpage";
     }
 
-
     @GetMapping("/protected/articles/{subjectId}")
     public String getArticlesBySubjectId(@PathVariable("subjectId") Long subjectId, Model model) {
         List<Articles> articles = ARTICLE_SERVICE.getArticlesBySubjectId(subjectId);
@@ -162,6 +157,7 @@ public class ArticleController {
         }
         model.addAttribute("article", article);
         model.addAttribute("sections", sections);
+
         model.addAttribute("comments", comments);
         return "article-details";
     }

@@ -1,5 +1,6 @@
 package org.example.forum;
 
+
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,3 +24,4 @@ public class ForumApplication {
         SpringApplication.run(ForumApplication.class, args);
     }
 }
+

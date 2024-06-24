@@ -58,7 +58,6 @@ public class UserService implements IUserService {
 
             return new InformationReturned(200, "Poprawnie zarejestrowano!", "user");
 
-
         }catch (Exception e){
             return new InformationReturned(400, e.getMessage(), "user");
         }
