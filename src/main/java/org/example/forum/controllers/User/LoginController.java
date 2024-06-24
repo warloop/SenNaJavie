@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.example.forum.dto.User.LoginInformationReturned;
 import org.example.forum.dto.User.UserLoginDto;
+import org.example.forum.repositories.RoleRepository;
 import org.example.forum.services.SecurityService;
 import org.example.forum.services.SubjectService;
 import org.example.forum.services.interfaces.IUserService;
@@ -25,6 +26,8 @@ public class LoginController {
 
     @Autowired
     SecurityService SECURITY_SERVICE;
+    @Autowired
+    RoleRepository roleRepository;
 
     @GetMapping("/")
     public String loginPage() {
@@ -65,11 +68,14 @@ public class LoginController {
             UserLoginDto userLoginDto = new UserLoginDto(login, password);
             LoginInformationReturned informationReturned = USER_SERVICE.loginUser(userLoginDto);
 
-            if (informationReturned.getCode() == 200 && informationReturned.getUser_id() > 0) {
+            int userId = informationReturned.getUser_id();
+            if (informationReturned.getCode() == 200 && userId > 0) {
                 HttpSession session = request.getSession();
                 session.setAttribute("isLogged", "true");
-                session.setAttribute("userId", informationReturned.getUser_id());
+                session.setAttribute("userId", userId);
                 session.setAttribute("username", login);
+                boolean admin = roleRepository.isAdmin((long) userId);
+                session.setAttribute("isAdmin", admin);
 
                 return "redirect:/protected/mainpage";
             }

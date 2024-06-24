@@ -32,15 +32,17 @@
     <p style="font-size: small">
         Oto główna strona naszego forum. Zapraszamy do eksplorowania różnych kategorii, zadawania pytań i angażowania się w dyskusje z innymi użytkownikami.</p>
 </section>
-<div class="button">
+<div class="button" th:if="${session.isAdmin}">
     <a th:href="@{/protected/subject/create}"><button>Stwórz nowy temat</button></a>
 </div>
-<div class="button">
+<div class="button" th:if="${session.isAdmin}">
     <a th:href="@{/protected/article/create}"><button>Stwórz nowy artykuł</button></a>
 </div>
-    <div  class="button">
-        <a th:href="@{/protected/assign-role}"><button>Zarządzaj</button></a>
-    </div>
+<div class="button" th:if="${session.isAdmin}">
+    <a th:href="@{/protected/assign-role}">
+        <button>Zarządzaj</button>
+    </a>
+</div>
 <div style="display: ruby-text">
     <table>
         <tr th:if="${subjects.empty}">

@@ -34,7 +34,25 @@ public class RoleRepository {
 
         return roles;
     }
+    public boolean isAdmin(Long userId) {
+        List<Role> roles = new ArrayList<>();
+        final String sql = "SELECT r.* FROM roles r join user_roles ur on ur.role_id=r.id where ur.user_id = "+userId+" and r.name = 'admin'";
 
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // lub logowanie błędu
+        }
+
+        return false;
+    }
     public boolean assignRoleToUser(Long userId, Long roleId) {
         final String deleteSQL = "DELETE FROM user_roles WHERE user_id = ?";
         final String insertSQL = "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)";

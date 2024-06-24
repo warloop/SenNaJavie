@@ -6,7 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+
 import java.io.IOException;
+import java.security.Principal;
 
 /**
  * Zadaniem tej klasy jest sprawdzenie czy użytkownk próbujący nawiązać połączenie jest zalogowany i może uzyskać
@@ -27,6 +29,10 @@ public class AuthorizationFilter implements Filter
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         if (isAuthorized(httpRequest)) {
+            HttpServletRequest req = (HttpServletRequest) request;
+
+
+
             chain.doFilter(request, response);
         } else {
             httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
