@@ -45,7 +45,7 @@
         <td colspan="2"> Brak komentarzy do tego artykułu </td>
       </tr>
       <tr th:each="comment : ${comments}">
-        <!--<td><span th:text="${comment.author}">Autor komentarza</span></td>-->
+        <td><span th:text="${comment.user.name}">Autor komentarza</span></td>
         <td><span th:text="${comment.comment_text}">Treść komentarza</span></td>
       </tr>
     </table>

@@ -63,7 +63,17 @@
 </section>
 <section>
     <h2>Twoje komentarze:</h2>
-    <!-- Tutaj możesz dodać sekcję wyświetlającą komentarze użytkownika -->
+<div>
+    <table>
+        <tr th:if="${#lists.isEmpty(comments)}">
+            <td colspan="2"> Brak komentarzy </td>
+        </tr>
+        <tr th:each="comment : ${comments}">
+            <td><span th:text="${comment.user.name}">Autor komentarza</span></td>
+            <td><span th:text="${comment.comment_text}">Treść komentarza</span></td>
+        </tr>
+    </table>
+</div>
 </section>
 <footer><p>&copy; 2024 Forum Wszystkie prawa zastrzeżone</p></footer>
 </body>

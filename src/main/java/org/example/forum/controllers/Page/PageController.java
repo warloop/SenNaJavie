@@ -3,8 +3,10 @@ package org.example.forum.controllers.Page;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.example.forum.entities.Articles;
+import org.example.forum.entities.Comments;
 import org.example.forum.entities.Role;
 import org.example.forum.entities.User;
+import org.example.forum.repositories.Interfaces.ICommentRepository;
 import org.example.forum.repositories.RoleRepository;
 import org.example.forum.services.interfaces.IArticleService;
 import org.example.forum.services.interfaces.ISubjectService;
@@ -28,6 +30,8 @@ public class PageController {
 
     @Autowired
     private IArticleService articleService;
+    @Autowired
+    private ICommentRepository commentRepository;
 
     @Autowired
     RoleRepository roleRepository;
@@ -99,6 +103,9 @@ public class PageController {
                 List<Articles> articles = articleService.findByUserId(user.getId());
 
                 model.addAttribute("articles", articles);
+
+                List<Comments> comments = commentRepository.getCommentsByUserId(user.getId());
+                model.addAttribute("comments", comments);
 
                 return "my-profile";
             } else {

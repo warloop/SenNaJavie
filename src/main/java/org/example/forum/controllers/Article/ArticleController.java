@@ -1,12 +1,10 @@
 package org.example.forum.controllers.Article;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.example.forum.dto.Article.ArticleAddDto;
 import org.example.forum.dto.System.InformationReturned;
-import org.example.forum.entities.Articles;
-import org.example.forum.entities.Comments;
-import org.example.forum.entities.Sections;
-import org.example.forum.entities.Subjects;
+import org.example.forum.entities.*;
 import org.example.forum.repositories.Interfaces.ICommentRepository;
 import org.example.forum.services.interfaces.IArticleService;
 import org.example.forum.services.interfaces.ISectionService;
@@ -22,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ArticleController {
@@ -116,7 +115,14 @@ public class ArticleController {
     }
 
     @GetMapping("/comments/add/{articleId}")
-    public String showAddCommentForm(@PathVariable long articleId, Model model) {
+    public String showAddCommentForm(@PathVariable long articleId, HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+        Optional<User> userOptional = USER_SERVICE.getUserByUsername((String) session.getAttribute("username"));
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            model.addAttribute("username", session.getAttribute("username"));
+            model.addAttribute("user_adder_id", user.getId());
+        }
         model.addAttribute("articleId", articleId);
         return "add-comment";
     }

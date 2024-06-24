@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public interface ICommentRepository {
 
+
+    List<Comments> getCommentsByUserId(int userId);
+
     List<Comments> getCommentsByArticleId(long articleId);
     Optional<Comments> getCommentById(long commentId);
 

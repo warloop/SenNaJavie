@@ -71,4 +71,8 @@ public class Comments {
     @Column(name = "deleted_date")
     private LocalDateTime deleted_date = LocalDateTime.now();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_adder_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private User user;
+
 }

@@ -3,12 +3,14 @@ package org.example.forum.repositories;
 import org.example.forum.dao.Interfaces.ICommentDao;
 import org.example.forum.dao.Interfaces.ICommentDislikesDao;
 import org.example.forum.dao.Interfaces.ICommentLikesDao;
+import org.example.forum.dao.Interfaces.IUserDao;
 import org.example.forum.dto.Opinions.CommentAddDto;
 import org.example.forum.dto.Opinions.CommentEditDto;
 import org.example.forum.dto.Opinions.CommentLikesAndDislikesCounterDto;
 import org.example.forum.entities.Comment_dislikes;
 import org.example.forum.entities.Comment_likes;
 import org.example.forum.entities.Comments;
+import org.example.forum.entities.User;
 import org.example.forum.enums.UserCommentStatus;
 import org.example.forum.repositories.Interfaces.ICommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,15 +40,27 @@ public class CommentRepository implements ICommentRepository {
      * Interfejs obiektu DAO, komentarze-nie-polubienia
      */
     private final ICommentDislikesDao commentDislikesDao;
+    private final IUserDao userDao;
 
     /**
      * Konstruktor i wstrzykiwanie zależności.
      */
     @Autowired
-    public CommentRepository(ICommentDao commentDao, ICommentLikesDao commentLikesDao, ICommentDislikesDao commentDislikesDao) {
+    public CommentRepository(ICommentDao commentDao, ICommentLikesDao commentLikesDao, ICommentDislikesDao commentDislikesDao, IUserDao userDao) {
         this.commentDao = commentDao;
         this.commentLikesDao = commentLikesDao;
         this.commentDislikesDao = commentDislikesDao;
+        this.userDao = userDao;
+    }
+
+    @Override
+    public List<Comments> getCommentsByUserId(int userId) {
+        List<Comments> comments = this.commentDao.getCommentsByUserId(userId);
+        comments.forEach(comment -> {
+            User user = this.userDao.get(comment.getUser_adder_id());
+            comment.setUser(user);
+        });
+        return comments;
     }
 
     /**
@@ -60,7 +74,14 @@ public class CommentRepository implements ICommentRepository {
      */
     @Override
     public List<Comments> getCommentsByArticleId(long articleId) {
-        return this.commentDao.getCommentsByArticleId(articleId);
+        List<Comments> comments = this.commentDao.getCommentsByArticleId(articleId);
+
+        comments.forEach(comment -> {
+            User user = this.userDao.get(comment.getUser_adder_id());
+            comment.setUser(user);
+        });
+
+        return comments;
     }
 
     /**

@@ -12,6 +12,43 @@ import java.util.Optional;
 
 public class CommentDao implements ICommentDao {
 
+    @Override
+    @Transactional
+    public List<Comments> getCommentsByUserId(int userId) {
+        final String selectSQL = "SELECT * FROM comments WHERE user_adder_id =?";
+
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement selectStatement = conn.prepareStatement(selectSQL)) {
+
+            selectStatement.setInt(1, userId);
+
+            List<Comments> comments = new ArrayList<>();
+            try (ResultSet resultSet = selectStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Comments comment = new Comments();
+                    comment.setId(resultSet.getLong("id"));
+                    comment.setArticleId(resultSet.getLong("article_id"));
+                    comment.setAnswerToComment(resultSet.getBoolean("is_answer_to_comment"));
+                    comment.setCommentId(resultSet.getLong("comment_id"));
+                    comment.setUser_adder_id(resultSet.getInt("user_adder_id"));
+                    comment.setAdd_date(resultSet.getTimestamp("add_date").toLocalDateTime());
+                    comment.setComment_text(resultSet.getString("comment_text"));
+                    comment.setComment_mark(resultSet.getShort("comment_mark"));
+                    comment.setLikes(resultSet.getInt("likes"));
+                    comment.setDislikes(resultSet.getInt("dislikes"));
+                    comment.setBanned(resultSet.getBoolean("is_banned"));
+                    comment.setDeleted(resultSet.getBoolean("is_deleted"));
+                    comment.setDeleted_date(resultSet.getTimestamp("deleted_date") != null ? resultSet.getTimestamp("deleted_date").toLocalDateTime() : null);
+
+                    comments.add(comment);
+                }
+            }
+            return comments;
+        } catch (SQLException ex) {
+            throw new DataAccessException(ex);
+        }
+    }
+
         /**
          * Pobiera pojedynczy rekord komentarza z bazy danych na podstawie podanego identyfikatora.
          *
